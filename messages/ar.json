@@ -1,0 +1,86 @@
+{
+  "home": {
+    "navLinks": {
+      "realEstate": "العقارات للأعمال",
+      "selling": "أنا أقوم ببيع عقار",
+      "searching": "البحث عن عقار",
+      "signIn": "تسجيل الدخول",
+      "formTitle": "قم بتسجيل الدخول أو التسجيل للاستفادة من خدماتنا",
+      "dontHaveAnAccount": "لا تمتلك حساب؟",
+      "signUp": "تسجيل",
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "name": "الاسم",
+      "phone": "رقم الهاتف",
+      "title": "نحن نصل إلى العقارات في كل مكان",
+      "almost": "تقريبا في كل مكان",
+      "placeholder": "المحافظة، المدينة، المنطقة",
+      "alreadyHaveAnAccount": "لديك حساب؟",
+      "profile": "الحساب",
+      "logout": "تسجيل الخروج"
+    },
+    "hero": {
+      "title": "نحن نصل إلى العقارات في كل مكان",
+      "almost": "تقريبا في كل مكان",
+      "rent": "إيجار",
+      "sale": "بيع",
+      "placeholder": "المحافظة، المدينة، المنطقة"
+    },
+    "services": {
+      "title": "خدمات (Dream Home Finder)",
+      "description": "نقدم خدماتنا لكل من يبحث عن عقار",
+      "findOutMore": "إعرف المزيد"
+    },
+    "bedrooms": "غرف",
+    "area": "متر",
+    "bathrooms": "حمام",
+    "kitchens": "مطبخ",
+    "shareVia": "شارك عبر",
+    "copyLink": "نسخ الرابط",
+    "copied": "تم النسخ"
+  },
+  "footer": {
+    "company": "الشركة",
+    "services": "الخدمات",
+    "globalPresence": "الحضور العالمي",
+    "cookieSettings": "إعدادات الكوكيز",
+    "copyright": "© 2024 Real Estate Group S.p.A. All rights reserved.",
+    "privacyPolicy": "سياسة الخصوصية",
+    "termsOfUse": "شروط الاستخدام",
+    "cookiePolicy": "سياسة الكوكيز"
+  },
+  "filters": {
+    "filters": "الفلاتر",
+    "filtersApplied": "{count} {count, plural, zero {فلتر} one {فلتر} two {فلتران} few {فلاتر} many {فلتر} other {فلتر}} مطبق",
+    "noFilters": "لا توجد فلاتر مطبقة",
+    "clearAll": "مسح الكل",
+    "selectType": "اختر النوع",
+    "sale": "بيع",
+    "rent": "إيجار",
+    "propertyType": "نوع العقار",
+    "priceRange": "نطاق السعر",
+    "minPrice": "أقل سعر",
+    "maxPrice": "أعلى سعر",
+    "fromPrice": "من {price}",
+    "upToPrice": "حتى {price}",
+    "surfaceArea": "المساحة",
+    "minArea": "أقل مساحة",
+    "maxArea": "أعلى مساحة",
+    "fromArea": "من {area}",
+    "upToArea": "حتى {area}",
+    "bathrooms": "حمامات",
+    "kitchens": "مطابخ",
+    "propertyName": "اسم العقار",
+    "advancedFilters": "المزيد من الفلاتر",
+    "searchByPropertyName": "البحث عن عقار بالاسم"
+  },
+  "properties": {
+    "video": "فيديو",
+    "video_360": "فيديو 360",
+    "photo": "صورة",
+    "map": "خريطة",
+    "showThumbnails": "عرض الصور المصغرة",
+    "hideThumbnails": "إخفاء الصور المصغرة"
+  }
+}

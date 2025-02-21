@@ -1,0 +1,82 @@
+{
+  "home": {
+    "navLinks": {
+      "realEstate": "Real Estate for Business",
+      "selling": "I am selling a property",
+      "searching": "Searching agency",
+      "signIn": "Sign In",
+      "formTitle": "Log in or register to take advantage of our services",
+      "dontHaveAnAccount": "Don't have an account?",
+      "signUp": "Sign Up",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "name": "Name",
+      "phone": "Phone",
+      "alreadyHaveAnAccount": "Already have an account?",
+      "profile": "Profile",
+      "logout": "Logout"
+    },
+    "hero": {
+      "title": "We Find Home Everywhere",
+      "almost": "Almost Everywhere",
+      "rent": "Rent",
+      "sale": "Sale",
+      "placeholder": "Province, municipality, area, reference"
+    },
+    "services": {
+      "title": "Dream Home Finder Services",
+      "findOutMore": "Find Out More"
+    },
+    "bedrooms": "rooms",
+    "area": "sqm",
+    "bathrooms": "bath",
+    "kitchens": "kitchen",
+    "shareVia": "Share via",
+    "copyLink": "Copy link",
+    "copied": "Copied"
+  },
+  "footer": {
+    "company": "COMPANY",
+    "services": "SERVICES",
+    "globalPresence": "GLOBAL PRESENCE",
+    "cookieSettings": "Cookie Settings",
+    "copyright": "© 2024 Real Estate Group S.p.A. All rights reserved.",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfUse": "Terms of Use",
+    "cookiePolicy": "Cookie Policy"
+  },
+  "filters": {
+    "filters": "Filters",
+    "filtersApplied": "{count} {count, plural, one {filter} other {filters}} applied",
+    "noFilters": "No filters applied",
+    "clearAll": "Clear all",
+    "selectType": "Select Type",
+    "sale": "Sale",
+    "rent": "Rent",
+    "propertyType": "Property Type",
+    "priceRange": "Price Range",
+    "minPrice": "Min Price",
+    "maxPrice": "Max Price",
+    "fromPrice": "From {price}",
+    "upToPrice": "Up to {price}",
+    "surfaceArea": "Surface Area",
+    "minArea": "Min Area",
+    "maxArea": "Max Area",
+    "fromArea": "From {area}",
+    "upToArea": "Up to {area}",
+    "bathrooms": "Bathrooms",
+    "kitchens": "Kitchens",
+    "propertyName": "Property Name",
+    "advancedFilters": "More Filters",
+    "searchByPropertyName": "Search by Property Name"
+  },
+  "properties": {
+    "video": "Video",
+    "video_360": "Video 360",
+    "photo": "Photo",
+    "map": "Map",
+    "showThumbnails": "Show Thumbnails",
+    "hideThumbnails": "Hide Thumbnails"
+  }
+}
