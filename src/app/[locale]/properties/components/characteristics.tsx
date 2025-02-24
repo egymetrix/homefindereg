@@ -10,54 +10,56 @@ const Characteristics = ({ property }: { property: Property | undefined }) => {
   const locale = useLocale();
   if (!property) return null;
 
+  console.log(property);
+
   const enCharacteristics = [
     { label: "REF:", value: property?.id || "" },
-    { label: "Floor:", value: property?.["home-floor"] || "" },
-    { label: "Box:", value: property?.["home-box"] || "" },
-    { label: "Parking spaces:", value: property?.["home-parking"] || "" },
-    { label: "Balconies:", value: property?.["home-balconies"] || "" },
-    { label: "Bedrooms:", value: property?.["home-bedrooms"] || "" },
-    { label: "Furniture:", value: property?.["home-furniture"] || "" },
+    { label: "Floor:", value: property?.home_floor || "" },
+    { label: "Box:", value: property?.home_box || "" },
+    { label: "Parking spaces:", value: property?.home_parking || "" },
+    { label: "Balconies:", value: property?.home_balconies || "" },
+    { label: "Bedrooms:", value: property?.home_bedrooms || "" },
+    { label: "Furniture:", value: property?.home_furniture || "" },
     {
       label: "Conditioning:",
-      value: property?.["home-conditioning"] || "",
+      value: property?.home_conditioning || "",
     },
-    { label: "Elevator:", value: property?.["home-elevator"] || "" },
-    { label: "Heating:", value: property?.["home-heating"] || "" },
-    { label: "Garden:", value: property?.["home-garden"] || "" },
-    { label: "Free:", value: property?.["home-free"] || "" },
-    { label: "Property class:", value: property?.["home-class"] || "" },
-    { label: "Year of construction:", value: property?.["home-year"] || "" },
+    { label: "Elevator:", value: property?.home_elevator || "" },
+    { label: "Heating:", value: property?.home_heating || "" },
+    { label: "Garden:", value: property?.home_garden || "" },
+    { label: "Free:", value: property?.home_free || "" },
+    { label: "Property class:", value: property?.home_class || "" },
+    { label: "Year of construction:", value: property?.home_year || "" },
     {
       label: "Property Type:",
-      value: property?.["home-type"] || "",
+      value: property?.home_type || "",
     },
-    { label: "Concierge:", value: property?.["home-concierge"] || "" },
+    { label: "Concierge:", value: property?.home_concierge || "" },
   ];
 
   const arCharacteristics = [
     { label: "المسلسل:", value: property?.id || "" },
-    { label: "الطابق:", value: property?.["home-floor"] || "" },
-    { label: "المربع:", value: property?.["home-box"] || "" },
-    { label: "المواقف:", value: property?.["home-parking"] || "" },
-    { label: "البالكونات:", value: property?.["home-balconies"] || "" },
-    { label: "الغرف:", value: property?.["home-bedrooms"] || "" },
-    { label: "الأثاث:", value: property?.["home-furniture"] || "" },
+    { label: "الطابق:", value: property?.home_floor || "" },
+    { label: "المربع:", value: property?.home_box || "" },
+    { label: "المواقف:", value: property?.home_parking || "" },
+    { label: "البالكونات:", value: property?.home_balconies || "" },
+    { label: "الغرف:", value: property?.home_bedrooms || "" },
+    { label: "الأثاث:", value: property?.home_furniture || "" },
     {
       label: "التكييف:",
-      value: property?.["home-conditioning"] || "",
+      value: property?.home_conditioning || "",
     },
-    { label: "المصعد:", value: property?.["home-elevator"] || "" },
-    { label: "التدفئة:", value: property?.["home-heating"] || "" },
-    { label: "الحديقة:", value: property?.["home-garden"] || "" },
-    { label: "المجانية:", value: property?.["home-free"] || "" },
-    { label: "فئة العقار:", value: property?.["home-class"] || "" },
-    { label: "سنة البناء:", value: property?.["home-year"] || "" },
+    { label: "المصعد:", value: property?.home_elevator || "" },
+    { label: "التدفئة:", value: property?.home_heating || "" },
+    { label: "الحديقة:", value: property?.home_garden || "" },
+    { label: "المجانية:", value: property?.home_free || "" },
+    { label: "فئة العقار:", value: property?.home_class || "" },
+    { label: "سنة البناء:", value: property?.home_year || "" },
     {
       label: "نوع العقار:",
-      value: property?.["home-type"] || "",
+      value: property?.home_type || "",
     },
-    { label: "المسؤول:", value: property?.["home-concierge"] || "" },
+    { label: "المسؤول:", value: property?.home_concierge || "" },
   ];
 
   const visibleCharacteristics = showAll
@@ -71,8 +73,8 @@ const Characteristics = ({ property }: { property: Property | undefined }) => {
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200">
       <div className="flex items-center gap-2 mb-6">
-        <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
-          <ScrollText size={16} className="text-blue-600" />
+        <div className="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center">
+          <ScrollText size={16} className="text-primary" />
         </div>
         <h2 className="text-xl font-semibold">
           {locale === "en" ? "Characteristics" : "المميزات"}
@@ -94,7 +96,7 @@ const Characteristics = ({ property }: { property: Property | undefined }) => {
       <div className="flex justify-center">
         <button
           onClick={() => setShowAll(true)}
-          className="mt-4 text-blue-600 hover:text-blue-700 font-medium text-sm"
+          className="mt-4 text-primary hover:text-primary/80 font-medium text-sm"
         >
           {locale === "en" ? "SHOW ALL" : "عرض الكل"}
         </button>
@@ -116,8 +118,8 @@ const Characteristics = ({ property }: { property: Property | undefined }) => {
             >
               <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
-                    <ScrollText size={16} className="text-blue-600" />
+                  <div className="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center">
+                    <ScrollText size={16} className="text-primary" />
                   </div>
                   <h2 className="text-xl font-semibold">
                     {locale === "en" ? "Characteristics" : "المميزات"}

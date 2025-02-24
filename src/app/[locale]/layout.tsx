@@ -1,10 +1,10 @@
+import "leaflet/dist/leaflet.css";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import type { Metadata } from "next";
 import "./globals.css";
-import "leaflet/dist/leaflet.css";
 import { Nunito, Cairo } from "next/font/google";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import { Toaster } from "react-hot-toast";
@@ -42,7 +42,7 @@ export default async function LocaleLayout({
   const { locale } = await params;
   setRequestLocale(locale);
   const messages = await getMessages({ locale });
-  if (!routing.locales.includes(locale as "en" | "ar")) {
+  if (!routing.locales.includes(locale as "en")) {
     notFound();
   }
 

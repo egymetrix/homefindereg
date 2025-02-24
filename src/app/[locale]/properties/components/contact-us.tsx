@@ -28,7 +28,6 @@ const ContactUs = () => {
         data.append(key, formValue.toString());
       });
       const response = await contactUs(data, locale);
-      console.log(response);
       return response;
     },
     onSuccess: (response) => {
@@ -67,8 +66,8 @@ const ContactUs = () => {
   return (
     <div className="bg-white rounded-lg shadow-sm">
       <div className="flex items-center gap-3 p-6 border-b">
-        <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center">
-          <Mail className="w-4 h-4 text-purple-600" />
+        <div className="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center">
+          <Mail className="w-4 h-4 text-primary" />
         </div>
         <h2 className="text-xl font-semibold text-gray-800">
           {locale === "ar" ? "تواصل معنا" : "Contact Us"}
@@ -127,11 +126,7 @@ const ContactUs = () => {
           />
         </div>
 
-        <Button
-          onClick={handleSubmit}
-          disabled={isPending}
-          className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg transition-colors duration-200"
-        >
+        <Button onClick={handleSubmit} disabled={isPending} className="w-full">
           {isPending ? (
             <Loader2 className="w-5 h-5 animate-spin" />
           ) : locale === "ar" ? (

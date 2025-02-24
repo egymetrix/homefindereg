@@ -19,8 +19,10 @@ const LanguageSwitcher = ({ bgColor = false }: { bgColor?: boolean }) => {
 
   // Create the full URL with search params
   const getFullPath = (path: string) => {
+    // Ensure path starts with a forward slash
+    const normalizedPath = path.startsWith("/") ? path : `/${path}`;
     const params = searchParams.toString();
-    return params ? `${path}?${params}` : path;
+    return params ? `${normalizedPath}?${params}` : normalizedPath;
   };
 
   return (

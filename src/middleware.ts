@@ -8,11 +8,11 @@ export default createMiddleware({
   // Used when no locale matches
   defaultLocale: routing.defaultLocale,
 
-  // Don't use localePrefix for default locale
-  localePrefix: "as-needed",
+  // Change this to "always" to ensure consistent URL structure
+  localePrefix: "always",
 });
 
 export const config = {
   // Match only internationalized pathnames
-  matcher: ["/", "/(ar|en)/:path*"],
+  matcher: ["/((?!api|_next|.*\\..*).*)"],
 };

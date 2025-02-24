@@ -15,7 +15,6 @@ interface MapProps {
   onMarkerClick?: (property: Property) => void;
 }
 
-// Custom icon style
 const customIcon = L.divIcon({
   className: "custom-marker-icon",
   html: `
@@ -131,6 +130,7 @@ const MapUpdater = ({
   const map = useMap();
 
   useEffect(() => {
+    console.log("Setting map view to:", center, zoom);
     map.setView(center, zoom);
   }, [map, center, zoom]);
 

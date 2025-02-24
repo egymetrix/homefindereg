@@ -26,7 +26,7 @@ const Button = ({
   const variantStyles = {
     primary: `
       bg-[length:300%_auto] 
-      bg-gradient-to-r from-[#3b82f6] via-[#1d4ed8] to-[#3b82f6] 
+      bg-gradient-to-r from-primary via-black/70 to-primary 
       bg-[position:0%_0%] 
       hover:bg-[position:100%_0%] 
       shadow-[0_8px_16px_0_rgba(59,130,246,0.18)]

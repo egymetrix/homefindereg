@@ -97,7 +97,7 @@ const CustomSelect = ({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-full px-4 py-3 text-gray-700 bg-white hover:bg-gray-50 transition-all duration-200 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent group-hover:border-blue-500"
+        className="flex items-center justify-between w-full px-4 py-3 text-gray-700 bg-white hover:bg-gray-50 transition-all duration-200 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent group-hover:border-primary/40"
       >
         <span className="text-sm font-medium">
           {isLoading ? (
@@ -133,7 +133,7 @@ const CustomSelect = ({
                   key={option.value}
                   className={`w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors ${
                     value === option.value
-                      ? "text-blue-600 font-medium bg-blue-50/50"
+                      ? "text-primary font-medium bg-primary/5"
                       : "text-gray-700"
                   }`}
                   onClick={() => {
@@ -173,10 +173,10 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
           )}
           <input
             ref={ref}
-            className={`w-full px-4 py-2.5 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+            className={`w-full px-4 py-2.5 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 ${
               icon ? "pl-10" : ""
             } ${
-              error ? "border-red-500" : "hover:border-blue-500"
+              error ? "border-red-500" : "hover:border-primary/40"
             } ${className}`}
             {...props}
           />
@@ -226,7 +226,7 @@ const RangeFilter = ({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-full px-4 py-3 text-gray-700 bg-white hover:bg-gray-50 transition-all duration-200 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent group-hover:border-blue-500"
+        className="flex items-center justify-between w-full px-4 py-3 text-gray-700 bg-white hover:bg-gray-50 transition-all duration-200 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent group-hover:border-primary/40"
       >
         <div className="flex items-center gap-2">
           {icon && <span className="text-gray-500">{icon}</span>}
@@ -398,7 +398,7 @@ const Filters = () => {
   }, [filters.type, filters.category_type, router, pathname, searchParams]);
 
   return (
-    <div className="bg-white shadow-sm border-y sticky top-[72px] z-[99]">
+    <div className="bg-white shadow-sm border-y sticky top-[69px] z-[99]">
       <div className="container max-w-7xl mx-auto px-4 py-4">
         {/* Mobile Filter Button */}
         <div className="lg:hidden">
@@ -412,8 +412,8 @@ const Filters = () => {
                   isRTL ? "flex-row-reverse" : ""
                 }`}
               >
-                <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
-                  <SlidersHorizontal className="w-4 h-4 text-blue-600" />
+                <div className="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                  <SlidersHorizontal className="w-4 h-4 text-primary" />
                 </div>
                 <div
                   className={`flex flex-col ${

@@ -288,7 +288,7 @@ const ImageGallery = ({ data }: { data: Property | undefined }) => {
   };
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="grid grid-cols-[2fr,1fr] gap-6 h-[600px] bg-gray-50 p-6 rounded-xl">
+      <div className="grid grid-cols-1 md:grid-cols-[2fr,1fr] gap-6 h-[400px] md:h-[600px] bg-gray-50 p-4 sm:p-6 rounded-xl">
         <div
           className="relative rounded-xl overflow-hidden shadow-lg h-full cursor-pointer group"
           onClick={() => {
@@ -307,56 +307,31 @@ const ImageGallery = ({ data }: { data: Property | undefined }) => {
             priority
           />
           <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/60 via-black/40 to-transparent">
-            <div className="flex justify-center gap-3">
+            <div className="flex justify-center gap-2 md:gap-3 flex-wrap">
               {VIEW_BUTTONS(t, mediaCollections)
                 .filter((btn) => btn.show !== false)
                 .map((Button, index) => (
                   <motion.button
                     key={index}
-                    className="flex items-center gap-3 px-6 py-3.5 bg-white/90 rounded-xl
-                      transition-all duration-200 backdrop-blur-sm group
-                      border border-white/40 shadow-sm
-                      hover:bg-white hover:border-white/60 hover:shadow-xl hover:shadow-black/5"
+                    className="flex flex-col items-center justify-center w-16 h-16 bg-white rounded-md
+                      backdrop-blur-sm border text-gray-700 transition-all duration-300 border-white/40 hover:bg-primary hover:text-white shadow-sm text-sm md:text-base"
                     onClick={(e) => {
                       e.stopPropagation();
                       setActiveView(Button.view as any);
                       setShowGallery(true);
                     }}
-                    whileHover={{
-                      scale: 1.03,
-                      y: -2,
-                      transition: {
-                        type: "spring",
-                        stiffness: 500,
-                        damping: 15,
-                      },
-                    }}
-                    whileTap={{ scale: 0.97 }}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 0.02,
-                    }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    <Button.icon
-                      className="text-gray-700 group-hover:text-blue-600 transition-all duration-200 
-                        transform group-hover:scale-110 group-hover:rotate-3"
-                      size={22}
-                    />
-                    <span
-                      className="text-sm font-semibold text-gray-700 group-hover:text-blue-600 
-                      transition-all duration-200 whitespace-nowrap tracking-wide
-                      group-hover:translate-x-0.5"
-                    >
-                      {Button.label}
-                    </span>
+                    <Button.icon className="" size={20} />
+                    <span className="text-xs">{Button.label}</span>
                   </motion.button>
                 ))}
             </div>
           </div>
         </div>
 
-        <div className="grid grid-rows-3 gap-3 h-full">
+        <div className="hidden md:grid grid-rows-3 gap-3 h-full">
           {mediaCollections.gallery.slice(1, 4).map((image, index) => (
             <div
               key={index}
@@ -397,38 +372,40 @@ const ImageGallery = ({ data }: { data: Property | undefined }) => {
             className="fixed inset-0 bg-gradient-to-br from-gray-50 to-white z-[99999]"
           >
             <div className="absolute top-0 left-0 right-0 z-10 bg-white/80 backdrop-blur-lg border-b border-gray-100">
-              <div className="max-w-7xl mx-auto flex items-center justify-between py-4 px-6">
-                <div className="flex gap-3">
-                  {VIEW_BUTTONS(t, mediaCollections).map((btn, idx) => (
-                    <motion.button
-                      key={idx}
-                      onClick={() => setActiveView(btn.view as any)}
-                      className={`px-6 py-3 rounded-xl transition-all duration-300 flex items-center gap-3
+              <div className="max-w-7xl mx-auto flex items-center justify-between py-2 px-3 md:py-4 md:px-6 overflow-x-auto">
+                <div className="flex gap-2 md:gap-3">
+                  {VIEW_BUTTONS(t, mediaCollections)
+                    .filter((btn) => btn.show !== false)
+                    .map((btn, idx) => (
+                      <motion.button
+                        key={idx}
+                        onClick={() => setActiveView(btn.view as any)}
+                        className={`px-3 md:px-6 py-2 md:py-3 rounded-xl transition-all duration-300 flex items-center gap-2 md:gap-3 flex-shrink-0
                         ${
                           activeView === btn.view
                             ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-200/50 ring-1 ring-blue-400/30"
                             : "text-gray-700 hover:bg-gray-100/80 hover:shadow-sm ring-1 ring-gray-200/50"
                         } backdrop-blur-sm`}
-                      whileHover={{ scale: 1.02, y: -1 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <btn.icon
-                        size={22}
-                        className={`${
-                          activeView === btn.view
-                            ? "text-white"
-                            : "text-gray-600"
-                        }`}
-                      />
-                      <span className="text-sm font-semibold tracking-wide">
-                        {btn.label}
-                      </span>
-                    </motion.button>
-                  ))}
+                        whileHover={{ scale: 1.02, y: -1 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <btn.icon
+                          size={20}
+                          className={`${
+                            activeView === btn.view
+                              ? "text-white"
+                              : "text-gray-600"
+                          }`}
+                        />
+                        <span className="text-xs md:text-sm font-semibold tracking-wide whitespace-nowrap">
+                          {btn.label}
+                        </span>
+                      </motion.button>
+                    ))}
                 </div>
                 <motion.button
                   onClick={() => setShowGallery(false)}
-                  className="text-gray-600 hover:text-red-500 p-2.5 rounded-full hover:bg-red-50 transition-all duration-300"
+                  className="text-gray-600 hover:text-red-500 p-2 md:p-2.5 rounded-full hover:bg-red-50 transition-all duration-300 flex-shrink-0"
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -437,7 +414,7 @@ const ImageGallery = ({ data }: { data: Property | undefined }) => {
               </div>
             </div>
 
-            <div className="h-full w-full pt-20 pb-8 px-8">
+            <div className="h-full w-full pt-16 md:pt-20 pb-8 px-2 md:px-8">
               <div className="w-full h-full max-w-7xl mx-auto bg-white rounded-2xl overflow-hidden shadow-xl border border-gray-100">
                 {renderFullScreenContent()}
               </div>
@@ -445,22 +422,22 @@ const ImageGallery = ({ data }: { data: Property | undefined }) => {
 
             {activeView === "gallery" && (
               <div className="absolute bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t border-gray-100">
-                <div className="max-w-7xl mx-auto py-4 px-6">
+                <div className="max-w-7xl mx-auto py-2 md:py-4 px-3 md:px-6">
                   <div className="flex items-center justify-between">
                     <motion.button
                       onClick={() => setShowThumbnails(!showThumbnails)}
                       whileHover={{ scale: 1.02, y: -1 }}
                       whileTap={{ scale: 0.98 }}
-                      className="text-gray-700 hover:text-blue-600 px-5 py-2.5 rounded-xl hover:bg-blue-50 transition-all duration-300 flex items-center gap-2.5 border border-gray-200 hover:border-blue-200"
+                      className="text-gray-700 hover:text-blue-600 px-3 md:px-5 py-2 md:py-2.5 rounded-xl hover:bg-blue-50 transition-all duration-300 flex items-center gap-2 md:gap-2.5 border border-gray-200 hover:border-blue-200"
                     >
-                      <IoImages size={20} />
-                      <span className="font-medium">
+                      <IoImages size={18} className="flex-shrink-0" />
+                      <span className="text-sm md:text-base font-medium whitespace-nowrap">
                         {showThumbnails
                           ? t("hideThumbnails")
                           : t("showThumbnails")}
                       </span>
                     </motion.button>
-                    <span className="text-gray-700 bg-gray-50 px-5 py-2.5 rounded-xl border border-gray-200">
+                    <span className="text-sm md:text-base text-gray-700 bg-gray-50 px-3 md:px-5 py-2 md:py-2.5 rounded-xl border border-gray-200">
                       {currentImageIndex + 1} /{" "}
                       {mediaCollections.gallery.length}
                     </span>

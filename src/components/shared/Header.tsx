@@ -24,7 +24,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import Button from "@/components/ui/Button";
-import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
+// import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 import Input from "../ui/input";
 import { clientPost, clientGetUser } from "@/services/api";
 import { useMutation } from "@tanstack/react-query";
@@ -101,7 +101,7 @@ const Header = ({
             }`}
           >
             <UserRoundCheck
-              className={`${hasBg ? "text-blue-500" : "text-white"} size-4`}
+              className={`${hasBg ? "text-primary" : "text-white"} size-4`}
             />
             {user.name}
           </button>
@@ -116,7 +116,7 @@ const Header = ({
                 onClick={() => setShowProfileMenu(false)}
               >
                 <UserRoundCheck
-                  className={`${hasBg ? "text-blue-500" : "text-white"} size-4`}
+                  className={`${hasBg ? "text-primary" : "text-white"} size-4`}
                 />
                 {t("profile")}
               </Link>
@@ -127,7 +127,7 @@ const Header = ({
                 }`}
               >
                 <LogOut
-                  className={`${hasBg ? "text-blue-500" : "text-white"} size-4`}
+                  className={`${hasBg ? "text-primary" : "text-white"} size-4`}
                 />
                 {t("logout")}
               </button>
@@ -145,7 +145,7 @@ const Header = ({
         }`}
       >
         <UserRoundCheck
-          className={`${hasBg ? "text-blue-500" : "text-white"} size-4`}
+          className={`${hasBg ? "text-primary" : "text-white"} size-4`}
         />
         {t("signIn")}
       </button>
@@ -185,7 +185,7 @@ const Header = ({
                   >
                     <span
                       className={`${
-                        withBg || isScrolled ? "text-blue-500" : "text-white"
+                        withBg || isScrolled ? "text-primary" : "text-white"
                       }`}
                     >
                       {link.icon}
@@ -205,7 +205,7 @@ const Header = ({
                 </div>
               }
             >
-              <LanguageSwitcher bgColor={withBg || isScrolled} />
+              {/* <LanguageSwitcher bgColor={withBg || isScrolled} /> */}
             </Suspense>
           </nav>
 
@@ -218,7 +218,7 @@ const Header = ({
                 </div>
               }
             >
-              <LanguageSwitcher bgColor={withBg || isScrolled} />
+              {/* <LanguageSwitcher bgColor={withBg || isScrolled} /> */}
             </Suspense>
             <button
               className={withBg || isScrolled ? "text-gray-900" : "text-white"}
@@ -249,7 +249,7 @@ const Header = ({
                   >
                     <span
                       className={`${
-                        withBg || isScrolled ? "text-blue-500" : "text-white"
+                        withBg || isScrolled ? "text-primary" : "text-white"
                       }`}
                     >
                       {link.icon}
@@ -286,7 +286,7 @@ const Header = ({
               onClick={() =>
                 handleDialogOpen(dialogState === "signIn" ? "signUp" : "signIn")
               }
-              className="text-blue-500 hover:underline ml-1"
+              className="text-primary hover:underline ml-1"
             >
               {dialogState === "signIn" ? t("signUp") : t("signIn")}
             </button>
@@ -446,7 +446,7 @@ const SignInForm = ({
             type="button"
             onClick={() => setShowPassword(!showPassword)}
             className={`absolute  top-1/2 -translate-y-1/2 ${
-              showPassword ? "text-blue-500" : "text-gray-500"
+              showPassword ? "text-primary" : "text-gray-500"
             } ${locale === "en" ? "right-3" : "left-3"}`}
           >
             {showPassword ? (
@@ -554,7 +554,7 @@ const SignUpForm = ({
             type="button"
             onClick={() => setShowPassword(!showPassword)}
             className={`absolute top-1/2 -translate-y-1/2 ${
-              showPassword ? "text-blue-500" : "text-gray-500"
+              showPassword ? "text-primary" : "text-gray-500"
             } ${locale === "en" ? "right-3" : "left-3"}`}
           >
             {showPassword ? (
@@ -575,7 +575,7 @@ const SignUpForm = ({
             type="button"
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             className={`absolute top-1/2 -translate-y-1/2 ${
-              showConfirmPassword ? "text-blue-500" : "text-gray-500"
+              showConfirmPassword ? "text-primary" : "text-gray-500"
             } ${locale === "en" ? "right-3" : "left-3"}`}
           >
             {showConfirmPassword ? (

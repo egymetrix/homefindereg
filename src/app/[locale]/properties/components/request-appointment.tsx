@@ -2,7 +2,7 @@
 "use client";
 
 import { useLocale } from "next-intl";
-import { X, Loader2, Calendar } from "lucide-react";
+import { Loader2, Calendar } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
 import { enUS, ar } from "date-fns/locale";
@@ -46,7 +46,7 @@ const RequestAppointmentButton = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="w-full py-4 text-lg font-medium shadow-lg shadow-blue-200 hover:shadow-blue-300 transform hover:-translate-y-0.5 transition-all duration-200">
+        <Button className="w-full py-4 text-lg font-medium shadow-lg shadow-primary/5 hover:shadow-primary/10">
           <div className="flex items-center gap-2 justify-center">
             <Calendar className="w-5 h-5" />
             {locale === "ar" ? "طلب موعد" : "Request Appointment"}
@@ -87,6 +87,8 @@ const RequestAppointmentForm = () => {
     },
   });
 
+  console.log(appointmentsData);
+
   // Check if data is empty
   const isEmpty =
     !appointmentsData?.data ||
@@ -94,7 +96,18 @@ const RequestAppointmentForm = () => {
       appointmentsData.data.length === 0);
 
   const availableDates = Array.isArray(appointmentsData?.data)
-    ? [...new Set(appointmentsData.data.map((appointment) => appointment.date))]
+    ? [
+        ...new Set(
+          appointmentsData.data
+            .filter((appointment) => {
+              const appointmentDate = new Date(appointment.date);
+              const today = new Date();
+              today.setHours(0, 0, 0, 0); // Reset time to start of day for accurate comparison
+              return appointmentDate >= today;
+            })
+            .map((appointment) => appointment.date)
+        ),
+      ]
     : [];
 
   const availableTimes = Array.isArray(appointmentsData?.data)
@@ -191,18 +204,13 @@ const RequestAppointmentForm = () => {
     <div className="bg-white rounded-lg">
       <div className="flex justify-between items-center p-6 border-b">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
-            <Calendar className="w-4 h-4 text-blue-600" />
+          <div className="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center">
+            <Calendar className="w-4 h-4 text-primary" />
           </div>
           <h2 className="text-xl font-semibold text-gray-800">
             {locale === "ar" ? "طلب موعد" : "Request Appointment"}
           </h2>
         </div>
-        <DialogTrigger asChild>
-          <button className="p-2 hover:bg-gray-100 rounded-full">
-            <X className="w-5 h-5" />
-          </button>
-        </DialogTrigger>
       </div>
 
       <div className="p-6 space-y-6 max-h-[80vh] overflow-y-auto">
@@ -294,7 +302,7 @@ const RequestAppointmentForm = () => {
               </div>
             </div>
 
-            <div className="bg-blue-50 p-4 rounded-lg text-sm text-blue-700">
+            <div className="bg-primary/5 p-4 rounded-lg text-sm text-primary">
               {locale === "ar"
                 ? "هذا ليس تحجير: سيتم إرسال طلبك إلى الوكالة التي ستتواصل معك مرة أخرى."
                 : "This is not a reservation: Your request will be sent to the agency that will contact you again."}

@@ -58,46 +58,51 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
     );
 
   return (
-    <div className="border-y shadow-sm sticky top-[72px] bg-white z-[95]">
-      <div className="max-w-screen-xl mx-auto flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="flex flex-col gap-2 py-3">
-            <p className="text-2xl font-bold">$ {property.home_price}</p>
+    <div className="border-y shadow-sm sticky top-[69px] bg-white z-[95]">
+      <div className="max-w-screen-xl mx-auto flex flex-col md:flex-row items-center justify-between p-4">
+        <div className="flex items-center gap-4 w-full md:w-auto">
+          <div className="flex flex-col gap-1 py-3">
+            <p className="text-lg md:text-2xl font-bold">
+              $ {property.home_price}
+            </p>
             <div className="flex items-center gap-2 text-gray-600">
               <div className="flex items-center gap-1">
                 <Bed className="w-4 h-4 text-[#ef9393]" />
-                <span className="text-sm">
-                  {property.home_bedrooms}
-                  {t("bedrooms")}
+                <span className="text-xs md:text-sm">
+                  {property.home_bedrooms} {t("bedrooms")}
                 </span>
               </div>
               <div className="flex items-center gap-1">
                 <Ruler className="w-4 h-4 text-[#b663d7]" />
-                <span className="text-sm">
+                <span className="text-xs md:text-sm">
                   {property.home_area} {t("area")}
                 </span>
               </div>
               <div className="flex items-center gap-1">
                 <Bath className="w-4 h-4 text-[#8ec7d5]" />
-                <span className="text-sm">
+                <span className="text-xs md:text-sm">
                   {property.home_bathrooms} {t("bathrooms")}
                 </span>
               </div>
             </div>
           </div>
-          <div className="h-16 w-px bg-gray-200" />
-          <div className="flex flex-col gap-2 py-3">
-            <p className="text-2xl font-bold">{property.home_name}</p>
-            <p className="text-gray-600">{property.address}</p>
+          <div className="h-16 w-px bg-gray-200 hidden md:block" />
+          <div className="flex flex-col gap-1 py-3">
+            <p className="text-lg md:text-2xl font-bold">
+              {property.home_name}
+            </p>
+            <p className="text-xs md:text-sm text-gray-600">
+              {property.address}
+            </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <button className="p-3 rounded-full bg-gray-100 hover:bg-gray-200">
+        <div className="flex items-center gap-4 mt-4 md:mt-0">
+          <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
             <Heart className="w-5 h-5" />
           </button>
           <div className="relative">
             <button
-              className="p-3 rounded-full bg-gray-100 hover:bg-gray-200"
+              className="p-2 rounded-full bg-gray-100 hover:bg-gray-200"
               onClick={() => setShowShareMenu(!showShareMenu)}
             >
               <Share2 className="w-5 h-5" />

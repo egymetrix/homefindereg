@@ -20,8 +20,8 @@ const PropertyPlace = ({ property }: { property: Property | undefined }) => {
     <>
       <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center">
-            <MapPin className="w-4 h-4 text-red-600" />
+          <div className="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center">
+            <MapPin className="w-4 h-4 text-primary" />
           </div>
           <h2 className="text-xl font-semibold text-gray-800">
             {locale === "ar" ? "الموقع" : "Location"}
@@ -39,7 +39,7 @@ const PropertyPlace = ({ property }: { property: Property | undefined }) => {
             onClick={() => setShowFullMap(true)}
             className="absolute top-4 right-4 bg-white p-2 rounded-lg shadow-lg hover:bg-gray-50 transition-colors"
           >
-            <Maximize2 className="w-5 h-5" />
+            <Maximize2 className="w-5 h-5 text-primary" />
           </button>
         </div>
       </div>
@@ -55,8 +55,8 @@ const PropertyPlace = ({ property }: { property: Property | undefined }) => {
             <div className="absolute top-0 left-0 right-0 z-10 bg-white/80 backdrop-blur-lg border-b border-gray-100">
               <div className="max-w-7xl mx-auto flex items-center justify-between py-4 px-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center">
-                    <MapPin className="w-4 h-4 text-red-600" />
+                  <div className="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center">
+                    <MapPin className="w-4 h-4 text-primary" />
                   </div>
                   <h2 className="text-xl font-semibold">
                     {locale === "ar" ? "الموقع" : "Location"}

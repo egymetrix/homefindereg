@@ -41,14 +41,14 @@ const PropertyContainer = ({ propertyId }: { propertyId: string }) => {
           <div className="max-w-screen-xl mx-auto py-3">
             <ImageGallery data={data?.data ?? undefined} />
             <main className="max-w-7xl mx-auto">
-              <section className="grid grid-cols-[2fr,1fr] gap-6 bg-gray-50 p-6 rounded-xl">
-                <div className="flex flex-col gap-4">
+              <section className="w-full flex flex-col md:flex-row gap-6 bg-gray-50 p-4 sm:p-6 lg:p-8 rounded-xl">
+                <div className="flex flex-col gap-4 basis-2/3">
                   <Characteristics property={data?.data ?? undefined} />
                   <Description property={data?.data ?? undefined} />
                   <OtherFeatures property={data?.data ?? undefined} />
                   <PropertyPlace property={data?.data ?? undefined} />
                 </div>
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4 basis-1/3">
                   <RequestAppointment />
                   <ContactUs />
                 </div>
