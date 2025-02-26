@@ -5,9 +5,6 @@ import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import {
-  Briefcase,
-  House,
-  UserRoundSearch,
   UserRoundCheck,
   Menu,
   X,
@@ -15,6 +12,12 @@ import {
   EyeOff,
   Loader2,
   LogOut,
+  Home,
+  Info,
+  Building2,
+  Wrench,
+  Building,
+  PhoneCall,
 } from "lucide-react";
 import { useState, useEffect, Suspense } from "react";
 import {
@@ -52,18 +55,33 @@ const Header = ({
   const navLinks = [
     {
       href: "/",
-      label: "realEstate",
-      icon: <Briefcase className="w-4 h-4" />,
+      label: "home",
+      icon: <Home className="w-4 h-4" />,
     },
     {
       href: "/about",
-      label: "selling",
-      icon: <House className="w-4 h-4" />,
+      label: "about",
+      icon: <Info className="w-4 h-4" />,
+    },
+    {
+      href: "/properties",
+      label: "properties",
+      icon: <Building2 className="w-4 h-4" />,
     },
     {
       href: "/services",
-      label: "searching",
-      icon: <UserRoundSearch className="w-4 h-4" />,
+      label: "services",
+      icon: <Wrench className="w-4 h-4" />,
+    },
+    {
+      href: "/sell-property",
+      label: "sellProperty",
+      icon: <Building className="w-4 h-4" />,
+    },
+    {
+      href: "/contact",
+      label: "contact",
+      icon: <PhoneCall className="w-4 h-4" />,
     },
   ];
 
@@ -175,7 +193,7 @@ const Header = ({
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-6">
             <ul className="flex gap-4">
-              {navLinks.slice(0, 3).map((link) => (
+              {navLinks.slice(0, 5).map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href ?? ""}
@@ -238,7 +256,7 @@ const Header = ({
             }`}
           >
             <ul className="flex flex-col items-center py-4 space-y-4">
-              {navLinks.slice(0, 3).map((link) => (
+              {navLinks.slice(0, 5).map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href ?? ""}

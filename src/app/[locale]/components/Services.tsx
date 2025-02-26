@@ -57,23 +57,24 @@ const Services = () => {
 
   const services = [
     {
-      title: "Visit in comfort",
+      title: "Property Evaluation",
       description:
-        "You can make an initial visit of the property from the comfort of your own home!",
-      imageSrc: "/images/service.jpg",
+        "Get a professional assessment of your property's market value to make informed buying or selling decisions.",
+      imageSrc: "/images/Property-Evaluation.jpg",
       delay: 0.2,
     },
     {
-      title: "Real estate valuation",
+      title: "Engineering Consultancy",
       description:
-        "For free today you can have an evaluation of your property without wasting precious time.",
-      imageSrc: "/images/service.jpg",
+        "Expert guidance on architectural design, structural planning, and construction solutions to enhance your property.",
+      imageSrc: "/images/Engineering-Consultancy.jpg",
       delay: 0.4,
     },
     {
-      title: "Work with us!",
-      description: "Would you like to work in a real estate agency?",
-      imageSrc: "/images/service.jpg",
+      title: "Home Thermal Insulation",
+      description:
+        "Improve energy efficiency and reduce costs with advanced insulation solutions tailored for your home.",
+      imageSrc: "/images/Home-Thermal-Insulation.jpg",
       delay: 0.6,
     },
   ];

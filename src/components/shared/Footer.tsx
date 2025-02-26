@@ -1,10 +1,17 @@
 "use client";
 
-import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+import {
+  Facebook,
+  Instagram,
+  Linkedin,
+  Twitter,
+  MapPin,
+  Phone,
+  Mail,
+} from "lucide-react";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
 
-// Types
 interface SocialLinkProps {
   href: string;
   icon: React.ReactNode;
@@ -42,22 +49,34 @@ const SOCIAL_LINKS: SocialLinkProps[] = [
 ];
 
 const FOOTER_LINKS = {
-  company: [
-    { href: "/about", label: "About" },
-    { href: "/contact", label: "Contact" },
-    { href: "/careers", label: "Careers" },
+  contact: [
+    {
+      href: "https://goo.gl/maps/...",
+      label: "Heliopolis, Cairo Governorate, Egypt",
+      icon: <MapPin className="w-4 h-4" />,
+    },
+    {
+      href: "tel:+201501234567",
+      label: "+20 150 123 4567",
+      icon: <Phone className="w-4 h-4" />,
+    },
+    {
+      href: "mailto:contact@homefindereg.com",
+      label: "contact@homefindereg.com",
+      icon: <Mail className="w-4 h-4" />,
+    },
   ],
-  services: [
+  navigation: [
     { href: "/buy", label: "Buy Property" },
     { href: "/sell", label: "Sell Property" },
-    { href: "/rent", label: "Rent Property" },
-    { href: "/valuation", label: "Property Valuation" },
-    { href: "/investment", label: "Investment Advisory" },
+    { href: "/evaluation", label: "Property Evaluation" },
+    { href: "/engineering", label: "Engineering Consultancy" },
+    { href: "/thermal-insulation", label: "Thermal Insulation" },
   ],
-  legal: [
+  help: [
+    { href: "/about", label: "About Us" },
+    { href: "/contact", label: "Contact Us" },
     { href: "/privacy", label: "Privacy Policy" },
-    { href: "/terms", label: "Terms of Service" },
-    { href: "/cookies", label: "Cookie Policy" },
   ],
 };
 
@@ -74,16 +93,18 @@ const SocialLink: React.FC<SocialLinkProps> = ({ href, icon, label }) => (
   </Link>
 );
 
-const FooterLink: React.FC<FooterLinkProps> = ({
+const FooterLink: React.FC<FooterLinkProps & { icon?: React.ReactNode }> = ({
   href,
   children,
   className = "",
+  icon,
 }) => (
   <li>
     <Link
       href={href}
-      className={`text-sm text-gray-400 hover:text-white transition-colors duration-200 ${className}`}
+      className={`text-sm text-gray-400 hover:text-white transition-colors duration-200 flex items-center gap-2 ${className}`}
     >
+      {icon}
       {children}
     </Link>
   </li>
@@ -104,15 +125,16 @@ const Footer: React.FC = () => {
                 <Image
                   src="/images/logo.png"
                   alt="Dream Home Finder"
-                  width={130}
-                  height={45}
+                  width={180}
+                  height={60}
                   className="brightness-0 invert"
                   priority
                 />
               </Link>
               <p className="text-sm text-gray-400 leading-relaxed">
-                Your trusted partner in real estate, helping people find their
-                dream homes since 1980.
+                Providing expert real estate services, property evaluation,
+                engineering consultancy, and home thermal
+                insulation across Egypt.
               </p>
               <div className="flex items-center gap-5">
                 {SOCIAL_LINKS.map((link) => (
@@ -121,13 +143,27 @@ const Footer: React.FC = () => {
               </div>
             </div>
 
-            {/* Company Links */}
+            {/* Contact Information */}
             <div className="lg:ml-8">
               <h3 className="text-white text-sm font-semibold uppercase tracking-wider mb-6">
-                Company
+                Contact
               </h3>
               <ul className="space-y-3">
-                {FOOTER_LINKS.company.map(({ href, label }) => (
+                {FOOTER_LINKS.contact.map(({ href, label, icon }) => (
+                  <FooterLink key={href} href={href} icon={icon}>
+                    {label}
+                  </FooterLink>
+                ))}
+              </ul>
+            </div>
+
+            {/* Navigation */}
+            <div>
+              <h3 className="text-white text-sm font-semibold uppercase tracking-wider mb-6">
+                Navigation
+              </h3>
+              <ul className="space-y-3">
+                {FOOTER_LINKS.navigation.map(({ href, label }) => (
                   <FooterLink key={href} href={href}>
                     {label}
                   </FooterLink>
@@ -135,27 +171,13 @@ const Footer: React.FC = () => {
               </ul>
             </div>
 
-            {/* Services */}
+            {/* Help */}
             <div>
               <h3 className="text-white text-sm font-semibold uppercase tracking-wider mb-6">
-                Services
+                Help
               </h3>
               <ul className="space-y-3">
-                {FOOTER_LINKS.services.map(({ href, label }) => (
-                  <FooterLink key={href} href={href}>
-                    {label}
-                  </FooterLink>
-                ))}
-              </ul>
-            </div>
-
-            {/* Legal */}
-            <div>
-              <h3 className="text-white text-sm font-semibold uppercase tracking-wider mb-6">
-                Legal
-              </h3>
-              <ul className="space-y-3">
-                {FOOTER_LINKS.legal.map(({ href, label }) => (
+                {FOOTER_LINKS.help.map(({ href, label }) => (
                   <FooterLink key={href} href={href}>
                     {label}
                   </FooterLink>
@@ -165,27 +187,14 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Divider */}
         <div className="w-full h-px bg-gray-800"></div>
 
-        {/* Enhanced Footer Bottom */}
         <div className="py-8">
-          {/* Copyright and Company Info */}
           <div className="flex flex-wrap justify-center  items-center gap-x-4 gap-y-2 text-xs text-gray-400">
             <span>© {currentYear} Dream Home Finder</span>
             <span className="hidden lg:block">•</span>
             <span>All rights reserved</span>
-            <span className="hidden lg:block">•</span>
-            <span>License #123456789</span>
           </div>
-
-          {/* Disclaimer */}
-          <p className="text-[11px] text-gray-500 text-center mt-8 max-w-3xl mx-auto leading-relaxed">
-            The information provided on this website does not constitute legal
-            advice and should be used for informational purposes only. Dream
-            Home Finder makes no warranties about the accuracy or completeness
-            of the information contained on this site.
-          </p>
         </div>
       </div>
     </footer>

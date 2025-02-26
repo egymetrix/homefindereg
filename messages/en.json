@@ -1,10 +1,13 @@
 {
   "home": {
     "navLinks": {
-      "realEstate": "Real Estate for Business",
-      "selling": "I am selling a property",
-      "searching": "Searching agency",
-      "signIn": "Sign In",
+      "home": "Home",
+      "about": "About",
+      "properties": "Properties",
+      "services": "Services",
+      "sellProperty": "Sell Property",
+      "contact": "Contact",
+      "signIn": "Login",
       "formTitle": "Log in or register to take advantage of our services",
       "dontHaveAnAccount": "Don't have an account?",
       "signUp": "Sign Up",
@@ -18,11 +21,11 @@
       "logout": "Logout"
     },
     "hero": {
-      "title": "We Find Home Everywhere",
-      "almost": "Almost Everywhere",
+      "title": "Find Your Home Anywhere in Egypt",
+      "almost": "Discover the best properties for sale and rent across Egypt with ease and speed.",
       "rent": "Rent",
       "sale": "Sale",
-      "placeholder": "Province, municipality, area, reference"
+      "placeholder": "Province, city, area, reference number"
     },
     "services": {
       "title": "Dream Home Finder Services",

@@ -1,9 +1,12 @@
 {
   "home": {
     "navLinks": {
-      "realEstate": "العقارات للأعمال",
-      "selling": "أنا أقوم ببيع عقار",
-      "searching": "البحث عن عقار",
+      "home": "الرئيسية",
+      "about": "عن الشركة",
+      "properties": "العقارات",
+      "services": "الخدمات",
+      "sellProperty": "بيع عقار",
+      "contact": "التواصل",
       "signIn": "تسجيل الدخول",
       "formTitle": "قم بتسجيل الدخول أو التسجيل للاستفادة من خدماتنا",
       "dontHaveAnAccount": "لا تمتلك حساب؟",
