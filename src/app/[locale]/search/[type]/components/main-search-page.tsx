@@ -9,7 +9,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useSearchParams, useParams } from "next/navigation";
 import PropertyCard from "@/app/[locale]/cities/[cityId]/components/property-card";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
-import Map from "@/components/shared/Map";
+import dynamic from "next/dynamic";
+
+const Map = dynamic(() => import("@/components/shared/Map"), {
+  ssr: false,
+});
 
 const MainSearchPage = () => {
   const searchParams = useSearchParams();

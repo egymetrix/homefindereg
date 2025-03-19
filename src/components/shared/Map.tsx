@@ -6,6 +6,7 @@ import L from "leaflet";
 import { Property } from "@/types";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
+import { formatPrice } from "@/lib/utils";
 
 interface MapProps {
   center: [number, number];
@@ -49,7 +50,7 @@ const CustomPopup = ({ property }: { property: Property }) => (
         />
       )}
       <div className="absolute top-2 right-2 bg-blue-500 text-white px-2 py-1 rounded-full text-sm">
-        ${property.home_price}
+        {formatPrice(Number(property.home_price))}
       </div>
     </div>
     <div className="p-2">

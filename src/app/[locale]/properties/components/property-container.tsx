@@ -48,9 +48,13 @@ const PropertyContainer = ({ propertyId }: { propertyId: string }) => {
                   <OtherFeatures property={data?.data ?? undefined} />
                   <PropertyPlace property={data?.data ?? undefined} />
                 </div>
-                <div className="flex flex-col gap-4 basis-1/3">
-                  <RequestAppointment />
-                  <ContactUs />
+                <div className="basis-1/3">
+                  <div className="mb-4">
+                    <RequestAppointment />
+                  </div>
+                  <div className="sticky top-48">
+                    <ContactUs />
+                  </div>
                 </div>
               </section>
             </main>

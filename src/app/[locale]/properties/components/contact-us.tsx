@@ -65,22 +65,23 @@ const ContactUs = () => {
 
   return (
     <div className="bg-white rounded-lg shadow-sm">
-      <div className="flex items-center gap-3 p-6 border-b">
-        <div className="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center">
-          <Mail className="w-4 h-4 text-primary" />
+      <div className="flex items-center gap-2 p-4 border-b">
+        <div className="w-6 h-6 rounded-lg bg-primary/5 flex items-center justify-center">
+          <Mail className="w-3 h-3 text-primary" />
         </div>
-        <h2 className="text-xl font-semibold text-gray-800">
+        <h2 className="text-base font-semibold text-gray-800">
           {locale === "ar" ? "تواصل معنا" : "Contact Us"}
         </h2>
       </div>
 
-      <div className="p-6 space-y-6">
-        <div className="grid grid-cols-2 gap-4">
+      <div className="p-4 space-y-3">
+        <div className="grid grid-cols-2 gap-3">
           <Input
             type="text"
             label={locale === "ar" ? "الاسم*" : "Name*"}
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            className="text-sm"
           />
           <Input
             type="text"
@@ -89,6 +90,7 @@ const ContactUs = () => {
             onChange={(e) =>
               setFormData({ ...formData, surname: e.target.value })
             }
+            className="text-sm"
           />
         </div>
 
@@ -97,6 +99,7 @@ const ContactUs = () => {
           label={locale === "ar" ? "البريد الإلكتروني*" : "Email*"}
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          className="text-sm"
         />
 
         <Input
@@ -106,10 +109,11 @@ const ContactUs = () => {
           onChange={(e) =>
             setFormData({ ...formData, telephone: e.target.value })
           }
+          className="text-sm"
         />
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-xs font-medium text-gray-700 mb-1">
             {locale === "ar" ? "الرسالة*" : "Message*"}
           </label>
           <textarea
@@ -117,7 +121,7 @@ const ContactUs = () => {
             onChange={(e) =>
               setFormData({ ...formData, message: e.target.value })
             }
-            className="w-full min-h-[120px] p-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+            className="w-full min-h-[80px] p-2 text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
             placeholder={
               locale === "ar"
                 ? "اكتب رسالتك هنا..."
@@ -126,9 +130,13 @@ const ContactUs = () => {
           />
         </div>
 
-        <Button onClick={handleSubmit} disabled={isPending} className="w-full">
+        <Button
+          onClick={handleSubmit}
+          disabled={isPending}
+          className="w-full text-sm py-3"
+        >
           {isPending ? (
-            <Loader2 className="w-5 h-5 animate-spin" />
+            <Loader2 className="w-4 h-4 animate-spin" />
           ) : locale === "ar" ? (
             "إرسال"
           ) : (

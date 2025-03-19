@@ -10,6 +10,7 @@ export interface Category {
 export interface City {
   id: number;
   name: string;
+  count: number;
   government_id: number;
   created_at: string;
   updated_at: string;
@@ -20,7 +21,6 @@ export interface Government {
   name: string;
   type: string;
   category_type: string;
-  city_count: number;
   cities: City[];
   created_at: string;
   updated_at: string;

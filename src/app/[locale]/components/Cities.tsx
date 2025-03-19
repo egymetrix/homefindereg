@@ -193,7 +193,7 @@ const CitiesList = ({
                       onClick={() => handleCityClick()}
                     >
                       <span className="text-gray-900 text-xs bg-white px-2 py-1 rounded-full">
-                        {government.city_count}
+                        {city.count}
                       </span>
                       <span className="text-gray-700 text-sm">{city.name}</span>
                     </Link>
