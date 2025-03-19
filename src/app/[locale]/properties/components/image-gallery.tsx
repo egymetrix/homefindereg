@@ -17,9 +17,13 @@ import { TbRotate360 } from "react-icons/tb";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
-// @ts-ignore
-import { Pannellum } from "pannellum-react";
 import { IconType } from "react-icons";
+
+// Dynamically import Pannellum with SSR disabled
+const Pannellum = dynamic(
+  () => import("pannellum-react").then((mod) => mod.Pannellum),
+  { ssr: false }
+);
 
 const Map = dynamic(() => import("@/components/shared/Map"), { ssr: false });
 
@@ -163,27 +167,24 @@ const ImageGallery = ({ data }: { data: Property | undefined }) => {
         case "panorama":
           return (
             <div className="w-full h-full relative group">
-              <Pannellum
-                width="100%"
-                height="100%"
-                image={
-                  "https://static.dermandar.com/php/getimage.php?epid=dglgiN&equi=1"
-                }
-                pitch={10}
-                yaw={180}
-                hfov={110}
-                autoLoad
-                autoRotate={true}
-                compass={true}
-                showZoomCtrl={true}
-                showFullscreenCtrl={true}
-                mouseZoom={true}
-                hotSpotDebug={false}
-                onLoad={() => {
-                  console.log("panorama loaded");
-                }}
-                cssClass="panorama-viewer"
-              />
+              {mediaCollections.panorama[0]?.original_url && (
+                <Pannellum
+                  id="panorama-viewer"
+                  width="100%"
+                  height="100%"
+                  image={
+                    "https://static.dermandar.com/php/getimage.php?epid=dbDvdU&equi=1"
+                  }
+                  pitch={10}
+                  yaw={180}
+                  hfov={110}
+                  autoLoad
+                  className="panorama-viewer"
+                  onLoad={() => {
+                    console.log("panorama loaded");
+                  }}
+                />
+              )}
             </div>
           );
         default:

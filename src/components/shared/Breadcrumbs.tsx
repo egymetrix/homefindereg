@@ -5,6 +5,7 @@ import { useLocale } from "next-intl";
 interface BreadcrumbItem {
   label: string;
   href: string;
+  onClick?: () => void;
 }
 
 interface BreadcrumbsProps {
@@ -31,16 +32,29 @@ const Breadcrumbs = ({ items }: BreadcrumbsProps) => {
                 }`}
               />
             )}
-            <Link
-              href={item.href}
-              className={`whitespace-nowrap hover:text-blue-600 transition-colors duration-200 ${
-                index === items.length - 1
-                  ? "text-gray-700 font-medium"
-                  : "text-gray-500"
-              }`}
-            >
-              {item.label}
-            </Link>
+            {item.onClick ? (
+              <button
+                onClick={item.onClick}
+                className={`whitespace-nowrap hover:text-blue-600 transition-colors duration-200 ${
+                  index === items.length - 1
+                    ? "text-gray-700 font-medium"
+                    : "text-gray-500"
+                }`}
+              >
+                {item.label}
+              </button>
+            ) : (
+              <Link
+                href={item.href}
+                className={`whitespace-nowrap hover:text-blue-600 transition-colors duration-200 ${
+                  index === items.length - 1
+                    ? "text-gray-700 font-medium"
+                    : "text-gray-500"
+                }`}
+              >
+                {item.label}
+              </Link>
+            )}
           </li>
         ))}
       </ol>

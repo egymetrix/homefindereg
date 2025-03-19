@@ -14,6 +14,7 @@ import ContactUs from "./contact-us";
 import Description from "./description";
 import OtherFeatures from "./other-features";
 import PropertyPlace from "./property-place";
+import Breadcrumbs from "@/components/shared/Breadcrumbs";
 
 const PropertyContainer = ({ propertyId }: { propertyId: string }) => {
   const locale = useLocale();
@@ -29,6 +30,27 @@ const PropertyContainer = ({ propertyId }: { propertyId: string }) => {
     }
   }, [data, isLoading, router]);
 
+  // Create breadcrumb items
+  const breadcrumbItems = [
+    {
+      label: locale === "en" ? "Home" : "الرئيسية",
+      href: "/",
+    },
+    {
+      label: locale === "en" ? "Properties" : "العقارات",
+      href: "",
+      onClick: () => {
+        router.back();
+      },
+    },
+    {
+      label:
+        data?.data?.home_name ||
+        (locale === "en" ? "Property Details" : "تفاصيل العقار"),
+      href: `#`,
+    },
+  ];
+
   return (
     <div className="mx-auto min-h-screen">
       {isLoading ? (
@@ -39,6 +61,9 @@ const PropertyContainer = ({ propertyId }: { propertyId: string }) => {
         <>
           <PropertyHeader property={data?.data ?? undefined} />
           <div className="max-w-screen-xl mx-auto py-3">
+            <div className="px-4 sm:px-6 lg:px-8">
+              <Breadcrumbs items={breadcrumbItems} />
+            </div>
             <ImageGallery data={data?.data ?? undefined} />
             <main className="max-w-7xl mx-auto">
               <section className="w-full flex flex-col md:flex-row gap-6 bg-gray-50 p-4 sm:p-6 lg:p-8 rounded-xl">
