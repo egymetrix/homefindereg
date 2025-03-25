@@ -48,14 +48,11 @@ const CitiesFilter = ({
   });
 
   useEffect(() => {
-    if (
-      categoriesResponse?.data &&
-      categoriesResponse.data.length > 0 &&
-      !activeCategory
-    ) {
+    setActiveCategory("");
+    if (categoriesResponse?.data && categoriesResponse.data.length > 0) {
       setActiveCategory(categoriesResponse.data[0].name);
     }
-  }, [categoriesResponse, activeCategory]);
+  }, [activeFilter, categoriesResponse, setActiveCategory]);
 
   const handleCategoryClick = (name: string) => {
     setActiveCategory(name);
@@ -63,6 +60,8 @@ const CitiesFilter = ({
       router.push(`/cities#estates`);
     }
   };
+
+  console.log(categoriesResponse);
 
   return (
     <div className="mb-8">
