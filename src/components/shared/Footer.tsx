@@ -103,9 +103,12 @@ const Footer: React.FC = () => {
     ],
     navigation: [
       { href: "/sell-property", label: t("sellProperty") },
-      { href: "/services/1", label: t("propertyEvaluation") },
-      { href: "/services/2", label: t("engineeringConsultancy") },
-      { href: "/services/3", label: t("thermalInsulation") },
+      { href: "/services/property-evaluation", label: t("propertyEvaluation") },
+      {
+        href: "/services/engineering-consultancy",
+        label: t("engineeringConsultancy"),
+      },
+      { href: "/services/thermal-insulation", label: t("thermalInsulation") },
     ],
     help: [
       { href: "/about", label: t("aboutUs") },
