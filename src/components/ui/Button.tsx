@@ -29,8 +29,6 @@ const Button = ({
       bg-gradient-to-r from-primary via-black/70 to-primary 
       bg-[position:0%_0%] 
       hover:bg-[position:100%_0%] 
-      shadow-[0_8px_16px_0_rgba(59,130,246,0.18)]
-      hover:shadow-[0_9px_9px_0_rgba(59,130,246,0.21),0_21px_13px_0_rgba(59,130,246,0.13)]
       active:scale-[0.98]
       text-white
     `,
@@ -47,8 +45,6 @@ const Button = ({
       bg-gradient-to-r from-green-600 via-teal-600 to-green-600
       bg-[position:0%_0%] 
       hover:bg-[position:100%_0%] 
-      shadow-[0_8px_16px_0_rgba(22,163,74,0.18)]
-      hover:shadow-[0_9px_9px_0_rgba(22,163,74,0.21),0_21px_13px_0_rgba(22,163,74,0.13)]
       active:scale-[0.98]
       text-white
     `,

@@ -130,5 +130,51 @@
     "contactUs": "Contact Us",
     "getQuote": "Get a Quote",
     "scheduleConsultation": "Schedule a Consultation"
+  },
+  "About": {
+    "hero": {
+      "title": "About Dream Home Finder",
+      "description": "Your trusted partner in finding the perfect property across Egypt. We combine local expertise with innovative technology to make your property journey seamless."
+    },
+    "mission": {
+      "title": "Our Mission & Values",
+      "description": "We're committed to transforming the real estate experience through transparency, innovation, and exceptional service.",
+      "values": {
+        "quality": {
+          "title": "Quality First",
+          "description": "We maintain the highest standards in property selection and service delivery to ensure customer satisfaction."
+        },
+        "trust": {
+          "title": "Building Trust",
+          "description": "Our relationships are built on transparency, integrity, and consistent delivery of value."
+        },
+        "growth": {
+          "title": "Continuous Growth",
+          "description": "We constantly evolve our services and technology to better serve our clients' needs."
+        }
+      }
+    },
+    "team": {
+      "title": "Meet Our Team",
+      "description": "Our diverse team of experts is dedicated to helping you achieve your real estate goals.",
+      "members": {
+        "member1": {
+          "name": "Ahmed Hassan",
+          "role": "Founder & CEO"
+        },
+        "member2": {
+          "name": "Sarah Mohamed",
+          "role": "Head of Properties"
+        },
+        "member3": {
+          "name": "Omar Ali",
+          "role": "Senior Property Consultant"
+        },
+        "member4": {
+          "name": "Nour Ibrahim",
+          "role": "Customer Success Manager"
+        }
+      }
+    }
   }
 }

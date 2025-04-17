@@ -26,13 +26,13 @@ interface ServiceResponse {
   data: ServiceData;
 }
 
-// Define a new interface that includes navigationId
+// Interface with the navigation name property
 interface EnhancedServiceData extends ServiceData {
-  id: number;
+  name: string;
 }
 
 interface ServiceCardProps {
-  id: number;
+  name: string;
   title: string;
   description: string;
   imageSrc: string;
@@ -40,7 +40,7 @@ interface ServiceCardProps {
 }
 
 const ServiceCard = ({
-  id,
+  name,
   title,
   description,
   imageSrc,
@@ -73,7 +73,7 @@ const ServiceCard = ({
         </div>
       </div>
       <div className="text-center">
-        <Link href={`/services/${id}`}>
+        <Link href={`/services/${name}`}>
           <Button>{t("findOutMore")}</Button>
         </Link>
       </div>
@@ -100,24 +100,40 @@ const Services = () => {
           getThermalInsulation() as Promise<ServiceResponse>,
         ]);
 
+        // Debug logs for API responses
+        console.log("Property Evaluation Response:", propertyEvaluationRes);
+        console.log(
+          "Engineering Consultant Response:",
+          engineeringConsultantRes
+        );
+        console.log("Thermal Insulation Response:", thermalInsulationRes);
+
         // Create enhanced service objects with explicit navigationIds
         const enhancedServices: EnhancedServiceData[] = [
           {
             ...propertyEvaluationRes.data,
-            id: 1,
+            name: "property-evaluation",
           },
           {
             ...engineeringConsultantRes.data,
-            id: 3,
+            name: "engineering-consultant",
           },
           {
             ...thermalInsulationRes.data,
-            id: 2,
+            name: "thermal-insulation",
           },
         ];
 
-        // Debug log to verify navigationIds are assigned
-        console.log("Enhanced services:", enhancedServices);
+        // Debug log each enhanced service individually
+        enhancedServices.forEach((service, index) => {
+          console.log(`Enhanced Service ${index}:`, {
+            id: service.id,
+            title: service.title,
+            content: service.content,
+            media: service.media,
+            name: service.name,
+          });
+        });
 
         setServices(enhancedServices);
       } catch (error) {
@@ -153,7 +169,7 @@ const Services = () => {
               return (
                 <ServiceCard
                   key={index}
-                  id={index + 1}
+                  name={service.name}
                   title={service.title}
                   description={service.content}
                   imageSrc={

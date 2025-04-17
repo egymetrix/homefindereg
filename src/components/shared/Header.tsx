@@ -187,11 +187,13 @@ const Header = ({
                   <Link
                     href={link.href ?? ""}
                     className={`text-sm hover:opacity-75 flex items-center gap-2 transition-colors ${
-                      withBg ? "text-gray-900" : "text-white"
+                      withBg || isScrolled ? "text-gray-900" : "text-white"
                     }`}
                   >
                     <span
-                      className={`${withBg ? "text-primary" : "text-white"}`}
+                      className={`${
+                        withBg || isScrolled ? "text-primary" : "text-white"
+                      }`}
                     >
                       {link.icon}
                     </span>

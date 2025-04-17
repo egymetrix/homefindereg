@@ -108,7 +108,7 @@ const Footer: React.FC = () => {
       { href: "/services/3", label: t("thermalInsulation") },
     ],
     help: [
-      // { href: "/about", label: t("aboutUs") },
+      { href: "/about", label: t("aboutUs") },
       { href: "/contact", label: t("contactUs") },
       // { href: "/privacy", label: t("privacyPolicy") },
     ],

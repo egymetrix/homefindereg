@@ -10,9 +10,7 @@ import {
 import Banner from "@/components/shared/Banner";
 import ContactUs from "../../properties/components/contact-us";
 import TransitionBox from "@/components/shared/TransitionBox";
-import { useTranslations } from "next-intl";
-import { Link, useRouter } from "@/i18n/routing";
-import { ArrowLeft } from "lucide-react";
+import { useRouter } from "@/i18n/routing";
 import Header from "@/components/shared/Header";
 
 interface ServiceData {
@@ -34,7 +32,6 @@ const ServiceDetail = () => {
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
-  const t = useTranslations("services");
 
   const [service, setService] = useState<ServiceData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -45,20 +42,24 @@ const ServiceDetail = () => {
       try {
         let response: ServiceResponse | undefined;
 
-        // Validate ID is numeric
-        const numericId = parseInt(id);
-        if (isNaN(numericId) || numericId < 1 || numericId > 3) {
-          // Invalid ID format, mark fetch as attempted but set no service
+        // Validate service name
+        const validServices = [
+          "property-evaluation",
+          "thermal-insulation",
+          "engineering-consultant",
+        ];
+        if (!validServices.includes(id)) {
+          // Invalid service name, mark fetch as attempted but set no service
           setFetchAttempted(true);
           setLoading(false);
           return;
         }
 
-        if (id === "1") {
+        if (id === "property-evaluation") {
           response = (await getPropertyEvaluation()) as ServiceResponse;
-        } else if (id === "3") {
+        } else if (id === "thermal-insulation") {
           response = (await getThermalInsulation()) as ServiceResponse;
-        } else if (id === "2") {
+        } else if (id === "engineering-consultant") {
           response = (await getEngineeringConsultant()) as ServiceResponse;
         }
 
@@ -119,39 +120,26 @@ const ServiceDetail = () => {
 
       <section className="py-16 px-4">
         <div className="container mx-auto">
-          <div className="mb-8">
-            <Link
-              href="/#services"
-              className="inline-flex items-center text-primary hover:underline transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Services
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="flex flex-col lg:flex-row gap-3">
             <TransitionBox
+              containerClassName="lg:w-[70%]"
               transitionType="fromLeft"
               delay={0.2}
-              className="lg:col-span-1"
             >
-              <div className="bg-white rounded-lg shadow-md p-8 md:p-10">
+              <div className="p-8 md:p-10">
                 <div
-                  className="prose prose-lg max-w-none prose-headings:text-gray-800 prose-p:text-gray-600 prose-strong:text-gray-700"
+                  className="prose prose-lg prose-headings:text-gray-800 prose-p:text-gray-600 prose-strong:text-gray-700"
                   dangerouslySetInnerHTML={{ __html: formattedContent }}
                 />
               </div>
             </TransitionBox>
 
             <TransitionBox
+              containerClassName="lg:w-[30%]"
               transitionType="fromRight"
               delay={0.4}
-              className="lg:col-span-1"
             >
-              <div className="bg-white rounded-lg shadow-md p-6 md:p-8 sticky top-24">
-                <h3 className="text-xl font-semibold text-gray-800 mb-6 pb-4 border-b border-gray-200">
-                  {t("contactUs") || "Contact Us"}
-                </h3>
+              <div className="bg-white rounded-lg shadow-md p-6 md:p-8">
                 <ContactUs type="service" />
               </div>
             </TransitionBox>

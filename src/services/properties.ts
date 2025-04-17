@@ -3,6 +3,20 @@
 import { Property } from "@/types";
 import { clientGet } from "@/services/api";
 
+interface ServiceData {
+  id: number;
+  title: string;
+  content: string;
+  media: { original_url: string }[];
+}
+
+interface ServiceResponse {
+  success: boolean;
+  status: number;
+  message: string;
+  data: ServiceData;
+}
+
 interface GetHomesParams {
   city_id?: string;
   category_type?: string;
@@ -63,13 +77,13 @@ export const getFAQ = async () => {
 };
 
 export const getPropertyEvaluation = async () => {
-  return await clientGet(`/site/get-property-evaluation`);
+  return await clientGet<ServiceResponse>(`/site/get-property-evaluation`);
 };
 
 export const getEngineeringConsultant = async () => {
-  return await clientGet(`/site/get-engineering-consultants`);
+  return await clientGet<ServiceResponse>(`/site/get-engineering-consultants`);
 };
 
 export const getThermalInsulation = async () => {
-  return await clientGet(`/site/get-thermal-insulation`);
+  return await clientGet<ServiceResponse>(`/site/get-thermal-insulation`);
 };
