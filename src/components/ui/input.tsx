@@ -19,7 +19,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           className={cn(
             "peer w-full rounded-lg bg-gray-100 px-4 pt-5 pb-2 text-gray-900 transition-all duration-300 focus:bg-white focus:shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] outline-none ring-0",
             {
-              "border border-gray-200 focus:border-blue-500":
+              "border border-gray-200 focus:border-primary":
                 variant === "primary",
               "border-0": variant === "secondary",
             },
@@ -41,7 +41,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               "absolute text-gray-500 transition-all duration-300 cursor-text select-none pointer-events-none",
               {
                 "text-[12px] top-[5px]": isFocused || hasValue,
-                "peer-focus:text-blue-500": variant === "primary",
+                "peer-focus:text-primary": variant === "primary",
                 "text-[15px] top-[14px]": !isFocused && !hasValue,
               },
               locale === "en" ? "left-4" : "right-4"

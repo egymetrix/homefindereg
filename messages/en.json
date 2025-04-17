@@ -25,10 +25,11 @@
       "almost": "Discover the best properties for sale and rent across Egypt with ease and speed.",
       "rent": "Rent",
       "sale": "Sale",
-      "placeholder": "Province, city, area, reference number"
+      "placeholder": "Province, city, area, reference number"
     },
     "services": {
       "title": "Dream Home Finder Services",
+      "description": "Explore our comprehensive range of real estate services designed to meet your needs",
       "findOutMore": "Find Out More"
     },
     "bedrooms": "rooms",
@@ -47,7 +48,19 @@
     "copyright": "© 2024 Real Estate Group S.p.A. All rights reserved.",
     "privacyPolicy": "Privacy Policy",
     "termsOfUse": "Terms of Use",
-    "cookiePolicy": "Cookie Policy"
+    "cookiePolicy": "Cookie Policy",
+    "contact": "Contact",
+    "navigation": "Navigation",
+    "help": "Help",
+    "sellProperty": "Sell Property",
+    "propertyEvaluation": "Property Evaluation",
+    "engineeringConsultancy": "Engineering Consultancy",
+    "thermalInsulation": "Thermal Insulation",
+    "aboutUs": "About Us",
+    "contactUs": "Contact Us",
+    "companyDescription": "Providing expert real estate services, property evaluation, engineering consultancy, and home thermal insulation across Egypt.",
+    "companyName": "Dream Home Finder",
+    "allRightsReserved": "All rights reserved"
   },
   "filters": {
     "filters": "Filters",
@@ -81,5 +94,41 @@
     "map": "Map",
     "showThumbnails": "Show Thumbnails",
     "hideThumbnails": "Hide Thumbnails"
+  },
+  "sell-hero": {
+    "title": "Do you want sell your property?",
+    "description": "We offer our services to everyone who is looking for a property"
+  },
+  "sell-form": {
+    "title": "Fill out the form to be contacted",
+    "subtitle": "Thanks to the deep knowledge of the local market, we are able to carry out a market evaluation in precise and timely terms.",
+    "formTitle": "Get Started",
+    "formDescription": "Fill out the form with your contact information and we'll get back to you promptly.",
+    "expertiseTitle": "Expert Evaluation",
+    "expertiseDescription": "Our team of specialists will evaluate your property based on current market conditions.",
+    "marketTitle": "Market Analysis",
+    "marketDescription": "We provide precise property valuations thanks to our deep understanding of the local real estate market.",
+    "contactFormTitle": "Contact Information",
+    "name": "First Name",
+    "surname": "Last Name",
+    "email": "Email",
+    "telephone": "Telephone",
+    "uploadFiles": "Upload Property Documents",
+    "dragAndDrop": "Drag and drop files here",
+    "orClickToUpload": "or click to upload",
+    "uploadedFiles": "Uploaded Files",
+    "submit": "Submit Request",
+    "successMessage": "Your information has been submitted successfully. We will contact you shortly.",
+    "errorMessage": "An error occurred. Please try again later."
+  },
+  "Contact": {
+    "title": "Contact Us",
+    "subtitle": "We're here to help with any questions you might have",
+    "faqTitle": "Frequently Asked Questions"
+  },
+  "services": {
+    "contactUs": "Contact Us",
+    "getQuote": "Get a Quote",
+    "scheduleConsultation": "Schedule a Consultation"
   }
 }

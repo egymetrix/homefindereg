@@ -1,12 +1,38 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import TransitionBox from "@/components/shared/TransitionBox";
 import Image from "next/image";
 import Button from "@/components/ui/Button";
 import { useTranslations } from "next-intl";
+import {
+  getPropertyEvaluation,
+  getEngineeringConsultant,
+  getThermalInsulation,
+} from "@/services/properties";
+import Link from "next/link";
+
+interface ServiceData {
+  id: number;
+  title: string;
+  content: string;
+  media: { original_url: string }[];
+}
+
+interface ServiceResponse {
+  success: boolean;
+  status: number;
+  message: string;
+  data: ServiceData;
+}
+
+// Define a new interface that includes navigationId
+interface EnhancedServiceData extends ServiceData {
+  id: number;
+}
 
 interface ServiceCardProps {
+  id: number;
   title: string;
   description: string;
   imageSrc: string;
@@ -14,12 +40,14 @@ interface ServiceCardProps {
 }
 
 const ServiceCard = ({
+  id,
   title,
   description,
   imageSrc,
   delay = 0,
 }: ServiceCardProps) => {
   const t = useTranslations("home.services");
+
   return (
     <TransitionBox
       transitionType="fromBottom"
@@ -45,7 +73,9 @@ const ServiceCard = ({
         </div>
       </div>
       <div className="text-center">
-        <Button>{t("findOutMore")}</Button>
+        <Link href={`/services/${id}`}>
+          <Button>{t("findOutMore")}</Button>
+        </Link>
       </div>
     </TransitionBox>
   );
@@ -54,33 +84,54 @@ const ServiceCard = ({
 const Services = () => {
   const t = useTranslations("home.services");
   const ref = useRef(null);
+  const [services, setServices] = useState<EnhancedServiceData[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const services = [
-    {
-      title: "Property Evaluation",
-      description:
-        "Get a professional assessment of your property's market value to make informed buying or selling decisions.",
-      imageSrc: "/images/Property-Evaluation.jpg",
-      delay: 0.2,
-    },
-    {
-      title: "Engineering Consultancy",
-      description:
-        "Expert guidance on architectural design, structural planning, and construction solutions to enhance your property.",
-      imageSrc: "/images/Engineering-Consultancy.jpg",
-      delay: 0.4,
-    },
-    {
-      title: "Home Thermal Insulation",
-      description:
-        "Improve energy efficiency and reduce costs with advanced insulation solutions tailored for your home.",
-      imageSrc: "/images/Home-Thermal-Insulation.jpg",
-      delay: 0.6,
-    },
-  ];
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const [
+          propertyEvaluationRes,
+          engineeringConsultantRes,
+          thermalInsulationRes,
+        ] = await Promise.all([
+          getPropertyEvaluation() as Promise<ServiceResponse>,
+          getEngineeringConsultant() as Promise<ServiceResponse>,
+          getThermalInsulation() as Promise<ServiceResponse>,
+        ]);
+
+        // Create enhanced service objects with explicit navigationIds
+        const enhancedServices: EnhancedServiceData[] = [
+          {
+            ...propertyEvaluationRes.data,
+            id: 1,
+          },
+          {
+            ...engineeringConsultantRes.data,
+            id: 3,
+          },
+          {
+            ...thermalInsulationRes.data,
+            id: 2,
+          },
+        ];
+
+        // Debug log to verify navigationIds are assigned
+        console.log("Enhanced services:", enhancedServices);
+
+        setServices(enhancedServices);
+      } catch (error) {
+        console.error("Error fetching services:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServices();
+  }, []);
 
   return (
-    <section className="py-16 md:py-24 px-4 bg-gray-50" ref={ref}>
+    <section className="py-16 md:py-24 px-4 bg-gray-50" ref={ref} id="services">
       <TransitionBox
         transitionType="fromBottom"
         className="container mx-auto"
@@ -91,9 +142,29 @@ const Services = () => {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 place-items-center">
-          {services.map((service) => (
-            <ServiceCard key={service.title} {...service} />
-          ))}
+          {loading ? (
+            <div className="col-span-full flex justify-center items-center py-12">
+              <p className="text-gray-500">Loading services...</p>
+            </div>
+          ) : (
+            services.map((service, index) => {
+              // Debug log for each service before rendering
+              console.log(`Service ${index}:`, service);
+              return (
+                <ServiceCard
+                  key={index}
+                  id={index + 1}
+                  title={service.title}
+                  description={service.content}
+                  imageSrc={
+                    service.media?.[0]?.original_url ||
+                    "/images/placeholder.jpg"
+                  }
+                  delay={0.2 * (index + 1)}
+                />
+              );
+            })
+          )}
         </div>
       </TransitionBox>
     </section>

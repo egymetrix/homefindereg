@@ -14,8 +14,6 @@ import {
   LogOut,
   Home,
   Info,
-  Building2,
-  Wrench,
   Building,
   PhoneCall,
 } from "lucide-react";
@@ -35,6 +33,7 @@ import toast from "react-hot-toast";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { AuthResponse } from "@/types/auth";
 import { cookies } from "@/lib/cookies";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 const Header = ({
   withBg = false,
@@ -62,16 +61,6 @@ const Header = ({
       href: "/about",
       label: "about",
       icon: <Info className="w-4 h-4" />,
-    },
-    {
-      href: "/properties",
-      label: "properties",
-      icon: <Building2 className="w-4 h-4" />,
-    },
-    {
-      href: "/services",
-      label: "services",
-      icon: <Wrench className="w-4 h-4" />,
     },
     {
       href: "/sell-property",
@@ -198,13 +187,11 @@ const Header = ({
                   <Link
                     href={link.href ?? ""}
                     className={`text-sm hover:opacity-75 flex items-center gap-2 transition-colors ${
-                      withBg || isScrolled ? "text-gray-900" : "text-white"
+                      withBg ? "text-gray-900" : "text-white"
                     }`}
                   >
                     <span
-                      className={`${
-                        withBg || isScrolled ? "text-primary" : "text-white"
-                      }`}
+                      className={`${withBg ? "text-primary" : "text-white"}`}
                     >
                       {link.icon}
                     </span>
@@ -223,7 +210,7 @@ const Header = ({
                 </div>
               }
             >
-              {/* <LanguageSwitcher bgColor={withBg || isScrolled} /> */}
+              <LanguageSwitcher bgColor={withBg || isScrolled} />
             </Suspense>
           </nav>
 
@@ -236,12 +223,9 @@ const Header = ({
                 </div>
               }
             >
-              {/* <LanguageSwitcher bgColor={withBg || isScrolled} /> */}
+              <LanguageSwitcher bgColor={withBg || isScrolled} />
             </Suspense>
-            <button
-              className={withBg || isScrolled ? "text-gray-900" : "text-white"}
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
               {isMenuOpen ? (
                 <X className="w-6 h-6" />
               ) : (
@@ -260,24 +244,42 @@ const Header = ({
                 <li key={link.label}>
                   <Link
                     href={link.href ?? ""}
-                    className={`text-black text-sm hover:text-gray-300 flex items-center gap-2 transition-colors ${
-                      withBg || isScrolled ? "text-gray-900" : "text-white"
-                    }`}
+                    className="text-gray-900 text-sm hover:text-gray-600 flex items-center gap-2 transition-colors"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    <span
-                      className={`${
-                        withBg || isScrolled ? "text-primary" : "text-white"
-                      }`}
-                    >
-                      {link.icon}
-                    </span>
+                    <span className="text-primary">{link.icon}</span>
                     {t(link.label)}
                   </Link>
                 </li>
               ))}
               <li className="flex flex-col items-center gap-4">
-                {renderAuthButton(withBg || isScrolled)}
+                {user ? (
+                  <div className="flex flex-col items-center gap-2">
+                    <Link
+                      href="/profile"
+                      className="text-gray-900 text-sm hover:text-gray-600 flex items-center gap-2 transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <UserRoundCheck className="text-primary size-4" />
+                      {t("profile")}
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="text-gray-900 text-sm hover:text-gray-600 flex items-center gap-2 transition-colors"
+                    >
+                      <LogOut className="text-primary size-4" />
+                      {t("logout")}
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => handleDialogOpen("signIn")}
+                    className="text-gray-900 text-sm hover:text-gray-600 flex items-center gap-2 transition-colors"
+                  >
+                    <UserRoundCheck className="text-primary size-4" />
+                    {t("signIn")}
+                  </button>
+                )}
               </li>
             </ul>
           </nav>
@@ -331,8 +333,7 @@ const SignInForm = ({
 
   const { mutate, isPending } = useMutation<AuthResponse, Error, FormData>({
     mutationKey: ["signIn"],
-    mutationFn: (formData: FormData) =>
-      clientPost("/site/login", formData, locale),
+    mutationFn: (formData: FormData) => clientPost("/site/login", formData),
     onSuccess: async (response) => {
       if (response.token) {
         cookies.set("token", response.token, {
@@ -343,7 +344,7 @@ const SignInForm = ({
         });
 
         // Get user data using token
-        const userData = await clientGetUser(response.token, locale);
+        const userData = await clientGetUser(response.token);
         login({ ...response, user: userData.user });
         toast.success(response.message || "Successfully logged in!");
         setDialogState(null);
@@ -367,7 +368,7 @@ const SignInForm = ({
           sameSite: "strict",
         });
 
-        const userData = await clientGetUser(data.token, locale);
+        const userData = await clientGetUser(data.token);
         login({ token: data.token, user: userData.user });
         toast.success(data.message || "Successfully logged in!");
         setDialogState(null);
@@ -503,8 +504,7 @@ const SignUpForm = ({
 
   const { mutate, isPending } = useMutation<AuthResponse, Error, FormData>({
     mutationKey: ["signUp"],
-    mutationFn: (formData: FormData) =>
-      clientPost("/site/register", formData, locale),
+    mutationFn: (formData: FormData) => clientPost("/site/register", formData),
     onSuccess: async (response) => {
       if (response.token) {
         cookies.set("token", response.token, {
@@ -513,7 +513,7 @@ const SignUpForm = ({
           secure: process.env.NODE_ENV === "production",
           sameSite: "strict",
         });
-        const userData = await clientGetUser(response.token, locale);
+        const userData = await clientGetUser(response.token);
         login({ ...response, user: userData.user });
         toast.success(response.message || "Successfully registered!");
         setDialogState(null);

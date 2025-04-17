@@ -5,6 +5,8 @@ import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import { formatPrice } from "@/lib/utils";
+import { addToFavorites } from "@/services/properties";
+import { MouseEvent, useState } from "react";
 
 interface PropertyCardProps {
   property: Property;
@@ -12,8 +14,30 @@ interface PropertyCardProps {
 }
 
 const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
+  const [isFavorite, setIsFavorite] = useState(property.is_favorite === 1);
   const t = useTranslations("home");
   const locale = useLocale();
+
+  const handleFavoriteClick = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const newFavoriteStatus = !isFavorite;
+    setIsFavorite(newFavoriteStatus);
+
+    try {
+      await addToFavorites(
+        property.id.toString(),
+        newFavoriteStatus ? "1" : "0",
+        locale
+      );
+    } catch (error) {
+      // Revert state if API call fails
+      setIsFavorite(!newFavoriteStatus);
+      console.error("Failed to update favorite status:", error);
+    }
+  };
+
   return (
     <Link href={`/properties/${property.id}`}>
       <Card
@@ -35,8 +59,15 @@ const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
             <span className="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
               {formatPrice(Number(property.home_price), locale)}
             </span>
-            <button className="p-1.5 hover:bg-gray-100 rounded-full transition-colors">
-              <Heart className="w-5 h-5 text-gray-600" />
+            <button
+              className="p-1.5 hover:bg-gray-100 rounded-full transition-colors"
+              onClick={handleFavoriteClick}
+            >
+              <Heart
+                className={`w-5 h-5 ${
+                  isFavorite ? "text-red-500 fill-red-500" : "text-gray-600"
+                }`}
+              />
             </button>
           </div>
 

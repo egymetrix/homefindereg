@@ -16,7 +16,7 @@ interface GetHomesParams {
   home_kitchens?: string;
 }
 
-export const getHomes = async (params: GetHomesParams, locale: string) => {
+export const getHomes = async (params: GetHomesParams) => {
   const searchParams = new URLSearchParams();
 
   // Add required parameter
@@ -37,18 +37,39 @@ export const getHomes = async (params: GetHomesParams, locale: string) => {
     searchParams.append("home_kitchens", params.home_kitchens);
 
   return await clientGet<{ data: Property[] }>(
-    `/site/get-homes?${searchParams.toString()}`,
-    locale
+    `/site/get-homes?${searchParams.toString()}`
   );
 };
 
-export const getProperty = async (propertyId: string, locale: string) => {
-  return await clientGet<{ data: Property }>(
-    `/site/get-home?id=${propertyId}`,
-    locale
+export const getProperty = async (propertyId: string) => {
+  return await clientGet<{ data: Property }>(`/site/get-home?id=${propertyId}`);
+};
+
+export const getAppointments = async () => {
+  return await clientGet(`/site/get-appointment`);
+};
+
+export const addToFavorites = async (
+  propertyId: string,
+  isFavorite: string
+) => {
+  return await clientGet(
+    `/site/is-favorite?id=${propertyId}&is_favorite=${isFavorite}`
   );
 };
 
-export const getAppointments = async (locale: string) => {
-  return await clientGet(`/site/get-appointment`, locale);
+export const getFAQ = async () => {
+  return await clientGet(`/site/get-faq`);
+};
+
+export const getPropertyEvaluation = async () => {
+  return await clientGet(`/site/get-property-evaluation`);
+};
+
+export const getEngineeringConsultant = async () => {
+  return await clientGet(`/site/get-engineering-consultants`);
+};
+
+export const getThermalInsulation = async () => {
+  return await clientGet(`/site/get-thermal-insulation`);
 };

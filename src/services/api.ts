@@ -2,6 +2,7 @@
 
 import { cookies } from "@/lib/cookies";
 import axios from "axios";
+import { getLocale } from "next-intl/server";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
@@ -19,18 +20,16 @@ const clientAxios = axios.create({
   },
 });
 
-export async function serverGet<T>(endpoint: string, locale: string) {
+export async function serverGet<T>(endpoint: string) {
+  const locale = await getLocale();
   const response = await serverAxios.get<T>(endpoint, {
     headers: { lang: locale },
   });
   return response.data;
 }
 
-export async function serverPost<T>(
-  endpoint: string,
-  formData: FormData,
-  locale: string
-) {
+export async function serverPost<T>(endpoint: string, formData: FormData) {
+  const locale = await getLocale();
   const response = await serverAxios.post<T>(endpoint, formData, {
     headers: {
       lang: locale,
@@ -41,8 +40,9 @@ export async function serverPost<T>(
 }
 
 // Client-side functions
-export async function clientGet<T>(endpoint: string, locale: string) {
+export async function clientGet<T>(endpoint: string) {
   "use client";
+  const locale = await getLocale();
   const response = await clientAxios.get<T>(endpoint, {
     headers: {
       lang: locale,
@@ -52,21 +52,18 @@ export async function clientGet<T>(endpoint: string, locale: string) {
   return response.data;
 }
 
-export async function clientGetUser(token: string, locale: string) {
+export async function clientGetUser(token: string) {
   "use client";
   const response = await clientAxios.get("/site/get-user", {
-    headers: { lang: locale, Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${token}` },
   });
   console.log("response.data", response.data);
   return response.data;
 }
 
-export async function clientPost<T>(
-  endpoint: string,
-  formData: FormData,
-  locale: string
-) {
+export async function clientPost<T>(endpoint: string, formData: FormData) {
   "use client";
+  const locale = await getLocale();
   const response = await clientAxios.post<T>(endpoint, formData, {
     headers: {
       lang: locale,

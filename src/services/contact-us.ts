@@ -3,7 +3,7 @@
 
 import { clientPost } from "@/services/api";
 
-export const contactUs = async (data: any, locale: string) => {
-  const response = await clientPost("/site/contactus-request", data, locale);
+export const contactUs = async (data: any) => {
+  const response = await clientPost("/site/contactus-request", data);
   return response;
 };

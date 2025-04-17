@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 interface SocialLinkProps {
   href: string;
@@ -48,38 +49,6 @@ const SOCIAL_LINKS: SocialLinkProps[] = [
   },
 ];
 
-const FOOTER_LINKS = {
-  contact: [
-    {
-      href: "https://goo.gl/maps/...",
-      label: "Heliopolis, Cairo Governorate, Egypt",
-      icon: <MapPin className="w-4 h-4" />,
-    },
-    {
-      href: "tel:+201501234567",
-      label: "+20 150 123 4567",
-      icon: <Phone className="w-4 h-4" />,
-    },
-    {
-      href: "mailto:contact@homefindereg.com",
-      label: "contact@homefindereg.com",
-      icon: <Mail className="w-4 h-4" />,
-    },
-  ],
-  navigation: [
-    { href: "/buy", label: "Buy Property" },
-    { href: "/sell", label: "Sell Property" },
-    { href: "/evaluation", label: "Property Evaluation" },
-    { href: "/engineering", label: "Engineering Consultancy" },
-    { href: "/thermal-insulation", label: "Thermal Insulation" },
-  ],
-  help: [
-    { href: "/about", label: "About Us" },
-    { href: "/contact", label: "Contact Us" },
-    { href: "/privacy", label: "Privacy Policy" },
-  ],
-};
-
 // Helper Components
 const SocialLink: React.FC<SocialLinkProps> = ({ href, icon, label }) => (
   <Link
@@ -111,7 +80,39 @@ const FooterLink: React.FC<FooterLinkProps & { icon?: React.ReactNode }> = ({
 );
 
 const Footer: React.FC = () => {
+  const t = useTranslations("footer");
   const currentYear = new Date().getFullYear();
+
+  const FOOTER_LINKS = {
+    contact: [
+      {
+        href: "https://goo.gl/maps/...",
+        label: "Heliopolis, Cairo Governorate, Egypt",
+        icon: <MapPin className="w-4 h-4" />,
+      },
+      {
+        href: "tel:+201501234567",
+        label: "+20 150 123 4567",
+        icon: <Phone className="w-4 h-4" />,
+      },
+      {
+        href: "mailto:contact@homefindereg.com",
+        label: "contact@homefindereg.com",
+        icon: <Mail className="w-4 h-4" />,
+      },
+    ],
+    navigation: [
+      { href: "/sell-property", label: t("sellProperty") },
+      { href: "/services/1", label: t("propertyEvaluation") },
+      { href: "/services/2", label: t("engineeringConsultancy") },
+      { href: "/services/3", label: t("thermalInsulation") },
+    ],
+    help: [
+      // { href: "/about", label: t("aboutUs") },
+      { href: "/contact", label: t("contactUs") },
+      // { href: "/privacy", label: t("privacyPolicy") },
+    ],
+  };
 
   return (
     <footer className="bg-[#1B2431] text-gray-300">
@@ -132,9 +133,7 @@ const Footer: React.FC = () => {
                 />
               </Link>
               <p className="text-sm text-gray-400 leading-relaxed">
-                Providing expert real estate services, property evaluation,
-                engineering consultancy, and home thermal
-                insulation across Egypt.
+                {t("companyDescription")}
               </p>
               <div className="flex items-center gap-5">
                 {SOCIAL_LINKS.map((link) => (
@@ -146,7 +145,7 @@ const Footer: React.FC = () => {
             {/* Contact Information */}
             <div className="lg:ml-8">
               <h3 className="text-white text-sm font-semibold uppercase tracking-wider mb-6">
-                Contact
+                {t("contact")}
               </h3>
               <ul className="space-y-3">
                 {FOOTER_LINKS.contact.map(({ href, label, icon }) => (
@@ -160,7 +159,7 @@ const Footer: React.FC = () => {
             {/* Navigation */}
             <div>
               <h3 className="text-white text-sm font-semibold uppercase tracking-wider mb-6">
-                Navigation
+                {t("navigation")}
               </h3>
               <ul className="space-y-3">
                 {FOOTER_LINKS.navigation.map(({ href, label }) => (
@@ -174,7 +173,7 @@ const Footer: React.FC = () => {
             {/* Help */}
             <div>
               <h3 className="text-white text-sm font-semibold uppercase tracking-wider mb-6">
-                Help
+                {t("help")}
               </h3>
               <ul className="space-y-3">
                 {FOOTER_LINKS.help.map(({ href, label }) => (
@@ -190,10 +189,12 @@ const Footer: React.FC = () => {
         <div className="w-full h-px bg-gray-800"></div>
 
         <div className="py-8">
-          <div className="flex flex-wrap justify-center  items-center gap-x-4 gap-y-2 text-xs text-gray-400">
-            <span>© {currentYear} Dream Home Finder</span>
+          <div className="flex flex-wrap justify-center items-center gap-x-4 gap-y-2 text-xs text-gray-400">
+            <span>
+              © {currentYear} {t("companyName")}
+            </span>
             <span className="hidden lg:block">•</span>
-            <span>All rights reserved</span>
+            <span>{t("allRightsReserved")}</span>
           </div>
         </div>
       </div>

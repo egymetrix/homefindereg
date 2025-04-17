@@ -24,6 +24,7 @@ import {
 import { useState } from "react";
 import { usePathname } from "@/i18n/routing";
 import { cn, formatPrice } from "@/lib/utils";
+import { addToFavorites } from "@/services/properties";
 
 interface PropertyHeaderProps {
   property: Property | undefined;
@@ -34,9 +35,28 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
   const t = useTranslations("home");
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(property?.is_favorite === 1);
   const pathname = usePathname();
   const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL}${pathname}`;
   const shareTitle = `${property?.home_name} - ${property?.home_price}€`;
+
+  const handleFavoriteClick = async () => {
+    if (!property) return;
+
+    const newFavoriteStatus = !isFavorite;
+    setIsFavorite(newFavoriteStatus);
+
+    try {
+      await addToFavorites(
+        property.id.toString(),
+        newFavoriteStatus ? "1" : "0"
+      );
+    } catch (error) {
+      // Revert state if API call fails
+      setIsFavorite(!newFavoriteStatus);
+      console.error("Failed to update favorite status:", error);
+    }
+  };
 
   const handleCopy = async () => {
     try {
@@ -97,8 +117,15 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
           </div>
         </div>
         <div className="flex items-center gap-4 mt-4 md:mt-0">
-          <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
-            <Heart className="w-5 h-5" />
+          <button
+            className="p-2 rounded-full bg-gray-100 hover:bg-gray-200"
+            onClick={handleFavoriteClick}
+          >
+            <Heart
+              className={`w-5 h-5 ${
+                isFavorite ? "text-red-500 fill-red-500" : "text-gray-600"
+              }`}
+            />
           </button>
           <div className="relative">
             <button

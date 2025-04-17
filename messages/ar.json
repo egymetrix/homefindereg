@@ -32,7 +32,7 @@
     },
     "services": {
       "title": "خدمات (Dream Home Finder)",
-      "description": "نقدم خدماتنا لكل من يبحث عن عقار",
+      "description": "استكشف مجموعتنا الشاملة من خدمات العقارات المصممة لتلبية احتياجاتك",
       "findOutMore": "إعرف المزيد"
     },
     "bedrooms": "غرف",
@@ -51,7 +51,19 @@
     "copyright": "© 2024 Real Estate Group S.p.A. All rights reserved.",
     "privacyPolicy": "سياسة الخصوصية",
     "termsOfUse": "شروط الاستخدام",
-    "cookiePolicy": "سياسة الكوكيز"
+    "cookiePolicy": "سياسة الكوكيز",
+    "contact": "التواصل",
+    "navigation": "التنقل",
+    "help": "المساعدة",
+    "sellProperty": "بيع عقار",
+    "propertyEvaluation": "تقييم عقاري",
+    "engineeringConsultancy": "استشارات هندسية",
+    "thermalInsulation": "العزل الحراري",
+    "aboutUs": "من نحن",
+    "contactUs": "تواصل معنا",
+    "companyDescription": "نقدم خدمات عقارية متخصصة، تقييم عقاري، استشارات هندسية، وخدمات العزل الحراري للمنازل في جميع أنحاء مصر.",
+    "companyName": "دريم هوم فايندر",
+    "allRightsReserved": "جميع الحقوق محفوظة"
   },
   "filters": {
     "filters": "الفلاتر",
@@ -84,6 +96,20 @@
     "photo": "صورة",
     "map": "خريطة",
     "showThumbnails": "عرض الصور المصغرة",
-    "hideThumbnails": "إخفاء الصور المصغرة"
+    "hideThumbnails": "إخفاء الصور المصغرة "
+  },
+  "sell-hero": {
+    "title": "هل تريد بيع عقارك؟",
+    "description": "نحن نقدم خدماتنا لكل من يبحث عن عقار"
+  },
+  "Contact": {
+    "title": "تواصل معنا",
+    "subtitle": "نحن هنا للمساعدة في أي استفسارات لديك",
+    "faqTitle": "الأسئلة الشائعة"
+  },
+  "services": {
+    "contactUs": "تواصل معنا",
+    "getQuote": "احصل على عرض سعر",
+    "scheduleConsultation": "جدولة استشارة"
   }
 }

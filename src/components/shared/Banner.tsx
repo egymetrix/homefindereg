@@ -2,10 +2,14 @@ const Banner = ({
   backgroundImage,
   height = "90vh",
   children,
+  withOverlay = true,
+  contentPosition = "center",
 }: {
   backgroundImage: string;
   height?: string;
   children: React.ReactNode;
+  withOverlay?: boolean;
+  contentPosition?: "start" | "center";
 }) => {
   return (
     <div
@@ -23,11 +27,17 @@ const Banner = ({
         }}
       >
         {/* Optional overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+        {withOverlay && (
+          <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+        )}
       </div>
 
       {/* Content */}
-      <div className="relative h-full flex items-center justify-center">
+      <div
+        className={`relative h-full flex ${
+          contentPosition === "start" ? "items-start" : "items-center"
+        } justify-center`}
+      >
         <div className="container mx-auto px-4 ">{children}</div>
       </div>
     </div>

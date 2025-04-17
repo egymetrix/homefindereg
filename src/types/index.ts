@@ -72,6 +72,7 @@ export interface Property {
   id: number;
   lon: string;
   lat: string;
+  is_favorite: number;
   home_name: string;
   address: string;
   home_price: string;

@@ -10,7 +10,7 @@ import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { contactUs } from "@/services/contact-us";
 
-const ContactUs = () => {
+const ContactUs = ({ type }: { type?: string }) => {
   const locale = useLocale();
   const [formData, setFormData] = useState({
     name: "",
@@ -18,6 +18,7 @@ const ContactUs = () => {
     email: "",
     telephone: "",
     message: "",
+    type: type || "",
   });
 
   const { mutate, isPending } = useMutation({
@@ -27,7 +28,7 @@ const ContactUs = () => {
         const formValue = key === "telephone" ? Number(value) : value;
         data.append(key, formValue.toString());
       });
-      const response = await contactUs(data, locale);
+      const response = await contactUs(data);
       return response;
     },
     onSuccess: (response) => {
@@ -43,6 +44,7 @@ const ContactUs = () => {
         email: "",
         telephone: "",
         message: "",
+        type: type || "property",
       });
     },
     onError: (error: any) => {
