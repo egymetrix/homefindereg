@@ -130,9 +130,7 @@ const CityHero = () => {
 
   const [selected, setSelected] = useState<PropertyType>(PROPERTY_TYPES.RENT);
 
-  const handleSearch = useCallback((value: string) => {
-    console.log("Searching:", value);
-  }, []);
+  const handleSearch = useCallback(() => {}, []);
 
   return (
     <Banner backgroundImage="/images/mobile_2.jpg" height="90vh">

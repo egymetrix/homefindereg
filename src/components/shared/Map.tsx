@@ -131,7 +131,6 @@ const MapUpdater = ({
   const map = useMap();
 
   useEffect(() => {
-    console.log("Setting map view to:", center, zoom);
     map.setView(center, zoom);
   }, [map, center, zoom]);
 

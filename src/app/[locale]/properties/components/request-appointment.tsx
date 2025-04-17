@@ -82,12 +82,10 @@ const RequestAppointmentForm = () => {
   >({
     queryKey: ["appointments"],
     queryFn: async () => {
-      const response = await getAppointments(locale);
+      const response = await getAppointments();
       return response as AppointmentResponse;
     },
   });
-
-  console.log(appointmentsData);
 
   // Check if data is empty
   const isEmpty =
@@ -144,11 +142,7 @@ const RequestAppointmentForm = () => {
       formDataToSend.append("telephone", formData.telephone);
       formDataToSend.append("id_appointment", appointmentId);
 
-      return await clientPost(
-        "/site/appointment-request",
-        formDataToSend,
-        locale
-      );
+      return await clientPost("/site/appointment-request", formDataToSend);
     },
     onSuccess: (response) => {
       toast.success(response.message);

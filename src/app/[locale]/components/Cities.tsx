@@ -41,8 +41,7 @@ const CitiesFilter = ({
     queryKey: ["categories", activeFilter],
     queryFn: async () => {
       return await clientGet<{ data: Category[] }>(
-        `/site/get-category?type=${activeFilter}`,
-        locale
+        `/site/get-category?type=${activeFilter}`
       );
     },
   });
@@ -60,8 +59,6 @@ const CitiesFilter = ({
       router.push(`/cities#estates`);
     }
   };
-
-  console.log(categoriesResponse);
 
   return (
     <div className="mb-8">
@@ -130,8 +127,7 @@ const CitiesList = ({
       queryKey: ["governments", activeFilter, activeCategory],
       queryFn: async () => {
         return await clientGet<GovernmentResponse>(
-          `/site/gov-city?type=${activeFilter}&category_type=${activeCategory}`,
-          locale
+          `/site/gov-city?type=${activeFilter}&category_type=${activeCategory}`
         );
       },
       enabled: !!activeFilter && !!activeCategory,

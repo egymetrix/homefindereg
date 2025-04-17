@@ -100,14 +100,6 @@ const Services = () => {
           getThermalInsulation() as Promise<ServiceResponse>,
         ]);
 
-        // Debug logs for API responses
-        console.log("Property Evaluation Response:", propertyEvaluationRes);
-        console.log(
-          "Engineering Consultant Response:",
-          engineeringConsultantRes
-        );
-        console.log("Thermal Insulation Response:", thermalInsulationRes);
-
         // Create enhanced service objects with explicit navigationIds
         const enhancedServices: EnhancedServiceData[] = [
           {
@@ -123,17 +115,6 @@ const Services = () => {
             name: "thermal-insulation",
           },
         ];
-
-        // Debug log each enhanced service individually
-        enhancedServices.forEach((service, index) => {
-          console.log(`Enhanced Service ${index}:`, {
-            id: service.id,
-            title: service.title,
-            content: service.content,
-            media: service.media,
-            name: service.name,
-          });
-        });
 
         setServices(enhancedServices);
       } catch (error) {
@@ -165,7 +146,6 @@ const Services = () => {
           ) : (
             services.map((service, index) => {
               // Debug log for each service before rendering
-              console.log(`Service ${index}:`, service);
               return (
                 <ServiceCard
                   key={index}
