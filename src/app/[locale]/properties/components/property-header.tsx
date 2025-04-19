@@ -21,7 +21,7 @@ import {
   TelegramShareButton,
   TelegramIcon,
 } from "react-share";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "@/i18n/routing";
 import { cn, formatPrice } from "@/lib/utils";
 import { addToFavorites } from "@/services/properties";
@@ -35,16 +35,48 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
   const t = useTranslations("home");
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(property?.is_favorite === 1);
+  const [isFavorite, setIsFavorite] = useState(false);
   const pathname = usePathname();
   const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL}${pathname}`;
   const shareTitle = `${property?.home_name} - ${property?.home_price}€`;
+
+  // Load favorites from localStorage on component mount
+  useEffect(() => {
+    if (!property) return;
+    
+    // Get favorites from localStorage
+    const storedFavorites = localStorage.getItem('favorites');
+    const favorites = storedFavorites ? JSON.parse(storedFavorites) : [];
+    
+    // Check if current property is in favorites
+    const isPropertyFavorite = favorites.includes(property.id.toString()) || property?.is_favorite === 1;
+    setIsFavorite(isPropertyFavorite);
+  }, [property]);
 
   const handleFavoriteClick = async () => {
     if (!property) return;
 
     const newFavoriteStatus = !isFavorite;
     setIsFavorite(newFavoriteStatus);
+
+    // Update localStorage
+    const storedFavorites = localStorage.getItem('favorites');
+    const favorites = storedFavorites ? JSON.parse(storedFavorites) : [];
+    
+    if (newFavoriteStatus) {
+      // Add to favorites if not already included
+      if (!favorites.includes(property.id.toString())) {
+        favorites.push(property.id.toString());
+      }
+    } else {
+      // Remove from favorites
+      const index = favorites.indexOf(property.id.toString());
+      if (index !== -1) {
+        favorites.splice(index, 1);
+      }
+    }
+    
+    localStorage.setItem('favorites', JSON.stringify(favorites));
 
     try {
       await addToFavorites(
