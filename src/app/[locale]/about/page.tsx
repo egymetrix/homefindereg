@@ -8,7 +8,7 @@ export const generateMetadata = async ({
 }: {
   params: { locale: string };
 }) => {
-  const locale = params.locale;
+  const { locale } = await params;
   return {
     title: locale === "en" ? "About Dream Home Finder" : "عن Dream Home Finder",
     description:

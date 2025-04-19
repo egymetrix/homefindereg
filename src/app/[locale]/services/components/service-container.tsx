@@ -6,7 +6,7 @@ import "../[id]/service.css";
 const ServiceContainer = ({ service }: { service: any }) => {
   return (
     <section className="py-16 px-4">
-      <div className="container mx-auto">
+      <div className="container mx-auto max-w-screen-xl">
         <div className="flex flex-col lg:flex-row gap-3">
           <TransitionBox
             containerClassName="lg:w-[70%]"

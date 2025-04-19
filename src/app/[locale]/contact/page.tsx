@@ -9,7 +9,7 @@ export const generateMetadata = async ({
 }: {
   params: { locale: string };
 }) => {
-  const locale = await params.locale;
+  const { locale } = await params;
   return {
     title: locale === "en" ? "Contact Us" : "تواصل معنا",
     description:
@@ -32,7 +32,7 @@ export default function ContactPage() {
         </div>
       </Banner>
 
-      <div className="container mx-auto py-16 px-4">
+      <div className="container mx-auto py-16 px-4 max-w-screen-xl">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-1">
             <ContactUs type="contact" />

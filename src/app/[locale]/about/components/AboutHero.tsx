@@ -5,7 +5,7 @@ export default function AboutHero() {
   const t = useTranslations("About");
 
   return (
-    <Banner backgroundImage="/images/hero-bg.jpg" height="60vh">
+    <Banner backgroundImage="/images/about.jpg" height="70vh">
       <div className="container relative flex h-full items-center justify-center px-4">
         <div className="text-center">
           <h1 className="mb-4 text-4xl font-bold text-white md:text-5xl lg:text-6xl">
