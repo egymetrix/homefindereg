@@ -24,40 +24,35 @@ export default function OurTeam() {
 
   const team = [
     {
-      image:
-        "/team/Alberto Castagneri - Chief Technical Officer ألبرتو كاستاجنيري – المدير الفني التنفيذي.jpeg",
+      image: "/team/Alberto.jpeg",
       nameEn: "Alberto Castagneri",
       nameAr: "ألبرتو كاستاجنيري",
       positionEn: "Chief Technical Officer",
       positionAr: "المدير الفني التنفيذي",
     },
     {
-      image:
-        "/team/Aya Mahrous - Marketing Specialist آية محروس – مسؤولة التسويق.jpeg",
+      image: "/team/Aya.jpeg",
       nameEn: "Aya Mahrous",
       nameAr: "آية محروس",
       positionEn: "Marketing Specialist",
       positionAr: "مسؤولة التسويق",
     },
     {
-      image:
-        "/team/Marilena Miresse - Operations Manager ماريلينا ميريس - مدير العمليات.jpeg",
+      image: "/team/Marilena.jpeg",
       nameEn: "Marilena Miresse",
       nameAr: "ماريلينا ميريس",
       positionEn: "Operations Manager",
       positionAr: "مدير العمليات",
     },
     {
-      image:
-        "/team/Mohamed Kelany - Sales Manager محمد الكيلاني – مدير المبيعات.jpeg",
+      image: "/team/Mohamed.jpeg",
       nameEn: "Mohamed Kelany",
       nameAr: "محمد الكيلاني",
       positionEn: "Sales Manager",
       positionAr: "مدير المبيعات",
     },
     {
-      image:
-        "/team/Mostafa Gad - Business Relations Officer مصطفى جاد – مسؤول علاقات الأعمال.jpeg",
+      image: "/team/Mostafa.jpeg",
       nameEn: "Mostafa Gad",
       nameAr: "مصطفى جاد",
       positionEn: "Business Relations Officer",
