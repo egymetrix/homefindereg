@@ -79,7 +79,7 @@ const PropertyContainer = ({ propertyId }: { propertyId: string }) => {
                     <RequestAppointment />
                   </div>
                   <div className="sticky top-48">
-                    <ContactUs />
+                    <ContactUs type="property" />
                   </div>
                 </div>
               </section>
