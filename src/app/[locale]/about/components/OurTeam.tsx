@@ -10,7 +10,6 @@ import {
   Navigation,
   Pagination,
   Autoplay,
-  EffectCoverflow,
 } from "swiper/modules";
 // Import Swiper styles
 import "swiper/css";
@@ -76,43 +75,47 @@ export default function OurTeam() {
           </p>
         </div>
 
-        <div className="relative mx-auto px-16 md:px-20 py-10">
-          {/* Custom navigation buttons remain the same */}
+        <div className="relative mx-auto max-w-screen-xl">
+          <button
+            ref={prevRef}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white p-2 rounded-full shadow-md hover:bg-gray-50"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+            </svg>
+          </button>
+
+          <button
+            ref={nextRef}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white p-2 rounded-full shadow-md hover:bg-gray-50"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </button>
 
           <Swiper
-            modules={[Navigation, Pagination, Autoplay, EffectCoverflow]}
-            effect="coverflow"
+            modules={[Navigation, Pagination, Autoplay]}
             slidesPerView={3}
-            centeredSlides={true}
             loop={true}
-            spaceBetween={30}
+            spaceBetween={24}
             autoplay={{
               delay: 5000,
               disableOnInteraction: false,
             }}
-            coverflowEffect={{
-              rotate: 0,
-              stretch: 0,
-              depth: 100,
-              modifier: 2.5,
-              slideShadows: true,
-            }}
-            pagination={{
-              clickable: true,
-              dynamicBullets: true,
+            navigation={{
+              prevEl: prevRef.current,
+              nextEl: nextRef.current,
             }}
             breakpoints={{
               320: {
                 slidesPerView: 1,
-                spaceBetween: 20,
               },
-              640: {
+              768: {
                 slidesPerView: 2,
-                spaceBetween: 30,
               },
               1024: {
                 slidesPerView: 3,
-                spaceBetween: 30,
               },
             }}
             onInit={(swiper) => {
@@ -123,42 +126,30 @@ export default function OurTeam() {
               swiper.navigation.init();
               swiper.navigation.update();
             }}
-            className="team-swiper py-10 !overflow-visible"
+            className="px-12"
           >
             {team.map((member, index) => (
-              <SwiperSlide key={index} className="!px-2 !py-4">
-                {({ isActive }) => (
-                  <div
-                    className={`group relative overflow-hidden rounded-2xl bg-white shadow-lg transition-all duration-500 hover:shadow-2xl ${
-                      isActive
-                        ? "ring-2 ring-blue-500 ring-offset-2 scale-105 z-10"
-                        : "opacity-75 scale-90"
-                    }`}
-                  >
-                    <div className="aspect-[3/4] w-full overflow-hidden bg-gray-100">
-                      <Image
-                        src={member.image}
-                        alt={locale === "en" ? member.nameEn : member.nameAr}
-                        width={400}
-                        height={533}
-                        className={`h-full w-full object-contain transition-transform duration-500 ${
-                          isActive ? "scale-105" : "group-hover:scale-105"
-                        }`}
-                        priority={index === 0}
-                      />
-                    </div>
-                    <div className="p-6 text-center">
-                      <h3 className="mb-2 text-xl font-semibold text-gray-900">
-                        {locale === "en" ? member.nameEn : member.nameAr}
-                      </h3>
-                      <p className="text-sm font-medium text-blue-600">
-                        {locale === "en"
-                          ? member.positionEn
-                          : member.positionAr}
-                      </p>
-                    </div>
+              <SwiperSlide key={index}>
+                <div className="bg-white rounded-lg overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300">
+                  <div className="aspect-[4/3] w-full overflow-hidden">
+                    <Image
+                      src={member.image}
+                      alt={locale === "en" ? member.nameEn : member.nameAr}
+                      width={400}
+                      height={300}
+                      className="w-full h-full object-contain"
+                      priority={index === 0}
+                    />
                   </div>
-                )}
+                  <div className="p-4 text-center">
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      {locale === "en" ? member.nameEn : member.nameAr}
+                    </h3>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {locale === "en" ? member.positionEn : member.positionAr}
+                    </p>
+                  </div>
+                </div>
               </SwiperSlide>
             ))}
           </Swiper>
