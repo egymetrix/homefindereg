@@ -123,7 +123,7 @@ const ContactUs = ({ type }: { type?: string }) => {
             onChange={(e) =>
               setFormData({ ...formData, message: e.target.value })
             }
-            className="w-full min-h-[80px] p-2 text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+            className="w-full min-h-[80px] p-2 text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
             placeholder={
               locale === "ar"
                 ? "اكتب رسالتك هنا..."
