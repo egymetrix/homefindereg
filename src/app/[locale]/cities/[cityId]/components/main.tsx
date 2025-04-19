@@ -21,24 +21,25 @@ const Main = () => {
   const locale = useLocale();
   const mapRef = useRef<L.Map>(null);
 
+  const cityId = params.cityId as string;
+  const cityName = cityId.split("-")[0];
+  const cityIdNumber = cityId.split("-")[1];
+
   const { data: homesResponse, isLoading } = useQuery({
-    queryKey: ["homes", params.cityId, searchParams.toString()],
+    queryKey: ["homes", cityIdNumber, searchParams.toString()],
     queryFn: async () => {
-      return await getHomes(
-        {
-          city_id: params.cityId as string,
-          category_type: searchParams.get("category_type") || undefined,
-          type: (searchParams.get("type") as "sale" | "rent") || undefined,
-          min_price: searchParams.get("min_price") || undefined,
-          max_price: searchParams.get("max_price") || undefined,
-          min_area: searchParams.get("min_area") || undefined,
-          max_area: searchParams.get("max_area") || undefined,
-          home_name: searchParams.get("home_name") || undefined,
-          home_bathrooms: searchParams.get("home_bathrooms") || undefined,
-          home_kitchens: searchParams.get("home_kitchens") || undefined,
-        },
-        locale
-      );
+      return await getHomes({
+        city_id: cityIdNumber,
+        category_type: searchParams.get("category_type") || undefined,
+        type: (searchParams.get("type") as "sale" | "rent") || undefined,
+        min_price: searchParams.get("min_price") || undefined,
+        max_price: searchParams.get("max_price") || undefined,
+        min_area: searchParams.get("min_area") || undefined,
+        max_area: searchParams.get("max_area") || undefined,
+        home_name: searchParams.get("home_name") || undefined,
+        home_bathrooms: searchParams.get("home_bathrooms") || undefined,
+        home_kitchens: searchParams.get("home_kitchens") || undefined,
+      });
     },
   });
 
@@ -48,9 +49,6 @@ const Main = () => {
     ? [parseFloat(selectedProperty.lat), parseFloat(selectedProperty.lon)]
     : [51.505, -0.09];
   const zoom = selectedProperty ? 15 : 13;
-
-  // Get the city name from the first property if available
-  const cityName = properties[0]?.address?.split(",")[0] || params.cityId;
 
   const breadcrumbItems = [
     {

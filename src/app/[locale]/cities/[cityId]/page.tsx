@@ -4,6 +4,21 @@ import Main from "@/app/[locale]/cities/[cityId]/components/main";
 import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
 
+export const generateMetadata = async ({
+  params,
+}: {
+  params: { locale: string };
+}) => {
+  const { locale } = await params;
+  return {
+    title: locale === "en" ? "Cities" : "المدن",
+    description:
+      locale === "en"
+        ? "Browse through our list of cities and find your perfect home"
+        : "استكشف قائمة المدن وابحث عن منزلك المثالي",
+  };
+};
+
 export default async function CityPage() {
   return (
     <>

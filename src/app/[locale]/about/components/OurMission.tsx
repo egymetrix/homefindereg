@@ -23,7 +23,7 @@ export default function OurMission() {
   ];
 
   return (
-    <section className="py-16 lg:py-24">
+    <section className="py-16 lg:py-24 max-w-screen-xl mx-auto">
       <div className="container px-4 mx-auto">
         <div className="mb-16 text-center">
           <h2 className="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">

@@ -4,6 +4,21 @@ import FAQ from "./components/faq";
 import { useTranslations } from "next-intl";
 import Header from "@/components/shared/Header";
 
+export const generateMetadata = async ({
+  params,
+}: {
+  params: { locale: string };
+}) => {
+  const locale = await params.locale;
+  return {
+    title: locale === "en" ? "Contact Us" : "تواصل معنا",
+    description:
+      locale === "en"
+        ? "Contact us for any inquiries or to schedule a visit"
+        : "تواصل معنا لأي أستفسارات أو ترتيب زيارة",
+  };
+};
+
 export default function ContactPage() {
   const t = useTranslations("Contact");
 
@@ -19,11 +34,11 @@ export default function ContactPage() {
 
       <div className="container mx-auto py-16 px-4">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <FAQ />
-          </div>
           <div className="lg:col-span-1">
             <ContactUs type="contact" />
+          </div>
+          <div className="lg:col-span-2">
+            <FAQ />
           </div>
         </div>
       </div>

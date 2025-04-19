@@ -66,7 +66,7 @@ const ContactUs = ({ type }: { type?: string }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm">
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
       <div className="flex items-center gap-2 p-4 border-b">
         <div className="w-6 h-6 rounded-lg bg-primary/5 flex items-center justify-center">
           <Mail className="w-3 h-3 text-primary" />

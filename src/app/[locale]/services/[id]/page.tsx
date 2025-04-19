@@ -8,10 +8,10 @@ import {
   getThermalInsulation,
 } from "@/services/properties";
 import Banner from "@/components/shared/Banner";
-import ContactUs from "../../properties/components/contact-us";
-import TransitionBox from "@/components/shared/TransitionBox";
 import { useRouter } from "@/i18n/routing";
 import Header from "@/components/shared/Header";
+import { Loader2 } from "lucide-react";
+import ServiceContainer from "../components/service-container";
 
 interface ServiceData {
   id: number;
@@ -87,17 +87,13 @@ const ServiceDetail = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        Loading...
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
       </div>
     );
   }
 
   // Service should exist at this point, but add a safety check
   if (!service) return null;
-
-  // Render HTML content from the service
-  const formattedContent =
-    service.long_content?.replace(/\\r\\n/g, "<br>") || "";
 
   return (
     <>
@@ -118,34 +114,7 @@ const ServiceDetail = () => {
         </div>
       </Banner>
 
-      <section className="py-16 px-4">
-        <div className="container mx-auto">
-          <div className="flex flex-col lg:flex-row gap-3">
-            <TransitionBox
-              containerClassName="lg:w-[70%]"
-              transitionType="fromLeft"
-              delay={0.2}
-            >
-              <div className="p-8 md:p-10">
-                <div
-                  className="prose prose-lg prose-headings:text-gray-800 prose-p:text-gray-600 prose-strong:text-gray-700"
-                  dangerouslySetInnerHTML={{ __html: formattedContent }}
-                />
-              </div>
-            </TransitionBox>
-
-            <TransitionBox
-              containerClassName="lg:w-[30%]"
-              transitionType="fromRight"
-              delay={0.4}
-            >
-              <div className="bg-white rounded-lg shadow-md p-6 md:p-8">
-                <ContactUs type="service" />
-              </div>
-            </TransitionBox>
-          </div>
-        </div>
-      </section>
+      <ServiceContainer service={service} />
     </>
   );
 };

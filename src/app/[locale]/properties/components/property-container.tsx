@@ -19,9 +19,10 @@ import Breadcrumbs from "@/components/shared/Breadcrumbs";
 const PropertyContainer = ({ propertyId }: { propertyId: string }) => {
   const locale = useLocale();
   const router = useRouter();
+  const id = propertyId.split("-")[1];
   const { data, isLoading } = useQuery({
-    queryKey: ["property", propertyId],
-    queryFn: () => getProperty(propertyId, locale),
+    queryKey: ["property", id],
+    queryFn: () => getProperty(id),
   });
 
   useEffect(() => {

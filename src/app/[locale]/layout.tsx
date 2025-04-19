@@ -23,9 +23,22 @@ const cairo = Cairo({
   weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
-export const metadata: Metadata = {
-  title: "Home Finding",
-  description: "Home Finding",
+export const generateMetadata = async ({
+  params,
+}: {
+  params: { locale: string };
+}): Promise<Metadata> => {
+  const { locale } = await params;
+  return {
+    title:
+      locale === "en"
+        ? "Property Guidance You Can Trust | Dream Home Finder"
+        : "معك خطوة بخطوة في رحلتك العقارية | دريم هوم فايندر",
+    description:
+      locale === "en"
+        ? "Dream Home Finder is your trusted partner in real estate. We offer expert guidance and a curated selection of properties to help you find your perfect home. Browse listings, connect with agents, and make informed decisions with our comprehensive property search platform."
+        : "دريم هوم فايندر شريكك الموثوق في مجال العقارات. نقدم التوجيه الخبير ومجموعة مختارة من العقارات لمساعدتك في العثور على منزل أحلامك. تصفح القوائم وتواصل مع الوكلاء واتخذ قرارات مدروسة من خلال منصتنا الشاملة للبحث عن العقارات.",
+  };
 };
 
 export function generateStaticParams() {

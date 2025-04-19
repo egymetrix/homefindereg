@@ -183,7 +183,7 @@ const CitiesList = ({
                   {government.cities.map((city: City) => (
                     <Link
                       key={city.id}
-                      href={`/cities/${city.id}?category_type=${activeCategory}&type=${activeFilter}`}
+                      href={`/cities/${`${city.name}-${city.id}`}?category_type=${activeCategory}&type=${activeFilter}`}
                       className="flex items-center gap-2 py-1 px-4 bg-gray-50 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
                       onClick={() => handleCityClick()}
                     >

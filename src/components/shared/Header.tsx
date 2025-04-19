@@ -117,25 +117,17 @@ const Header = ({
             <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
               <Link
                 href="/profile"
-                className={`w-full flex items-center gap-2  text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors ${
-                  hasBg ? "text-gray-900" : "text-white"
-                }`}
+                className={`w-full flex items-center gap-2  text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors`}
                 onClick={() => setShowProfileMenu(false)}
               >
-                <UserRoundCheck
-                  className={`${hasBg ? "text-primary" : "text-white"} size-4`}
-                />
+                <UserRoundCheck className={`size-4`} />
                 {t("profile")}
               </Link>
               <button
                 onClick={handleLogout}
-                className={`w-full flex items-center gap-2  text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors ${
-                  hasBg ? "text-gray-900" : "text-white"
-                }`}
+                className={`w-full flex items-center gap-2  text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors`}
               >
-                <LogOut
-                  className={`${hasBg ? "text-primary" : "text-white"} size-4`}
-                />
+                <LogOut className={`size-4`} />
                 {t("logout")}
               </button>
             </div>
@@ -181,9 +173,9 @@ const Header = ({
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-6">
-            <ul className="flex gap-4">
+            <div className="flex gap-10">
               {navLinks.slice(0, 5).map((link) => (
-                <li key={link.label}>
+                <div key={link.label}>
                   <Link
                     href={link.href ?? ""}
                     className={`text-sm hover:opacity-75 flex items-center gap-2 transition-colors ${
@@ -199,12 +191,12 @@ const Header = ({
                     </span>
                     {t(link.label)}
                   </Link>
-                </li>
+                </div>
               ))}
-              <li className="flex gap-4">
+              <div className="flex gap-4">
                 {renderAuthButton(withBg || isScrolled)}
-              </li>
-            </ul>
+              </div>
+            </div>
             <Suspense
               fallback={
                 <div className="flex justify-center items-center">

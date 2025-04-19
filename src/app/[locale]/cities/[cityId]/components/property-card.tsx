@@ -28,8 +28,7 @@ const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
     try {
       await addToFavorites(
         property.id.toString(),
-        newFavoriteStatus ? "1" : "0",
-        locale
+        newFavoriteStatus ? "1" : "0"
       );
     } catch (error) {
       // Revert state if API call fails
@@ -39,7 +38,7 @@ const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
   };
 
   return (
-    <Link href={`/properties/${property.id}`}>
+    <Link href={`/properties/${`${property.home_name}-${property.id}`}`}>
       <Card
         key={property.id}
         className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow duration-200"
