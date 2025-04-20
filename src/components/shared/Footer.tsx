@@ -121,7 +121,7 @@ const Footer: React.FC = () => {
     <footer className="bg-[#1B2431] text-gray-300">
       <div className="container mx-auto px-6 lg:px-8">
         {/* Main Footer Content */}
-        <div className="py-16">
+        <div className="py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-10">
             {/* Company Info */}
             <div className="space-y-8">
@@ -191,7 +191,7 @@ const Footer: React.FC = () => {
 
         <div className="w-full h-px bg-gray-800"></div>
 
-        <div className="py-8">
+        <div className="py-4">
           <div className="flex flex-wrap justify-center items-center gap-x-4 gap-y-2 text-xs text-gray-400">
             <span>
               © {currentYear} {t("companyName")}

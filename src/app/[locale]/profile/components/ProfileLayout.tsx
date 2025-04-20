@@ -1,24 +1,27 @@
 "use client";
 
+import { ReactNode } from "react";
 import Header from "@/components/shared/Header";
+import ProfileSidebar from "./ProfileSidebar";
 
 interface ProfileLayoutProps {
-  children: React.ReactNode;
-  title: string;
+  children: ReactNode;
 }
 
-const ProfileLayout = ({ children, title }: ProfileLayoutProps) => {
+export default function ProfileLayout({ children }: ProfileLayoutProps) {
   return (
     <div>
       <Header withBg withShadow />
-      <div className="max-w-screen-xl min-h-screen mx-auto py-3">
-        <div className="px-4 sm:px-6 lg:px-8 text-center my-auto">
-          <h1 className="text-2xl font-bold mb-6">{title}</h1>
-          {children}
+      <div className="max-w-screen-xl min-h-screen mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6">
+          <div>
+            <ProfileSidebar />
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+            {children}
+          </div>
         </div>
       </div>
     </div>
   );
-};
-
-export default ProfileLayout;
+}

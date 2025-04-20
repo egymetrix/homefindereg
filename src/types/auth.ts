@@ -3,6 +3,12 @@ export interface User {
   name: string;
   email: string;
   phone?: string;
+  profileImage?: string;
+  firstName?: string;
+  lastName?: string;
+  website?: string;
+  facebook?: string;
+  twitter?: string;
 }
 
 export interface AuthResponse {

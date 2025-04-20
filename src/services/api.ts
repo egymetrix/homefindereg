@@ -3,6 +3,7 @@
 import { cookies } from "@/lib/cookies";
 import axios from "axios";
 import { getLocale } from "next-intl/server";
+import { cookies as nextCookies } from "next/headers";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
@@ -17,6 +18,7 @@ const clientAxios = axios.create({
   baseURL: BASE_URL,
   headers: {
     "Content-Type": "application/json",
+    Authorization: `Bearer ${cookies.get("token")}`,
   },
 });
 
@@ -63,10 +65,13 @@ export async function clientGetUser(token: string) {
 export async function clientPost<T>(endpoint: string, formData: FormData) {
   "use client";
   const locale = await getLocale();
+  const token = (await nextCookies()).get("token")?.value;
+  console.log(token);
   const response = await clientAxios.post<T>(endpoint, formData, {
     headers: {
       lang: locale,
       "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`,
     },
   });
   return response.data;

@@ -57,7 +57,7 @@ const LanguageSwitcher = ({ bgColor = false }: { bgColor?: boolean }) => {
                 locale={language.code}
                 className={`flex items-center px-3 py-1.5 text-sm hover:bg-gray-50 transition-colors duration-200 ${
                   currentLocale === language.code
-                    ? "text-blue-600 font-medium"
+                    ? "text-primary font-medium"
                     : "text-gray-700"
                 }`}
                 onClick={() => setIsOpen(false)}
