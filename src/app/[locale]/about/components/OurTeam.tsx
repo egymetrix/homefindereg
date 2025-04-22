@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useLocale } from "next-intl";
 // Import Swiper
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -16,6 +16,7 @@ import "swiper/css/effect-coverflow";
 export default function OurTeam() {
   const t = useTranslations("About");
   const locale = useLocale();
+  const [isLoading, setIsLoading] = useState(true);
 
   const team = [
     {
@@ -58,6 +59,15 @@ export default function OurTeam() {
   // Navigation custom button refs
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
+
+  // Handle loading state
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <section className="py-16 lg:py-24 bg-gray-100">
@@ -112,65 +122,86 @@ export default function OurTeam() {
             </svg>
           </button>
 
-          <Swiper
-            modules={[Navigation, Pagination, Autoplay]}
-            slidesPerView={3}
-            loop={true}
-            spaceBetween={24}
-            autoplay={{
-              delay: 5000,
-              disableOnInteraction: false,
-            }}
-            navigation={{
-              prevEl: prevRef.current,
-              nextEl: nextRef.current,
-            }}
-            breakpoints={{
-              320: {
-                slidesPerView: 1,
-              },
-              768: {
-                slidesPerView: 2,
-              },
-              1024: {
-                slidesPerView: 4,
-              },
-            }}
-            onInit={(swiper) => {
-              // @ts-expect-error - Swiper's type definitions are incomplete
-              swiper.params.navigation.prevEl = prevRef.current;
-              // @ts-expect-error - Swiper's type definitions are incomplete
-              swiper.params.navigation.nextEl = nextRef.current;
-              swiper.navigation.init();
-              swiper.navigation.update();
-            }}
-            className="px-12"
-          >
-            {team.map((member, index) => (
-              <SwiperSlide key={index}>
-                <div className="bg-white rounded-lg overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300">
-                  <div className="aspect-[4/3] w-full overflow-hidden">
-                    <Image
-                      src={member.image}
-                      alt={locale === "en" ? member.nameEn : member.nameAr}
-                      width={400}
-                      height={300}
-                      className="w-full h-full object-cover"
-                      priority={index === 0}
-                    />
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-12">
+              {Array(4)
+                .fill(0)
+                .map((_, index) => (
+                  <div
+                    key={index}
+                    className="bg-white rounded-lg overflow-hidden border border-gray-200 shadow-sm animate-pulse"
+                  >
+                    <div className="aspect-[3/4] w-full bg-gray-200"></div>
+                    <div className="p-4 space-y-3">
+                      <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto"></div>
+                      <div className="h-3 bg-gray-200 rounded w-1/2 mx-auto"></div>
+                    </div>
                   </div>
-                  <div className="p-4 text-center">
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      {locale === "en" ? member.nameEn : member.nameAr}
-                    </h3>
-                    <p className="text-sm text-gray-600 mt-1">
-                      {locale === "en" ? member.positionEn : member.positionAr}
-                    </p>
+                ))}
+            </div>
+          ) : (
+            <Swiper
+              modules={[Navigation, Pagination, Autoplay]}
+              slidesPerView={3}
+              loop={true}
+              spaceBetween={24}
+              autoplay={{
+                delay: 5000,
+                disableOnInteraction: false,
+              }}
+              navigation={{
+                prevEl: prevRef.current,
+                nextEl: nextRef.current,
+              }}
+              breakpoints={{
+                320: {
+                  slidesPerView: 1,
+                },
+                768: {
+                  slidesPerView: 2,
+                },
+                1024: {
+                  slidesPerView: 4,
+                },
+              }}
+              onInit={(swiper) => {
+                // @ts-expect-error - Swiper's type definitions are incomplete
+                swiper.params.navigation.prevEl = prevRef.current;
+                // @ts-expect-error - Swiper's type definitions are incomplete
+                swiper.params.navigation.nextEl = nextRef.current;
+                swiper.navigation.init();
+                swiper.navigation.update();
+              }}
+              className="px-12"
+            >
+              {team.map((member, index) => (
+                <SwiperSlide key={index}>
+                  <div className="bg-white rounded-lg overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300 h-full flex flex-col">
+                    <div className="aspect-[3/4] w-full overflow-hidden">
+                      <Image
+                        src={member.image}
+                        alt={locale === "en" ? member.nameEn : member.nameAr}
+                        width={400}
+                        height={500}
+                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                        priority={index === 0}
+                      />
+                    </div>
+                    <div className="p-5 text-center flex-grow flex flex-col justify-center">
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        {locale === "en" ? member.nameEn : member.nameAr}
+                      </h3>
+                      <p className="text-sm text-gray-600 mt-2">
+                        {locale === "en"
+                          ? member.positionEn
+                          : member.positionAr}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          )}
         </div>
       </div>
 
@@ -186,6 +217,7 @@ export default function OurTeam() {
 
         .swiper-slide {
           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          height: auto;
         }
 
         .swiper-pagination-bullet {
@@ -209,6 +241,20 @@ export default function OurTeam() {
             rgba(0, 0, 0, 0.1),
             rgba(0, 0, 0, 0)
           ) !important;
+        }
+
+        @keyframes pulse {
+          0%,
+          100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.7;
+          }
+        }
+
+        .animate-pulse {
+          animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
       `}</style>
     </section>
