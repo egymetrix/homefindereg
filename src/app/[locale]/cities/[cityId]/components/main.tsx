@@ -62,7 +62,7 @@ const Main = () => {
       )}&category_type=${searchParams.get("category_type")}`,
     },
     {
-      label: `${cityName} (${properties.length} ${
+      label: `${decodeURIComponent(cityName)} (${properties.length} ${
         locale === "en" ? "properties" : "عقار"
       })`,
       href: `#`,
@@ -98,7 +98,9 @@ const Main = () => {
             <div className="mt-4 flex items-center justify-between px-1">
               <h1 className="text-xl font-semibold text-gray-900">
                 {locale === "en" ? "Houses for sale in" : "منازل للبيع في"}{" "}
-                <span className="text-blue-600">{cityName}</span>
+                <span className="text-blue-600">
+                  {decodeURIComponent(cityName)}
+                </span>
               </h1>
               <span className="text-sm text-gray-500">
                 {properties.length} {locale === "en" ? "properties" : "عقار"}

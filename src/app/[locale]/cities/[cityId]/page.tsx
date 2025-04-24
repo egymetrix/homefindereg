@@ -7,11 +7,17 @@ import { Loader2 } from "lucide-react";
 export const generateMetadata = async ({
   params,
 }: {
-  params: { locale: string };
+  params: { locale: string; cityId: string };
 }) => {
-  const { locale } = await params;
+  const { locale, cityId } = await params;
+  const cityName = cityId.split("-")[0];
   return {
-    title: locale === "en" ? "Cities" : "المدن",
+    title:
+      locale === "en"
+        ? `Houses for sale in ${decodeURIComponent(
+            cityName
+          )} | Dream Home Finder`
+        : `منازل للبيع في ${decodeURIComponent(cityName)} | Dream Home Finder`,
     description:
       locale === "en"
         ? "Browse through our list of cities and find your perfect home"

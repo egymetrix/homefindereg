@@ -316,11 +316,10 @@ const Filters = () => {
   const { data: categoriesResponse, isLoading } = useQuery<{
     data: Category[];
   }>({
-    queryKey: ["categories", filters.type],
+    queryKey: ["categories", filters.type, locale],
     queryFn: async () => {
       return await clientGet<{ data: Category[] }>(
-        `/site/get-category?type=${filters.type}`,
-        locale
+        `/site/get-category?type=${filters.type}&locale=${locale}`
       );
     },
   });
@@ -333,6 +332,14 @@ const Filters = () => {
     },
     [searchParams, router, pathname]
   );
+
+  // Reset category_type when locale changes
+  useEffect(() => {
+    // Reset the category_type when locale changes
+    if (filters.category_type) {
+      updateFilter("category_type", "");
+    }
+  }, [locale, updateFilter, filters.category_type]);
 
   // Update URL when debounced values change with proper dependencies
   useEffect(() => {
