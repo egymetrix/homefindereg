@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocale } from "next-intl";
 import Button from "@/components/ui/Button";
 import { usePathname, useRouter, Link } from "@/i18n/routing";
+import { useSearchParams } from "next/navigation";
 import { Category, City, Government } from "@/types";
 
 interface GovernmentResponse {
@@ -47,7 +48,6 @@ const CitiesFilter = ({
   });
 
   useEffect(() => {
-    setActiveCategory("");
     if (categoriesResponse?.data && categoriesResponse.data.length > 0) {
       setActiveCategory(categoriesResponse.data[0].name);
     }
@@ -55,8 +55,19 @@ const CitiesFilter = ({
 
   const handleCategoryClick = (name: string) => {
     setActiveCategory(name);
+
+    const searchParams = new URLSearchParams();
+    searchParams.set("filter", activeFilter);
+    searchParams.set("category", name);
+
     if (pathname === "/") {
-      router.push(`/cities#estates`);
+      router.push(`/cities?${searchParams.toString()}#estates`, {
+        scroll: false,
+      });
+    } else {
+      router.push(`${pathname}?${searchParams.toString()}`, {
+        scroll: false,
+      });
     }
   };
 
@@ -72,9 +83,31 @@ const CitiesFilter = ({
                 : "bg-gray-100 hover:bg-gray-200"
             }`}
             onClick={() => {
-              setActiveFilter(filter.name as "sale" | "rent");
-              if (pathname === "/") {
-                router.push(`/cities#estates`);
+              if (activeFilter !== filter.name) {
+                setActiveFilter(filter.name as "sale" | "rent");
+                // The category will be updated via useEffect
+                // But only update URL when explicitly clicked
+                if (
+                  categoriesResponse?.data &&
+                  categoriesResponse.data.length > 0
+                ) {
+                  // We need to wait for the new category to be set first
+                  const newCategory = categoriesResponse.data[0].name;
+
+                  const searchParams = new URLSearchParams();
+                  searchParams.set("filter", filter.name);
+                  searchParams.set("category", newCategory);
+
+                  if (pathname === "/") {
+                    router.push(`/cities?${searchParams.toString()}#estates`, {
+                      scroll: false,
+                    });
+                  } else {
+                    router.push(`${pathname}?${searchParams.toString()}`, {
+                      scroll: false,
+                    });
+                  }
+                }
               }
             }}
           >
@@ -139,14 +172,24 @@ const CitiesList = ({
 
   const handleCityClick = () => {
     if (pathname === "/") {
-      router.push(`/cities#estates`);
+      const searchParams = new URLSearchParams();
+      searchParams.set("filter", activeFilter);
+      searchParams.set("category", activeCategory);
+      router.push(`/cities?${searchParams.toString()}#estates`, {
+        scroll: false,
+      });
     }
   };
 
   const handleShowAll = () => {
     setShowAll(true);
     if (pathname === "/") {
-      router.push(`/cities#estates`);
+      const searchParams = new URLSearchParams();
+      searchParams.set("filter", activeFilter);
+      searchParams.set("category", activeCategory);
+      router.push(`/cities?${searchParams.toString()}#estates`, {
+        scroll: false,
+      });
     }
   };
 
@@ -215,8 +258,17 @@ const CitiesList = ({
 };
 
 const Cities = () => {
-  const [activeFilter, setActiveFilter] = useState<"sale" | "rent">("sale");
-  const [activeCategory, setActiveCategory] = useState<string>("");
+  const searchParams = useSearchParams();
+  const filterParam = searchParams.get("filter");
+  const categoryParam = searchParams.get("category");
+
+  // Initialize state from URL parameters, but don't trigger navigation on load
+  const [activeFilter, setActiveFilter] = useState<"sale" | "rent">(
+    filterParam === "rent" || filterParam === "sale" ? filterParam : "sale"
+  );
+  const [activeCategory, setActiveCategory] = useState<string>(
+    categoryParam || ""
+  );
 
   return (
     <section className="pb-16 -mt-10 px-4">

@@ -2,6 +2,8 @@ import CityHero from "@/app/[locale]/cities/components/city-hero";
 import Description from "@/app/[locale]/cities/components/description";
 import Cities from "@/app/[locale]/components/Cities";
 import Header from "@/components/shared/Header";
+import { Loader2 } from "lucide-react";
+import { Suspense } from "react";
 
 export const generateMetadata = async ({
   params,
@@ -20,12 +22,18 @@ export const generateMetadata = async ({
 
 const CitiesPage = () => {
   return (
-    <>
+    <Suspense
+      fallback={
+        <div className="h-screen w-screen flex items-center justify-center">
+          <Loader2 className="size-10 animate-spin" />
+        </div>
+      }
+    >
       <Header />
       <CityHero />
       <Description />
       <Cities />
-    </>
+    </Suspense>
   );
 };
 

@@ -35,6 +35,23 @@ import { AuthResponse } from "@/types/auth";
 import { cookies } from "@/lib/cookies";
 import LanguageSwitcher from "./LanguageSwitcher";
 
+declare global {
+  interface Window {
+    googleAuthWindow?: WindowProxy | null;
+    facebookAuthWindow?: WindowProxy | null;
+    authDebug?: {
+      lastResponse?: any;
+      lastError?: any;
+      authHistory: Array<{
+        provider: string;
+        timestamp: string;
+        type: string;
+        data: any;
+      }>;
+    };
+  }
+}
+
 const Header = ({
   withBg = false,
   withShadow = false,
@@ -325,6 +342,212 @@ const SignInForm = ({
   const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuthContext();
 
+  const openSocialAuthWindow = (provider: "google" | "facebook" | "apple") => {
+    // Initialize debug object if not exists
+    if (typeof window !== "undefined" && !window.authDebug) {
+      window.authDebug = {
+        authHistory: [],
+      };
+    }
+
+    // Log attempt to debug history
+    window.authDebug!.authHistory.push({
+      provider,
+      timestamp: new Date().toISOString(),
+      type: "windowOpen",
+      data: { attempt: true },
+    });
+
+    const width = 500;
+    const height = 600;
+    const left = window.screenX + (window.outerWidth - width) / 2;
+    const top = window.screenY + (window.outerHeight - height) / 2;
+
+    console.log(`Opening ${provider} authentication window`);
+    let url = "";
+    let windowName = "";
+    let windowRef = null;
+
+    if (provider === "google") {
+      url = `${process.env.NEXT_PUBLIC_API_URL}/site/auth/google`;
+      windowName = "Google Sign In";
+      windowRef = window.open(
+        url,
+        windowName,
+        `width=${width},height=${height},left=${left},top=${top}`
+      );
+      window.googleAuthWindow = windowRef;
+      console.log("Google auth window opened");
+    } else if (provider === "facebook") {
+      url = `${process.env.NEXT_PUBLIC_API_URL}/site/auth/facebook`;
+      windowName = "Facebook Sign In";
+      windowRef = window.open(
+        url,
+        windowName,
+        `width=${width},height=${height},left=${left},top=${top}`
+      );
+      window.facebookAuthWindow = windowRef;
+      console.log("Facebook auth window opened");
+    } else if (provider === "apple") {
+      // Implement Apple sign in if available
+      console.log("Apple sign in not implemented yet");
+    }
+
+    // Log window open status
+    window.authDebug!.authHistory.push({
+      provider,
+      timestamp: new Date().toISOString(),
+      type: "windowOpenResult",
+      data: {
+        success: !!windowRef,
+        windowClosed: windowRef ? windowRef.closed : true,
+      },
+    });
+  };
+
+  // Handle social authentication through popup windows
+  useEffect(() => {
+    // Initialize debug object
+    if (typeof window !== "undefined" && !window.authDebug) {
+      window.authDebug = {
+        authHistory: [],
+      };
+    }
+
+    const handleSocialAuth = async (
+      data: any,
+      windowRef?: WindowProxy | null
+    ) => {
+      try {
+        console.log("Social auth response received:", data);
+
+        // Log to debug object
+        window.authDebug!.lastResponse = data;
+        window.authDebug!.authHistory.push({
+          provider: data.type === "googleAuth" ? "google" : "facebook",
+          timestamp: new Date().toISOString(),
+          type: "success",
+          data: data,
+        });
+
+        cookies.set("token", data.token, {
+          expires: 1, // 1 day
+          path: "/",
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "strict",
+        });
+
+        console.log("Fetching user data with token");
+        const userData = await clientGetUser(data.token);
+        console.log("User data received:", userData);
+
+        // Log user data to debug object
+        window.authDebug!.authHistory.push({
+          provider: data.type === "googleAuth" ? "google" : "facebook",
+          timestamp: new Date().toISOString(),
+          type: "userData",
+          data: userData,
+        });
+
+        if (!userData || !userData.user) {
+          throw new Error("Failed to get user data");
+        }
+
+        login({ token: data.token, user: userData.user });
+        toast.success(data.message || "Successfully logged in!");
+        setDialogState(null);
+
+        // Close the popup window if it's still open
+        if (windowRef && !windowRef.closed) {
+          windowRef.close();
+        }
+      } catch (error: any) {
+        console.error("Authentication error details:", error);
+
+        // Log error to debug object
+        window.authDebug!.lastError = error;
+        window.authDebug!.authHistory.push({
+          provider: data.type === "googleAuth" ? "google" : "facebook",
+          timestamp: new Date().toISOString(),
+          type: "error",
+          data: error,
+        });
+
+        toast.error(error?.message || "Authentication failed");
+      }
+    };
+
+    const handleMessage = async (event: MessageEvent) => {
+      if (event.origin !== process.env.NEXT_PUBLIC_API_URL) {
+        console.log("Ignored message from unauthorized origin:", event.origin);
+        return;
+      }
+
+      console.log("Message received from auth window:", event.data);
+      const data = event.data;
+
+      // Log all incoming messages to debug history
+      if (window.authDebug) {
+        window.authDebug.authHistory.push({
+          provider:
+            data.type === "googleAuth"
+              ? "google"
+              : data.type === "facebookAuth"
+              ? "facebook"
+              : "unknown",
+          timestamp: new Date().toISOString(),
+          type: "message",
+          data: data,
+        });
+      }
+
+      // Handle Google Auth
+      if (data.type === "googleAuth") {
+        console.log("Processing Google auth response");
+        if (data.token) {
+          await handleSocialAuth(data, window.googleAuthWindow);
+        } else if (data.error) {
+          console.error("Google auth error response:", data.error);
+
+          // Log error to debug object
+          window.authDebug!.lastError = data.error;
+          window.authDebug!.authHistory.push({
+            provider: "google",
+            timestamp: new Date().toISOString(),
+            type: "errorResponse",
+            data: data.error,
+          });
+
+          toast.error(data.error || "Google authentication failed");
+        }
+      }
+
+      // Handle Facebook Auth
+      else if (data.type === "facebookAuth") {
+        console.log("Processing Facebook auth response");
+        if (data.token) {
+          await handleSocialAuth(data, window.facebookAuthWindow);
+        } else if (data.error) {
+          console.error("Facebook auth error response:", data.error);
+
+          // Log error to debug object
+          window.authDebug!.lastError = data.error;
+          window.authDebug!.authHistory.push({
+            provider: "facebook",
+            timestamp: new Date().toISOString(),
+            type: "errorResponse",
+            data: data.error,
+          });
+
+          toast.error(data.error || "Facebook authentication failed");
+        }
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [locale, login, setDialogState]);
+
   const { mutate, isPending } = useMutation<AuthResponse, Error, FormData>({
     mutationKey: ["signIn"],
     mutationFn: (formData: FormData) => clientPost("/site/login", formData),
@@ -349,30 +572,6 @@ const SignInForm = ({
     },
   });
 
-  useEffect(() => {
-    const handleMessage = async (event: MessageEvent) => {
-      if (event.origin !== process.env.NEXT_PUBLIC_API_URL) return;
-
-      const data = event.data;
-      if (data.type === "googleAuth" && data.token) {
-        cookies.set("token", data.token, {
-          expires: 1, // 1 day
-          path: "/",
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "strict",
-        });
-
-        const userData = await clientGetUser(data.token);
-        login({ token: data.token, user: userData.user });
-        toast.success(data.message || "Successfully logged in!");
-        setDialogState(null);
-      }
-    };
-
-    window.addEventListener("message", handleMessage);
-    return () => window.removeEventListener("message", handleMessage);
-  }, [locale, login, setDialogState]);
-
   const handleSignIn = () => {
     const formData = new FormData();
     formData.append("email", email);
@@ -384,18 +583,8 @@ const SignInForm = ({
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4">
         <a
-          onClick={() => {
-            const width = 500;
-            const height = 600;
-            const left = window.screenX + (window.outerWidth - width) / 2;
-            const top = window.screenY + (window.outerHeight - height) / 2;
-            window.open(
-              `${process.env.NEXT_PUBLIC_API_URL}/site/auth/facebook`,
-              "Facebook Sign In",
-              `width=${width},height=${height},left=${left},top=${top}`
-            );
-          }}
-          className="flex items-center text-sm bg-blue-500 text-white justify-center gap-2 w-full rounded-full py-2.5 transition-all duration-300 hover:shadow-[0_8px_16px_0_rgba(59,130,246,0.3)] active:scale-[0.98] transform"
+          onClick={() => openSocialAuthWindow("facebook")}
+          className="flex items-center text-sm bg-blue-500 text-white justify-center gap-2 w-full rounded-full py-2.5 transition-all duration-300 hover:shadow-[0_8px_16px_0_rgba(59,130,246,0.3)] active:scale-[0.98] transform cursor-pointer"
         >
           <Image
             src="/images/facebook-logo.svg"
@@ -406,18 +595,8 @@ const SignInForm = ({
           Facebook
         </a>
         <a
-          onClick={() => {
-            const width = 500;
-            const height = 600;
-            const left = window.screenX + (window.outerWidth - width) / 2;
-            const top = window.screenY + (window.outerHeight - height) / 2;
-            window.open(
-              `${process.env.NEXT_PUBLIC_API_URL}/site/auth/google`,
-              "Google Sign In",
-              `width=${width},height=${height},left=${left},top=${top}`
-            );
-          }}
-          className="flex items-center text-sm justify-center gap-2 w-full rounded-full py-2.5 border transition-all duration-300 hover:shadow-[0_8px_16px_0_rgba(0,0,0,0.1)] hover:bg-gray-50 active:scale-[0.98] transform"
+          onClick={() => openSocialAuthWindow("google")}
+          className="flex items-center text-sm justify-center gap-2 w-full rounded-full py-2.5 border transition-all duration-300 hover:shadow-[0_8px_16px_0_rgba(0,0,0,0.1)] hover:bg-gray-50 active:scale-[0.98] transform cursor-pointer"
         >
           <Image src="/images/google.svg" alt="Google" width={20} height={20} />
           Google

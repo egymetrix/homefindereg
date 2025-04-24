@@ -9,7 +9,7 @@ export function formatPrice(price: number, locale: string = "en") {
   const currencyMap: { [key: string]: { locale: string; currency: string } } = {
     en: {
       locale: "en-US",
-      currency: "EGP",
+      currency: "USD",
     },
     ar: {
       locale: "ar-EG",

@@ -103,15 +103,15 @@ const Services = () => {
         // Create enhanced service objects with explicit navigationIds
         const enhancedServices: EnhancedServiceData[] = [
           {
-            ...propertyEvaluationRes.data,
+            ...propertyEvaluationRes?.data,
             name: "property-evaluation",
           },
           {
-            ...engineeringConsultantRes.data,
+            ...engineeringConsultantRes?.data,
             name: "engineering-consultant",
           },
           {
-            ...thermalInsulationRes.data,
+            ...thermalInsulationRes?.data,
             name: "thermal-insulation",
           },
         ];
