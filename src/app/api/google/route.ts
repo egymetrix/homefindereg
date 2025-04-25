@@ -7,19 +7,56 @@ export async function GET(request: Request) {
   const token = url.searchParams.get("token");
   console.log("Token from search params:", token);
 
-  // Save token in cookies if it exists
+  // Process token if it exists
   if (token) {
-    // Store the token in cookies
     const cookieStore = await cookies();
+
+    // Check if token already exists - delete it first
+    if (cookieStore.has("token")) {
+      cookieStore.delete("token");
+    }
+
+    // Store the new token in cookies
     cookieStore.set("token", decodeURIComponent(token), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60 * 24 * 7, // 1 week
       path: "/",
     });
+
+    // Return HTML with script to close window
+    return new Response(
+      `
+      <html>
+        <head>
+          <title>Authentication Successful</title>
+        </head>
+        <body>
+          <h1>Authentication Successful</h1>
+          <p>You can close this window now.</p>
+          <script>
+            window.onload = function() {
+              // Send message to opener and close this window
+              if (window.opener) {
+                window.opener.postMessage('authentication-successful', '*');
+                setTimeout(function() {
+                  window.close();
+                }, 1000);
+              }
+            }
+          </script>
+        </body>
+      </html>
+      `,
+      {
+        headers: {
+          "Content-Type": "text/html",
+        },
+      }
+    );
   }
 
-  // Redirect to homepage or dashboard after setting the cookie
+  // Redirect to homepage if no token
   return NextResponse.redirect(new URL("/", request.url));
 }
 
