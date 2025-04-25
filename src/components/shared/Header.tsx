@@ -353,7 +353,6 @@ const SignInForm = ({
   const locale = useLocale();
   const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuthContext();
-  const auth = useAuth();
 
   const openSocialAuthWindow = (provider: "google" | "facebook" | "apple") => {
     // Initialize debug object if not exists
@@ -506,7 +505,14 @@ const SignInForm = ({
         setTimeout(async () => {
           try {
             // Use the auth.checkAuth method to verify the token and get user data
-            await auth.checkAuth();
+            const token = cookies.get("token");
+            if (!token) {
+              console.log("No token found");
+              return;
+            }
+
+            const userData = await clientGetUser(token);
+            console.log("User data:", userData);
             toast.success("Successfully logged in!");
             setDialogState(null);
 
