@@ -73,6 +73,8 @@ const Header = ({
     const checkAuth = async () => {
       try {
         const token = cookies.get("token");
+        console.log("Token:", token);
+
         if (token) {
           console.log("Found token, fetching user data");
           const userData = await clientGetUser(token);
