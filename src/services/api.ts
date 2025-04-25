@@ -59,6 +59,7 @@ export async function clientGetUser(token: string) {
   const response = await clientAxios.get("/site/get-user", {
     headers: { Authorization: `Bearer ${token}` },
   });
+  console.log(response.data);
   return response.data;
 }
 
