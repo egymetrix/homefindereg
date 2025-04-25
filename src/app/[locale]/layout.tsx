@@ -71,9 +71,9 @@ export default async function LocaleLayout({
           locale === "ar" ? cairo.className : nunito.className
         } antialiased`}
       >
-        <ReactQueryProvider>
-          <NextIntlClientProvider locale={locale} messages={messages}>
-            <AuthProvider>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <AuthProvider>
+            <ReactQueryProvider>
               <Toaster
                 containerStyle={{
                   zIndex: 99999999,
@@ -89,9 +89,9 @@ export default async function LocaleLayout({
               <AuthListener />
               {children}
               <Footer />
-            </AuthProvider>
-          </NextIntlClientProvider>
-        </ReactQueryProvider>
+            </ReactQueryProvider>
+          </AuthProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );
