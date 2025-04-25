@@ -10,6 +10,7 @@ import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Footer from "@/components/shared/Footer";
+import AuthListener from "@/components/AuthListener";
 
 const nunito = Nunito({
   subsets: ["latin"],
@@ -85,6 +86,7 @@ export default async function LocaleLayout({
                 }}
                 position={locale === "ar" ? "top-right" : "top-left"}
               />
+              <AuthListener />
               {children}
               <Footer />
             </AuthProvider>

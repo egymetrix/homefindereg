@@ -369,7 +369,8 @@ const SignInForm = ({
     let windowRef = null;
 
     if (provider === "google") {
-      url = `${process.env.NEXT_PUBLIC_API_URL}/site/auth/google`;
+      // Use our custom API route instead of the direct backend URL
+      url = `/api/google`;
       windowName = "Google Sign In";
       windowRef = window.open(
         url,
@@ -478,6 +479,43 @@ const SignInForm = ({
     };
 
     const handleMessage = async (event: MessageEvent) => {
+      // Check for messages from our API route
+      if (event.data === "authentication-successful") {
+        console.log("Authentication successful via popup");
+
+        // Get token from cookies and fetch user data
+        try {
+          const token = cookies.get("token");
+          if (!token) {
+            console.error("No token found after authentication");
+            toast.error("Authentication failed: No token received");
+            return;
+          }
+
+          console.log("Fetching user data with token");
+          const userData = await clientGetUser(token);
+          console.log("User data received:", userData);
+
+          if (!userData || !userData.user) {
+            throw new Error("Failed to get user data");
+          }
+
+          login({ token, user: userData.user });
+          toast.success("Successfully logged in!");
+          setDialogState(null);
+
+          // Close the popup window if it's still open
+          if (window.googleAuthWindow && !window.googleAuthWindow.closed) {
+            window.googleAuthWindow.close();
+          }
+        } catch (error: any) {
+          console.error("Authentication error details:", error);
+          toast.error(error?.message || "Authentication failed");
+        }
+        return;
+      }
+
+      // Handle existing authentication flow for backward compatibility
       if (event.origin !== process.env.NEXT_PUBLIC_API_URL) {
         console.log("Ignored message from unauthorized origin:", event.origin);
         return;
