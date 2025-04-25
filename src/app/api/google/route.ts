@@ -11,7 +11,7 @@ export async function GET(request: Request) {
   if (token) {
     // Store the token in cookies
     const cookieStore = await cookies();
-    cookieStore.set("token", token, {
+    cookieStore.set("token", decodeURIComponent(token), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60 * 24 * 7, // 1 week
