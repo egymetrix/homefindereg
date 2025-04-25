@@ -369,8 +369,8 @@ const SignInForm = ({
     let windowRef = null;
 
     if (provider === "google") {
-      // Use the backend's Google OAuth URL which will send the token via webhook
-      url = `${process.env.NEXT_PUBLIC_API_URL}/site/auth/google`;
+      // Use our API route which will handle the OAuth flow
+      url = `/api/google`;
       windowName = "Google Sign In";
       windowRef = window.open(
         url,

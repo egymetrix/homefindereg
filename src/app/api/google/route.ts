@@ -1,38 +1,60 @@
 import { NextResponse } from "next/server";
 
-export async function GET() {
-  // This route now handles the final step of authentication process
-  // It shows a success page that will message the opener window
+export async function GET(request: Request) {
+  // Check if we have a token parameter (coming back from OAuth)
+  const url = new URL(request.url);
+  const token = url.searchParams.get("token");
 
-  return new Response(
-    `
-    <html>
-      <head>
-        <title>Authentication Successful</title>
-      </head>
-      <body>
-        <h1>Authentication Successful</h1>
-        <p>You can close this window now.</p>
-        <script>
-          window.onload = function() {
-            // Send message to opener and close this window
-            if (window.opener) {
-              window.opener.postMessage('authentication-successful', '*');
-              setTimeout(function() {
-                window.close();
-              }, 1000);
+  if (token) {
+    console.log("Token received in query params:", token);
+
+    // Create response with HTML content
+    const response = new Response(
+      `
+      <html>
+        <head>
+          <title>Authentication Successful</title>
+        </head>
+        <body>
+          <h1>Authentication Successful</h1>
+          <p>You can close this window now.</p>
+          <script>
+            window.onload = function() {
+              // Send message to opener and close this window
+              if (window.opener) {
+                window.opener.postMessage('authentication-successful', '*');
+                setTimeout(function() {
+                  window.close();
+                }, 1000);
+              }
             }
-          }
-        </script>
-      </body>
-    </html>
-    `,
-    {
-      headers: {
-        "Content-Type": "text/html",
-      },
-    }
-  );
+          </script>
+        </body>
+      </html>
+      `,
+      {
+        headers: {
+          "Content-Type": "text/html",
+        },
+      }
+    );
+
+    // Set the cookie in the response headers
+    response.headers.set(
+      "Set-Cookie",
+      `token=${token}; Path=/; HttpOnly; Max-Age=${60 * 60 * 24}; ${
+        process.env.NODE_ENV === "production" ? "Secure;" : ""
+      } SameSite=Strict`
+    );
+
+    return response;
+  } else {
+    // If no token is provided, handle the initial OAuth request
+    return new Response(
+      `<html><body><h1>Redirecting to Google authentication...</h1></body></html>`,
+      { headers: { "Content-Type": "text/html" } }
+    );
+  }
 }
 
 export async function POST(request: Request) {
