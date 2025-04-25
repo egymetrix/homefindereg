@@ -353,6 +353,7 @@ const SignInForm = ({
   const locale = useLocale();
   const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuthContext();
+  const auth = useAuth();
 
   const openSocialAuthWindow = (provider: "google" | "facebook" | "apple") => {
     // Initialize debug object if not exists
@@ -501,26 +502,11 @@ const SignInForm = ({
           data: "authentication-successful",
         });
 
-        // Get token from cookies (token should have been set by webhook)
-        try {
-          setTimeout(async () => {
-            // Small delay to ensure cookie is set
-            const token = cookies.get("token");
-            if (!token) {
-              console.error("No token found after authentication");
-              toast.error("Authentication failed: No token received");
-              return;
-            }
-
-            console.log("Fetching user data with token from cookie:", token);
-            const userData = await clientGetUser(token);
-            console.log("User data received:", userData);
-
-            if (!userData || !userData.user) {
-              throw new Error("Failed to get user data");
-            }
-
-            login({ token, user: userData.user });
+        // Small delay to ensure the cookie is set before checking auth
+        setTimeout(async () => {
+          try {
+            // Use the auth.checkAuth method to verify the token and get user data
+            await auth.checkAuth();
             toast.success("Successfully logged in!");
             setDialogState(null);
 
@@ -528,11 +514,12 @@ const SignInForm = ({
             if (window.googleAuthWindow && !window.googleAuthWindow.closed) {
               window.googleAuthWindow.close();
             }
-          }, 500); // Small delay to ensure the cookie has been set
-        } catch (error: any) {
-          console.error("Authentication error details:", error);
-          toast.error(error?.message || "Authentication failed");
-        }
+          } catch (error: any) {
+            console.error("Authentication error:", error);
+            toast.error(error?.message || "Authentication failed");
+          }
+        }, 500);
+
         return;
       }
 
