@@ -5,15 +5,14 @@ export async function GET(request: Request) {
   const url = new URL(request.url);
   const token = url.searchParams.get("token");
 
-  if (token) {
-    // Handle the token from the OAuth response
-    console.log("Token from search params:", token);
+  // Handle the token from the OAuth response
+  console.log("Token from search params:", token);
 
-    const decodedToken = decodeURIComponent(token);
+  const decodedToken = decodeURIComponent(token || "");
 
-    // Create response with HTML content
-    const response = new Response(
-      `
+  // Create response with HTML content
+  const response = new Response(
+    `
       <html>
         <head>
           <title>Authentication Successful</title>
@@ -35,28 +34,22 @@ export async function GET(request: Request) {
         </body>
       </html>
       `,
-      {
-        headers: {
-          "Content-Type": "text/html",
-        },
-      }
-    );
+    {
+      headers: {
+        "Content-Type": "text/html",
+      },
+    }
+  );
 
-    // Set the cookie in the response headers
-    response.headers.set(
-      "Set-Cookie",
-      `token=${decodedToken}; Path=/; HttpOnly; Max-Age=${60 * 60 * 24}; ${
-        process.env.NODE_ENV === "production" ? "Secure;" : ""
-      } SameSite=Strict`
-    );
+  // Set the cookie in the response headers
+  response.headers.set(
+    "Set-Cookie",
+    `token=${decodedToken}; Path=/; HttpOnly; Max-Age=${60 * 60 * 24}; ${
+      process.env.NODE_ENV === "production" ? "Secure;" : ""
+    } SameSite=Strict`
+  );
 
-    return response;
-  } else {
-    // If no token is provided, redirect to the Google OAuth endpoint
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    const googleAuthUrl = `${apiUrl}/site/auth/google`;
-    return NextResponse.redirect(googleAuthUrl);
-  }
+  return response;
 }
 
 export async function POST(request: Request) {
