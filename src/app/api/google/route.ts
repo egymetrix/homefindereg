@@ -20,6 +20,13 @@ export async function GET(request: Request) {
           <p>You can close this window now.</p>
           <script>
             window.onload = function() {
+              // Store token in client-side cookie for immediate access
+              document.cookie = "token=${token}; path=/; max-age=${
+        60 * 60 * 24
+      }; ${
+        process.env.NODE_ENV === "production" ? "secure;" : ""
+      } SameSite=Strict";
+              
               // Send message to opener and close this window
               if (window.opener) {
                 window.opener.postMessage('authentication-successful', '*');
@@ -39,10 +46,10 @@ export async function GET(request: Request) {
       }
     );
 
-    // Set the cookie in the response headers
+    // Set the cookie in the response headers (still needed for server-side)
     response.headers.set(
       "Set-Cookie",
-      `token=${token}; Path=/; HttpOnly; Max-Age=${60 * 60 * 24}; ${
+      `token=${token}; Path=/; Max-Age=${60 * 60 * 24}; ${
         process.env.NODE_ENV === "production" ? "Secure;" : ""
       } SameSite=Strict`
     );

@@ -73,16 +73,20 @@ const Header = ({
     const checkAuth = async () => {
       try {
         const token = cookies.get("token");
-        console.log("Token:", token);
+        console.log("Initial auth check, token:", token);
 
         if (token) {
           console.log("Found token, fetching user data");
           const userData = await clientGetUser(token);
+          console.log("User data on initial load:", userData);
 
           if (userData && userData.user) {
             // Use the login function from AuthContext
             login({ token, user: userData.user });
             console.log("User authenticated from stored token");
+          } else {
+            console.log("Valid token but no user data, clearing token");
+            cookies.remove("token");
           }
         }
       } catch (error) {
@@ -519,15 +523,24 @@ const SignInForm = ({
         // Small delay to ensure the cookie is set before checking auth
         setTimeout(async () => {
           try {
-            // Use the auth.checkAuth method to verify the token and get user data
             const token = cookies.get("token");
+            console.log("Token after auth:", token);
+
             if (!token) {
-              console.log("No token found");
+              console.error("No token found after authentication");
+              toast.error("Authentication failed: No token received");
               return;
             }
 
+            console.log("Fetching user data with token");
             const userData = await clientGetUser(token);
-            console.log("User data:", userData);
+            console.log("User data received:", userData);
+
+            if (!userData || !userData.user) {
+              throw new Error("Failed to get user data");
+            }
+
+            login({ token, user: userData.user });
             toast.success("Successfully logged in!");
             setDialogState(null);
 
@@ -539,7 +552,7 @@ const SignInForm = ({
             console.error("Authentication error:", error);
             toast.error(error?.message || "Authentication failed");
           }
-        }, 500);
+        }, 1000); // Increased delay to ensure cookie is set
 
         return;
       }
