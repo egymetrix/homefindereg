@@ -370,7 +370,7 @@ const SignInForm = ({
 
     if (provider === "google") {
       // Use our API route which will handle the OAuth flow
-      url = `/api/google`;
+      url = `${process.env.NEXT_PUBLIC_API_URL}/site/auth/google`;
       windowName = "Google Sign In";
       windowRef = window.open(
         url,
