@@ -23,9 +23,7 @@ export async function GET(request: Request) {
               // Store token in client-side cookie for immediate access
               document.cookie = "token=${token}; path=/; max-age=${
         60 * 60 * 24
-      }; ${
-        process.env.NODE_ENV === "production" ? "secure;" : ""
-      } SameSite=Strict";
+      }; ${process.env.NODE_ENV === "production" ? "" : ""} SameSite=Strict";
               
               // Send message with token to opener window
               if (window.opener) {
