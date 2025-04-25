@@ -21,7 +21,8 @@ export const useAuth = () => {
         return;
       }
 
-      const userData = await clientGetUser(token, locale);
+      const userData = await clientGetUser(token);
+      console.log(userData);
       setAuthState({
         user: userData.user,
         isAuthenticated: true,

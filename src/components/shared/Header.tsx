@@ -34,6 +34,7 @@ import { useAuthContext } from "@/contexts/AuthContext";
 import { AuthResponse } from "@/types/auth";
 import { cookies } from "@/lib/cookies";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { useAuth } from "@/hooks/useAuth";
 
 declare global {
   interface Window {
@@ -59,7 +60,7 @@ const Header = ({
   withBg?: boolean;
   withShadow?: boolean;
 }) => {
-  const { user, logout, login } = useAuthContext();
+  const { user, logout } = useAuthContext();
   const t = useTranslations("home.navLinks");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [dialogState, setDialogState] = useState<"signIn" | "signUp" | null>(
@@ -67,17 +68,17 @@ const Header = ({
   );
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const auth = useAuth();
 
   useEffect(() => {
     const checkAuth = async () => {
       const token = cookies.get("token");
       if (token) {
-        const userData = await clientGetUser(token);
-        login({ ...userData, user: userData.user });
+        auth.checkAuth();
       }
     };
     checkAuth();
-  }, [login]);
+  }, [auth]);
 
   const navLinks = [
     {
