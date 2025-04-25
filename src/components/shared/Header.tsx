@@ -510,49 +510,71 @@ const SignInForm = ({
     };
 
     const handleMessage = async (event: MessageEvent) => {
-      // Check for messages from our API route
-      if (event.data === "authentication-successful") {
+      console.log("Message received:", event.data);
+
+      // Check if it's our authentication message with token
+      if (
+        event.data &&
+        (event.data === "authentication-successful" ||
+          (typeof event.data === "object" &&
+            event.data.type === "authentication-successful"))
+      ) {
         console.log("Authentication successful via popup");
+
+        // Log to debug object
         window.authDebug!.authHistory.push({
           provider: "google",
           timestamp: new Date().toISOString(),
           type: "message",
-          data: "authentication-successful",
+          data: event.data,
         });
 
-        // Small delay to ensure the cookie is set before checking auth
-        setTimeout(async () => {
-          try {
-            const token = cookies.get("token");
-            console.log("Token after auth:", token);
+        // Extract token either from message or from cookies
+        let token;
+        if (typeof event.data === "object" && event.data.token) {
+          token = event.data.token;
+          console.log("Token received directly in message");
 
-            if (!token) {
-              console.error("No token found after authentication");
-              toast.error("Authentication failed: No token received");
-              return;
-            }
+          // Store token in cookie for future use
+          cookies.set("token", token, {
+            expires: 1, // 1 day
+            path: "/",
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+          });
+        } else {
+          token = cookies.get("token");
+          console.log("Trying to get token from cookie:", token);
+        }
 
-            console.log("Fetching user data with token");
-            const userData = await clientGetUser(token);
-            console.log("User data received:", userData);
+        if (!token) {
+          console.error("No token available after authentication");
+          toast.error("Authentication failed: No token received");
+          return;
+        }
 
-            if (!userData || !userData.user) {
-              throw new Error("Failed to get user data");
-            }
+        // Fetch user data with token
+        try {
+          console.log("Fetching user data with token:", token);
+          const userData = await clientGetUser(token);
+          console.log("User data received:", userData);
 
-            login({ token, user: userData.user });
-            toast.success("Successfully logged in!");
-            setDialogState(null);
-
-            // Close the popup window if it's still open
-            if (window.googleAuthWindow && !window.googleAuthWindow.closed) {
-              window.googleAuthWindow.close();
-            }
-          } catch (error: any) {
-            console.error("Authentication error:", error);
-            toast.error(error?.message || "Authentication failed");
+          if (!userData || !userData.user) {
+            throw new Error("Failed to get user data");
           }
-        }, 1000); // Increased delay to ensure cookie is set
+
+          login({ token, user: userData.user });
+          toast.success("Successfully logged in!");
+          setDialogState(null);
+
+          // Close the popup window if it's still open
+          if (window.googleAuthWindow && !window.googleAuthWindow.closed) {
+            window.googleAuthWindow.close();
+          }
+        } catch (error: any) {
+          console.error("Authentication error:", error);
+          toast.error(error?.message || "Authentication failed");
+        }
 
         return;
       }

@@ -27,9 +27,13 @@ export async function GET(request: Request) {
         process.env.NODE_ENV === "production" ? "secure;" : ""
       } SameSite=Strict";
               
-              // Send message to opener and close this window
+              // Send message with token to opener window
               if (window.opener) {
-                window.opener.postMessage('authentication-successful', '*');
+                window.opener.postMessage({
+                  type: 'authentication-successful',
+                  token: '${token}'
+                }, '*');
+                
                 setTimeout(function() {
                   window.close();
                 }, 1000);
