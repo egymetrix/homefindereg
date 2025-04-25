@@ -369,7 +369,7 @@ const SignInForm = ({
     let windowRef = null;
 
     if (provider === "google") {
-      // Use our custom API route instead of the direct backend URL
+      // Direct to our API route which will handle the OAuth flow
       url = `/api/google`;
       windowName = "Google Sign In";
       windowRef = window.open(
@@ -482,6 +482,12 @@ const SignInForm = ({
       // Check for messages from our API route
       if (event.data === "authentication-successful") {
         console.log("Authentication successful via popup");
+        window.authDebug!.authHistory.push({
+          provider: "google",
+          timestamp: new Date().toISOString(),
+          type: "message",
+          data: "authentication-successful",
+        });
 
         // Get token from cookies and fetch user data
         try {
@@ -492,7 +498,7 @@ const SignInForm = ({
             return;
           }
 
-          console.log("Fetching user data with token");
+          console.log("Fetching user data with token from cookie:", token);
           const userData = await clientGetUser(token);
           console.log("User data received:", userData);
 

@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 
 export async function GET(request: Request) {
   // Check if we have a token parameter (coming back from OAuth)
@@ -10,25 +9,10 @@ export async function GET(request: Request) {
     // Handle the token from the OAuth response
     console.log("Token from search params:", token);
 
-    const cookieStore = await cookies();
-
-    // Check if token already exists - delete it first
-    if (cookieStore.has("token")) {
-      cookieStore.delete("token");
-    }
-
     const decodedToken = decodeURIComponent(token);
 
-    // Store the new token in cookies
-    cookieStore.set("token", decodedToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 24, // 1 day
-      path: "/",
-    });
-
-    // Return HTML with script to close window and trigger auth check
-    return new Response(
+    // Create response with HTML content
+    const response = new Response(
       `
       <html>
         <head>
@@ -57,8 +41,21 @@ export async function GET(request: Request) {
         },
       }
     );
+
+    // Set the cookie in the response headers
+    response.headers.set(
+      "Set-Cookie",
+      `token=${decodedToken}; Path=/; HttpOnly; Max-Age=${60 * 60 * 24}; ${
+        process.env.NODE_ENV === "production" ? "Secure;" : ""
+      } SameSite=Strict`
+    );
+
+    return response;
   } else {
-    return NextResponse.redirect(new URL("/", request.url));
+    // If no token is provided, redirect to the Google OAuth endpoint
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const googleAuthUrl = `${apiUrl}/site/auth/google`;
+    return NextResponse.redirect(googleAuthUrl);
   }
 }
 
