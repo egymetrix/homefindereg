@@ -369,8 +369,8 @@ const SignInForm = ({
     let windowRef = null;
 
     if (provider === "google") {
-      // Direct to our API route which will handle the OAuth flow
-      url = `/api/google`;
+      // Use the backend's Google OAuth URL which will send the token via webhook
+      url = `${process.env.NEXT_PUBLIC_API_URL}/site/auth/google`;
       windowName = "Google Sign In";
       windowRef = window.open(
         url,
@@ -489,31 +489,34 @@ const SignInForm = ({
           data: "authentication-successful",
         });
 
-        // Get token from cookies and fetch user data
+        // Get token from cookies (token should have been set by webhook)
         try {
-          const token = cookies.get("token");
-          if (!token) {
-            console.error("No token found after authentication");
-            toast.error("Authentication failed: No token received");
-            return;
-          }
+          setTimeout(async () => {
+            // Small delay to ensure cookie is set
+            const token = cookies.get("token");
+            if (!token) {
+              console.error("No token found after authentication");
+              toast.error("Authentication failed: No token received");
+              return;
+            }
 
-          console.log("Fetching user data with token from cookie:", token);
-          const userData = await clientGetUser(token);
-          console.log("User data received:", userData);
+            console.log("Fetching user data with token from cookie:", token);
+            const userData = await clientGetUser(token);
+            console.log("User data received:", userData);
 
-          if (!userData || !userData.user) {
-            throw new Error("Failed to get user data");
-          }
+            if (!userData || !userData.user) {
+              throw new Error("Failed to get user data");
+            }
 
-          login({ token, user: userData.user });
-          toast.success("Successfully logged in!");
-          setDialogState(null);
+            login({ token, user: userData.user });
+            toast.success("Successfully logged in!");
+            setDialogState(null);
 
-          // Close the popup window if it's still open
-          if (window.googleAuthWindow && !window.googleAuthWindow.closed) {
-            window.googleAuthWindow.close();
-          }
+            // Close the popup window if it's still open
+            if (window.googleAuthWindow && !window.googleAuthWindow.closed) {
+              window.googleAuthWindow.close();
+            }
+          }, 500); // Small delay to ensure the cookie has been set
         } catch (error: any) {
           console.error("Authentication error details:", error);
           toast.error(error?.message || "Authentication failed");

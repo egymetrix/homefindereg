@@ -1,66 +1,71 @@
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request) {
-  // Check if we have a token parameter (coming back from OAuth)
-  const url = new URL(request.url);
-  const token = url.searchParams.get("token");
+export async function GET() {
+  // This route now handles the final step of authentication process
+  // It shows a success page that will message the opener window
 
-  // Handle the token from the OAuth response
-  console.log("Token from search params:", token);
-
-  const decodedToken = decodeURIComponent(token || "");
-
-  // Create response with HTML content
-  const response = new Response(
+  return new Response(
     `
-      <html>
-        <head>
-          <title>Authentication Successful</title>
-        </head>
-        <body>
-          <h1>Authentication Successful</h1>
-          <p>You can close this window now.</p>
-          <script>
-            window.onload = function() {
-              // Send message to opener and close this window
-              if (window.opener) {
-                window.opener.postMessage('authentication-successful', '*');
-                setTimeout(function() {
-                  window.close();
-                }, 1000);
-              }
+    <html>
+      <head>
+        <title>Authentication Successful</title>
+      </head>
+      <body>
+        <h1>Authentication Successful</h1>
+        <p>You can close this window now.</p>
+        <script>
+          window.onload = function() {
+            // Send message to opener and close this window
+            if (window.opener) {
+              window.opener.postMessage('authentication-successful', '*');
+              setTimeout(function() {
+                window.close();
+              }, 1000);
             }
-          </script>
-        </body>
-      </html>
-      `,
+          }
+        </script>
+      </body>
+    </html>
+    `,
     {
       headers: {
         "Content-Type": "text/html",
       },
     }
   );
-
-  // Set the cookie in the response headers
-  response.headers.set(
-    "Set-Cookie",
-    `token=${decodedToken}; Path=/; HttpOnly; Max-Age=${60 * 60 * 24}; ${
-      process.env.NODE_ENV === "production" ? "Secure;" : ""
-    } SameSite=Strict`
-  );
-
-  return response;
 }
 
 export async function POST(request: Request) {
-  // Extract search params from the URL
-  const url = new URL(request.url);
-  const token = url.searchParams.get("token");
-  console.log("Token from search params:", token);
+  try {
+    // Extract token from the webhook request body
+    const body = await request.json().catch(() => ({}));
+    console.log("Webhook request body:", body);
 
-  // Log the request body
-  const body = await request.json().catch(() => ({}));
-  console.log("Request body:", body);
+    const token = body.token || "";
 
-  return NextResponse.json({ message: "Request received" });
+    if (!token) {
+      console.error("No token received in webhook");
+      return NextResponse.json({ error: "No token provided" }, { status: 400 });
+    }
+
+    // Create response with cookie
+    const response = NextResponse.json({ success: true });
+
+    // Set the cookie in the response
+    response.cookies.set("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 24, // 1 day
+      path: "/",
+      sameSite: "strict",
+    });
+
+    return response;
+  } catch (error) {
+    console.error("Error processing webhook:", error);
+    return NextResponse.json(
+      { error: "Failed to process webhook" },
+      { status: 500 }
+    );
+  }
 }
