@@ -82,7 +82,7 @@ serverAxios.interceptors.response.use(
   (response) => response,
   (error) => {
     const message = error.response?.data?.message || "An error occurred";
-    throw new Error(message);
+    console.log(message);
   }
 );
 
@@ -90,6 +90,6 @@ clientAxios.interceptors.response.use(
   (response) => response,
   (error) => {
     const message = error.response?.data?.message || "An error occurred";
-    throw new Error(message);
+    console.log(message);
   }
 );
