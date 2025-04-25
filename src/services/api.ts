@@ -51,7 +51,7 @@ export async function clientGet<T>(endpoint: string) {
       Authorization: `Bearer ${cookies.get("token")}`,
     },
   });
-  return response.data;
+  return response?.data;
 }
 
 export async function clientGetUser(token: string) {
@@ -59,8 +59,8 @@ export async function clientGetUser(token: string) {
   const response = await clientAxios.get("/site/get-user", {
     headers: { Authorization: `Bearer ${token}` },
   });
-  console.log(response.data);
-  return response.data;
+  console.log(response?.data);
+  return response?.data;
 }
 
 export async function clientPost<T>(endpoint: string, formData: FormData) {
