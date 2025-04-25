@@ -59,7 +59,11 @@ export async function GET(request: Request) {
     );
   } else {
     // No token, redirect to Google OAuth
-    const googleAuthUrl = `${process.env.NEXT_PUBLIC_API_URL}/site/auth/google`;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    if (!apiUrl) {
+      return new Response("API URL not configured", { status: 500 });
+    }
+    const googleAuthUrl = `${apiUrl}/site/auth/google`;
     return NextResponse.redirect(googleAuthUrl);
   }
 }
