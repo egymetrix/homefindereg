@@ -34,7 +34,6 @@ import { useAuthContext } from "@/contexts/AuthContext";
 import { AuthResponse } from "@/types/auth";
 import { cookies } from "@/lib/cookies";
 import LanguageSwitcher from "./LanguageSwitcher";
-import { useAuth } from "@/hooks/useAuth";
 
 declare global {
   interface Window {
@@ -60,7 +59,7 @@ const Header = ({
   withBg?: boolean;
   withShadow?: boolean;
 }) => {
-  const { user, logout } = useAuthContext();
+  const { user, logout, login } = useAuthContext();
   const t = useTranslations("home.navLinks");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [dialogState, setDialogState] = useState<"signIn" | "signUp" | null>(
@@ -68,17 +67,31 @@ const Header = ({
   );
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const auth = useAuth();
 
+  // Check for token and fetch user data when component mounts
   useEffect(() => {
     const checkAuth = async () => {
-      const token = cookies.get("token");
-      if (token) {
-        auth.checkAuth();
+      try {
+        const token = cookies.get("token");
+        if (token) {
+          console.log("Found token, fetching user data");
+          const userData = await clientGetUser(token);
+
+          if (userData && userData.user) {
+            // Use the login function from AuthContext
+            login({ token, user: userData.user });
+            console.log("User authenticated from stored token");
+          }
+        }
+      } catch (error) {
+        console.error("Error checking authentication:", error);
+        // Clear invalid token
+        cookies.remove("token");
       }
     };
+
     checkAuth();
-  }, [auth]);
+  }, [login]);
 
   const navLinks = [
     {
