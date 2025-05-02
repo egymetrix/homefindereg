@@ -23,7 +23,7 @@ import {
 } from "react-share";
 import { useEffect, useState } from "react";
 import { usePathname } from "@/i18n/routing";
-import { cn, formatPrice } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { addToFavorites } from "@/services/properties";
 
 interface PropertyHeaderProps {
@@ -38,18 +38,23 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const pathname = usePathname();
   const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL}${pathname}`;
-  const shareTitle = `${property?.home_name} - ${property?.home_price}€`;
+  const shareTitle = `${property?.home_name} - ${
+    locale === "ar"
+      ? `${property?.home_price} ج.م`
+      : `${property?.home_price} $`
+  }`;
 
   // Load favorites from localStorage on component mount
   useEffect(() => {
     if (!property) return;
-    
+
     // Get favorites from localStorage
-    const storedFavorites = localStorage.getItem('favorites');
+    const storedFavorites = localStorage.getItem("favorites");
     const favorites = storedFavorites ? JSON.parse(storedFavorites) : [];
-    
+
     // Check if current property is in favorites
-    const isPropertyFavorite = favorites.includes(property.id.toString()) || property?.is_favorite === 1;
+    const isPropertyFavorite =
+      favorites.includes(property.id.toString()) || property?.is_favorite === 1;
     setIsFavorite(isPropertyFavorite);
   }, [property]);
 
@@ -60,9 +65,9 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
     setIsFavorite(newFavoriteStatus);
 
     // Update localStorage
-    const storedFavorites = localStorage.getItem('favorites');
+    const storedFavorites = localStorage.getItem("favorites");
     const favorites = storedFavorites ? JSON.parse(storedFavorites) : [];
-    
+
     if (newFavoriteStatus) {
       // Add to favorites if not already included
       if (!favorites.includes(property.id.toString())) {
@@ -75,8 +80,8 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
         favorites.splice(index, 1);
       }
     }
-    
-    localStorage.setItem('favorites', JSON.stringify(favorites));
+
+    localStorage.setItem("favorites", JSON.stringify(favorites));
 
     try {
       await addToFavorites(
@@ -115,7 +120,9 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
         <div className="flex items-center gap-4 w-full md:w-auto">
           <div className="flex flex-col gap-1 py-3">
             <p className="text-lg md:text-2xl font-bold">
-              {formatPrice(Number(property.home_price), locale)}
+              {locale === "ar"
+                ? `${property.home_price} ج.م`
+                : `${property.home_price} $`}
             </p>
             <div className="flex items-center gap-2 text-gray-600">
               <div className="flex items-center gap-1">

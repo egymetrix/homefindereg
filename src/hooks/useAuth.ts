@@ -22,7 +22,6 @@ export const useAuth = () => {
       }
 
       const userData = await clientGetUser(token);
-      console.log(userData);
       setAuthState({
         user: userData.user,
         isAuthenticated: true,

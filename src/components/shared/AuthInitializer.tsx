@@ -13,19 +13,14 @@ export default function AuthInitializer() {
     const checkAuth = async () => {
       try {
         const token = cookies.get("token");
-        console.log("Initial auth check, token:", token);
 
         if (token) {
-          console.log("Found token, fetching user data");
           const userData = await clientGetUser(token);
-          console.log("User data on initial load:", userData);
 
           if (userData && userData.user) {
             // Use the login function from AuthContext
             login({ token, user: userData.user });
-            console.log("User authenticated from stored token");
           } else {
-            console.log("Valid token but no user data, clearing token");
             cookies.remove("token");
           }
         }

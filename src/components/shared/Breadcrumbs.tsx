@@ -35,7 +35,7 @@ const Breadcrumbs = ({ items }: BreadcrumbsProps) => {
             {item.onClick ? (
               <button
                 onClick={item.onClick}
-                className={`whitespace-nowrap hover:text-blue-600 transition-colors duration-200 ${
+                className={`whitespace-nowrap hover:text-primary transition-colors duration-200 ${
                   index === items.length - 1
                     ? "text-gray-700 font-medium"
                     : "text-gray-500"
@@ -46,7 +46,7 @@ const Breadcrumbs = ({ items }: BreadcrumbsProps) => {
             ) : (
               <Link
                 href={item.href}
-                className={`whitespace-nowrap hover:text-blue-600 transition-colors duration-200 ${
+                className={`whitespace-nowrap hover:text-primary transition-colors duration-200 ${
                   index === items.length - 1
                     ? "text-gray-700 font-medium"
                     : "text-gray-500"

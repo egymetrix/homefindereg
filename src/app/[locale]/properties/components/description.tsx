@@ -6,12 +6,72 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@/components/ui/visually-hidden";
 import { AlignLeft, X } from "lucide-react";
+import "../../services/[id]/service.css";
+
+// Format description text to preserve bullet points and line breaks
+const formatDescription = (text: string) => {
+  if (!text) return "";
+
+  // Convert bullet points (• or -) to HTML list items
+  const hasBullets = text.includes("•") || text.includes("	•");
+
+  if (hasBullets) {
+    // Split by lines
+    const lines = text.split("\n");
+    let inList = false;
+    let formattedText = "";
+
+    lines.forEach((line) => {
+      const trimmedLine = line.trim();
+
+      // Check if line is a bullet point
+      if (trimmedLine.startsWith("•") || trimmedLine.startsWith("	•")) {
+        // Start a list if not already in one
+        if (!inList) {
+          formattedText += "<ul class='list-disc pl-6 my-3'>";
+          inList = true;
+        }
+        // Add list item
+        formattedText += `<li>${trimmedLine.replace(/^•\s*|^\t•\s*/, "")}</li>`;
+      } else {
+        // Close list if we were in one
+        if (inList) {
+          formattedText += "</ul>";
+          inList = false;
+        }
+
+        // Add regular paragraph
+        if (trimmedLine) {
+          formattedText += `<p>${trimmedLine}</p>`;
+        } else if (line === "") {
+          // Preserve empty lines
+          formattedText += "<br/>";
+        }
+      }
+    });
+
+    // Close list if still open
+    if (inList) {
+      formattedText += "</ul>";
+    }
+
+    return formattedText;
+  }
+
+  // If no bullets, just convert line breaks to <br/>
+  return text
+    .split("\n")
+    .map((line) => line.trim())
+    .join("<br/>");
+};
 
 const Description = ({ property }: { property: Property | undefined }) => {
   const locale = useLocale();
   const [showDialog, setShowDialog] = useState(false);
 
   if (!property) return null;
+
+  const formattedDescription = formatDescription(property.home_description);
 
   return (
     <div className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow duration-200">
@@ -29,9 +89,16 @@ const Description = ({ property }: { property: Property | undefined }) => {
           {property.home_name}
         </h3>
 
-        <p className="text-gray-600 line-clamp-3 leading-relaxed">
+        <div
+          className="text-gray-600 line-clamp-3 leading-relaxed"
+          dangerouslySetInnerHTML={{
+            __html: formattedDescription,
+          }}
+        />
+
+        {/* <p className="text-gray-600 line-clamp-3 leading-relaxed">
           {property.home_description}
-        </p>
+        </p> */}
 
         <div className="flex justify-center">
           <button
@@ -73,9 +140,12 @@ const Description = ({ property }: { property: Property | undefined }) => {
               <h3 className="text-lg font-semibold text-gray-800">
                 {property.home_name}
               </h3>
-              <div className="prose prose-gray max-w-none leading-relaxed">
-                {property.home_description}
-              </div>
+              <div
+                className="prose prose-gray max-w-none leading-relaxed"
+                dangerouslySetInnerHTML={{
+                  __html: formattedDescription,
+                }}
+              />
             </div>
           </div>
         </DialogContent>

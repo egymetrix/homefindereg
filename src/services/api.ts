@@ -59,7 +59,6 @@ export async function clientGetUser(token: string) {
   const response = await clientAxios.get("/site/get-user", {
     headers: { Authorization: `Bearer ${token}` },
   });
-  console.log(response?.data);
   return response?.data;
 }
 
@@ -67,7 +66,6 @@ export async function clientPost<T>(endpoint: string, formData: FormData) {
   "use client";
   const locale = await getLocale();
   const token = (await nextCookies()).get("token")?.value;
-  console.log(token);
   const response = await clientAxios.post<T>(endpoint, formData, {
     headers: {
       lang: locale,

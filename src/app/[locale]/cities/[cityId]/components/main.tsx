@@ -98,7 +98,7 @@ const Main = () => {
             <div className="mt-4 flex items-center justify-between px-1">
               <h1 className="text-xl font-semibold text-gray-900">
                 {locale === "en" ? "Houses for sale in" : "منازل للبيع في"}{" "}
-                <span className="text-blue-600">
+                <span className="text-primary">
                   {decodeURIComponent(cityName)}
                 </span>
               </h1>

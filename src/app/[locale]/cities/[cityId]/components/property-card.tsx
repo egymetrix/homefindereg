@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Card } from "@/components/ui/card";
 import { Property } from "@/types";
@@ -6,7 +6,6 @@ import { Bath, Bed, Heart, Ruler } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
-import { formatPrice } from "@/lib/utils";
 import { addToFavorites } from "@/services/properties";
 import { MouseEvent, useState } from "react";
 
@@ -57,9 +56,12 @@ const PropertyCard = ({ property, onClick }: PropertyCardProps) => {
 
         <div className="p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-              {formatPrice(Number(property.home_price), locale)}
+            <span className="text-sm font-medium text-primary bg-primary/5 px-3 py-1 rounded-full">
+              {locale === "ar"
+                ? `${property.home_price} ج.م`
+                : `${property.home_price} $`}
             </span>
+
             <button
               className="p-1.5 hover:bg-gray-100 rounded-full transition-colors"
               onClick={handleFavoriteClick}

@@ -6,7 +6,7 @@ import L from "leaflet";
 import { Property } from "@/types";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
-import { formatPrice } from "@/lib/utils";
+import { useLocale } from "next-intl";
 
 interface MapProps {
   center: [number, number];
@@ -38,39 +38,44 @@ const customIcon = L.divIcon({
 });
 
 // Update the Popup component with better styling
-const CustomPopup = ({ property }: { property: Property }) => (
-  <div className="min-w-[200px]">
-    <div className="relative h-32 mb-2">
-      {property.media && property.media[0] && (
-        <Image
-          fill
-          src={property.media[0].original_url}
-          alt={property.home_name}
-          className="w-full h-full object-cover rounded-t-lg"
-        />
-      )}
-      <div className="absolute top-2 right-2 bg-blue-500 text-white px-2 py-1 rounded-full text-sm">
-        {formatPrice(Number(property.home_price))}
+const CustomPopup = ({ property }: { property: Property }) => {
+  const locale = useLocale();
+  return (
+    <div className="min-w-[200px]">
+      <div className="relative h-32 mb-2">
+        {property.media && property.media[0] && (
+          <Image
+            fill
+            src={property.media[0].original_url}
+            alt={property.home_name}
+            className="w-full h-full object-cover rounded-t-lg"
+          />
+        )}
+        <div className="absolute top-2 right-2 bg-blue-500 text-white px-2 py-1 rounded-full text-sm">
+          {locale === "ar"
+            ? `${property.home_price} ج.م`
+            : `${property.home_price} $`}
+        </div>
+      </div>
+      <div className="p-2">
+        <Link
+          href={`/properties/${property.id}`}
+          className="font-semibold text-gray-800 mb-1"
+        >
+          {property.home_name}
+        </Link>
+        <p className="text-sm text-gray-500 truncate">{property.address}</p>
+        <div className="flex items-center gap-2 mt-2 text-sm text-gray-600">
+          <span>{property.home_bedrooms} beds</span>
+          <span>•</span>
+          <span>{property.home_bathrooms} baths</span>
+          <span>•</span>
+          <span>{property.home_area} m²</span>
+        </div>
       </div>
     </div>
-    <div className="p-2">
-      <Link
-        href={`/properties/${property.id}`}
-        className="font-semibold text-gray-800 mb-1"
-      >
-        {property.home_name}
-      </Link>
-      <p className="text-sm text-gray-500 truncate">{property.address}</p>
-      <div className="flex items-center gap-2 mt-2 text-sm text-gray-600">
-        <span>{property.home_bedrooms} beds</span>
-        <span>•</span>
-        <span>{property.home_bathrooms} baths</span>
-        <span>•</span>
-        <span>{property.home_area} m²</span>
-      </div>
-    </div>
-  </div>
-);
+  );
+};
 
 // Selected icon style
 const selectedIcon = L.divIcon({

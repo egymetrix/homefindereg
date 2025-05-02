@@ -64,7 +64,7 @@ export default function OurTeam() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 200);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, []);

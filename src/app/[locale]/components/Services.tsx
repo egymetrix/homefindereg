@@ -58,7 +58,7 @@ const ServiceCard = ({
         <div className="relative w-64 h-64 md:w-72 md:h-72 mb-6 flex-shrink-0">
           <Image
             src={imageSrc}
-            alt={title}
+            alt={title || "alt"}
             fill
             className="rounded-full object-cover"
           />
@@ -153,8 +153,7 @@ const Services = () => {
                   title={service.title}
                   description={service.content}
                   imageSrc={
-                    service.media?.[0]?.original_url ||
-                    "/images/placeholder.jpg"
+                    service.media?.[0]?.original_url || "/images/hero-bg.jpg"
                   }
                   delay={0.2 * (index + 1)}
                 />

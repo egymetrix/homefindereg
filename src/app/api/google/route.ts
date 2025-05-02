@@ -6,8 +6,6 @@ export async function GET(request: Request) {
   const token = url.searchParams.get("token");
 
   if (token) {
-    console.log("Token received in query params:", token);
-
     // Create response with HTML content
     const response = new Response(
       `
@@ -70,7 +68,6 @@ export async function POST(request: Request) {
   try {
     // Extract token from the webhook request body
     const body = await request.json().catch(() => ({}));
-    console.log("Webhook request body:", body);
 
     const token = body.token || "";
 

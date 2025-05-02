@@ -22,53 +22,53 @@ const Characteristics = ({ property }: { property: Property | undefined }) => {
   if (!property) return null;
 
   const enCharacteristics = [
-    { label: "REF:", value: property?.id || "" },
-    { label: "Floor:", value: property?.home_floor || "" },
-    { label: "Box:", value: property?.home_box || "" },
-    { label: "Parking spaces:", value: property?.home_parking || "" },
-    { label: "Balconies:", value: property?.home_balconies || "" },
-    { label: "Bedrooms:", value: property?.home_bedrooms || "" },
-    { label: "Furniture:", value: property?.home_furniture || "" },
+    { label: "REF:", value: property?.id || "-" },
+    { label: "Floor:", value: property?.home_floor || "-" },
+    { label: "Box:", value: property?.home_box || "-" },
+    { label: "Parking spaces:", value: property?.home_parking || "-" },
+    { label: "Balconies:", value: property?.home_balconies || "-" },
+    { label: "Bedrooms:", value: property?.home_bedrooms || "-" },
+    { label: "Furniture:", value: property?.home_furniture || "-" },
     {
       label: "Conditioning:",
-      value: property?.home_conditioning || "",
+      value: property?.home_conditioning || "-",
     },
-    { label: "Elevator:", value: property?.home_elevator || "" },
-    { label: "Heating:", value: property?.home_heating || "" },
-    { label: "Garden:", value: property?.home_garden || "" },
-    { label: "Free:", value: property?.home_free || "" },
-    { label: "Property class:", value: property?.home_class || "" },
-    { label: "Year of construction:", value: property?.home_year || "" },
+    { label: "Elevator:", value: property?.home_elevator || "-" },
+    { label: "Heating:", value: property?.home_heating || "-" },
+    { label: "Garden:", value: property?.home_garden || "-" },
+    { label: "Free:", value: property?.home_free || "-" },
+    { label: "Property class:", value: property?.home_class || "-" },
+    { label: "Year of construction:", value: property?.home_year || "-" },
     {
       label: "Property Type:",
-      value: property?.home_type || "",
+      value: property?.home_type || "-",
     },
-    { label: "Concierge:", value: property?.home_concierge || "" },
+    { label: "Concierge:", value: property?.home_concierge || "-" },
   ];
 
   const arCharacteristics = [
-    { label: "المسلسل:", value: property?.id || "" },
-    { label: "الطابق:", value: property?.home_floor || "" },
-    { label: "المربع:", value: property?.home_box || "" },
-    { label: "المواقف:", value: property?.home_parking || "" },
-    { label: "البالكونات:", value: property?.home_balconies || "" },
-    { label: "الغرف:", value: property?.home_bedrooms || "" },
-    { label: "الأثاث:", value: property?.home_furniture || "" },
+    { label: "المسلسل:", value: property?.id || "-" },
+    { label: "الطابق:", value: property?.home_floor || "-" },
+    { label: "المربع:", value: property?.home_box || "-" },
+    { label: "المواقف:", value: property?.home_parking || "-" },
+    { label: "البالكونات:", value: property?.home_balconies || "-" },
+    { label: "الغرف:", value: property?.home_bedrooms || "-" },
+    { label: "الأثاث:", value: property?.home_furniture || "-" },
     {
       label: "التكييف:",
-      value: property?.home_conditioning || "",
+      value: property?.home_conditioning || "-",
     },
-    { label: "المصعد:", value: property?.home_elevator || "" },
-    { label: "التدفئة:", value: property?.home_heating || "" },
-    { label: "الحديقة:", value: property?.home_garden || "" },
-    { label: "المجانية:", value: property?.home_free || "" },
-    { label: "فئة العقار:", value: property?.home_class || "" },
-    { label: "سنة البناء:", value: property?.home_year || "" },
+    { label: "المصعد:", value: property?.home_elevator || "-" },
+    { label: "التدفئة:", value: property?.home_heating || "-" },
+    { label: "الحديقة:", value: property?.home_garden || "-" },
+    { label: "المجانية:", value: property?.home_free || "-" },
+    { label: "فئة العقار:", value: property?.home_class || "-" },
+    { label: "سنة البناء:", value: property?.home_year || "-" },
     {
       label: "نوع العقار:",
-      value: property?.home_type || "",
+      value: property?.home_type || "-",
     },
-    { label: "المسؤول:", value: property?.home_concierge || "" },
+    { label: "المسؤول:", value: property?.home_concierge || "-" },
   ];
 
   const visibleCharacteristics = showAll
@@ -97,7 +97,7 @@ const Characteristics = ({ property }: { property: Property | undefined }) => {
     formDataObj.append("property_id", property?.id?.toString() || "");
 
     try {
-      await clientPost("/site/store-offer", formDataObj, locale);
+      await clientPost("/site/store-offer", formDataObj);
       setShowPriceModal(false);
       toast.success(
         locale === "en" ? "Price proposal submitted" : "تم تقديم الاقتراح"

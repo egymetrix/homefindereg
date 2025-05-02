@@ -10,7 +10,6 @@ export const generateMetadata = async ({
   const { propertyId } = await params;
   const id = propertyId.split("-")[1];
   const property = await getProperty(id);
-  console.log(property?.data);
 
   return {
     title: property?.data.home_name,

@@ -25,7 +25,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import Button from "@/components/ui/Button";
-// import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 import Input from "../ui/input";
 import { clientPost, clientGetUser } from "@/services/api";
 import { useMutation } from "@tanstack/react-query";
@@ -246,7 +245,7 @@ const Header = ({
           </div>
 
           <nav
-            className={`lg:hidden fixed inset-x-0 top-[72px] bg-white/95 backdrop-blur-sm shadow-lg transition-all duration-300 ease-in-out z-[99996] ${
+            className={`lg:hidden fixed inset-x-0 top-[72px] bg-white backdrop-blur-sm shadow-lg transition-all duration-300 ease-in-out z-[99996] ${
               isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
             }`}
           >
@@ -317,7 +316,7 @@ const Header = ({
               onClick={() =>
                 handleDialogOpen(dialogState === "signIn" ? "signUp" : "signIn")
               }
-              className="text-primary hover:underline ml-1"
+              className="text-primary hover:underline mx-1"
             >
               {dialogState === "signIn" ? t("signUp") : t("signIn")}
             </button>
@@ -363,7 +362,6 @@ const SignInForm = ({
     const left = window.screenX + (window.outerWidth - width) / 2;
     const top = window.screenY + (window.outerHeight - height) / 2;
 
-    console.log(`Opening ${provider} authentication window`);
     let url = "";
     let windowName = "";
     let windowRef = null;
@@ -378,7 +376,6 @@ const SignInForm = ({
         `width=${width},height=${height},left=${left},top=${top}`
       );
       window.googleAuthWindow = windowRef;
-      console.log("Google auth window opened");
     } else if (provider === "facebook") {
       url = `${process.env.NEXT_PUBLIC_API_URL}/site/auth/facebook`;
       windowName = "Facebook Sign In";
@@ -388,10 +385,8 @@ const SignInForm = ({
         `width=${width},height=${height},left=${left},top=${top}`
       );
       window.facebookAuthWindow = windowRef;
-      console.log("Facebook auth window opened");
     } else if (provider === "apple") {
       // Implement Apple sign in if available
-      console.log("Apple sign in not implemented yet");
     }
 
     // Log window open status
@@ -420,8 +415,6 @@ const SignInForm = ({
       windowRef?: WindowProxy | null
     ) => {
       try {
-        console.log("Social auth response received:", data);
-
         // Log to debug object
         window.authDebug!.lastResponse = data;
         window.authDebug!.authHistory.push({
@@ -438,9 +431,7 @@ const SignInForm = ({
           sameSite: "strict",
         });
 
-        console.log("Fetching user data with token");
         const userData = await clientGetUser(data.token);
-        console.log("User data received:", userData);
 
         // Log user data to debug object
         window.authDebug!.authHistory.push({
@@ -479,8 +470,6 @@ const SignInForm = ({
     };
 
     const handleMessage = async (event: MessageEvent) => {
-      console.log("Message received:", event.data);
-
       // Check if it's our authentication message with token
       if (
         event.data &&
@@ -488,8 +477,6 @@ const SignInForm = ({
           (typeof event.data === "object" &&
             event.data.type === "authentication-successful"))
       ) {
-        console.log("Authentication successful via popup");
-
         // Log to debug object
         window.authDebug!.authHistory.push({
           provider: "google",
@@ -502,7 +489,6 @@ const SignInForm = ({
         let token;
         if (typeof event.data === "object" && event.data.token) {
           token = event.data.token;
-          console.log("Token received directly in message");
 
           // Store token in cookie for future use
           cookies.set("token", token, {
@@ -513,7 +499,6 @@ const SignInForm = ({
           });
         } else {
           token = cookies.get("token");
-          console.log("Trying to get token from cookie:", token);
         }
 
         if (!token) {
@@ -524,9 +509,7 @@ const SignInForm = ({
 
         // Fetch user data with token
         try {
-          console.log("Fetching user data with token:", token);
           const userData = await clientGetUser(token);
-          console.log("User data received:", userData);
 
           if (!userData || !userData.user) {
             throw new Error("Failed to get user data");
@@ -541,7 +524,6 @@ const SignInForm = ({
             window.googleAuthWindow.close();
           }
         } catch (error: any) {
-          console.error("Authentication error:", error);
           toast.error(error?.message || "Authentication failed");
         }
 
@@ -550,11 +532,9 @@ const SignInForm = ({
 
       // Handle existing authentication flow for backward compatibility
       if (event.origin !== process.env.NEXT_PUBLIC_API_URL) {
-        console.log("Ignored message from unauthorized origin:", event.origin);
         return;
       }
 
-      console.log("Message received from auth window:", event.data);
       const data = event.data;
 
       // Log all incoming messages to debug history
@@ -574,12 +554,9 @@ const SignInForm = ({
 
       // Handle Google Auth
       if (data.type === "googleAuth") {
-        console.log("Processing Google auth response");
         if (data.token) {
           await handleSocialAuth(data, window.googleAuthWindow);
         } else if (data.error) {
-          console.error("Google auth error response:", data.error);
-
           // Log error to debug object
           window.authDebug!.lastError = data.error;
           window.authDebug!.authHistory.push({
@@ -595,7 +572,6 @@ const SignInForm = ({
 
       // Handle Facebook Auth
       else if (data.type === "facebookAuth") {
-        console.log("Processing Facebook auth response");
         if (data.token) {
           await handleSocialAuth(data, window.facebookAuthWindow);
         } else if (data.error) {

@@ -17,20 +17,15 @@ export default function AuthListener() {
 
   useEffect(() => {
     const handleAuthMessage = async (event: MessageEvent) => {
-      console.log("Message received:", event.data);
-
       // Check for authentication success messages
       if (
         event.data === "authentication-successful" ||
         (typeof event.data === "object" &&
           event.data.type === "authentication-successful")
       ) {
-        console.log("Authentication successful message received");
-
         // Extract token from message if available
         if (typeof event.data === "object" && event.data.token) {
           const token = event.data.token;
-          console.log("Token received in message:", token);
 
           // Store token in cookie
           cookies.set("token", token, {
@@ -55,7 +50,6 @@ export default function AuthListener() {
           }
         } else {
           // If no token in message, use the original checkAuth method
-          console.log("No token in message, checking auth via cookies");
           checkAuth();
           toast.success("Successfully logged in!");
         }

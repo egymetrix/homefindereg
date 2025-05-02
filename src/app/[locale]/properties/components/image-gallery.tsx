@@ -69,6 +69,7 @@ const useMediaCollections = (data: Property | undefined) => {
   if (!data?.media) return null;
 
   return {
+    main: data.media.filter((m) => m.collection_name === "Home-main"),
     gallery: data.media.filter(
       (m) => m.collection_name === "Home-Gallery" || !m.collection_name
     ),
@@ -93,7 +94,7 @@ const ImageThumbnail = ({
     whileHover={{ scale: 1.05 }}
     whileTap={{ scale: 0.95 }}
     className={`relative w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden snap-center 
-      ${isActive ? "ring-2 ring-blue-500" : "ring-1 ring-white/20"}`}
+      ${isActive ? "ring-2 ring-green-500" : "ring-1 ring-white/20"}`}
   >
     <Image
       src={image.original_url}
@@ -105,6 +106,7 @@ const ImageThumbnail = ({
 );
 
 const ImageGallery = ({ data }: { data: Property | undefined }) => {
+  console.log(data);
   const t = useTranslations("properties");
   const mediaCollections = useMediaCollections(data);
 
@@ -113,25 +115,54 @@ const ImageGallery = ({ data }: { data: Property | undefined }) => {
   const [activeView, setActiveView] = useState<ViewType>("gallery");
   const [showThumbnails, setShowThumbnails] = useState(false);
 
+  // Get actual images to display, either gallery, main or empty
+  const getImagesForDisplay = () => {
+    if (!mediaCollections) return [];
+    // If gallery has images, use them
+    if (mediaCollections.gallery.length > 0) return mediaCollections.gallery;
+    // If no gallery but have main images, use them
+    if (mediaCollections.main.length > 0) return mediaCollections.main;
+    // No images available
+    return [];
+  };
+
+  const displayImages = getImagesForDisplay();
+  const hasImages = displayImages.length > 0;
+
   useEffect(() => {
-    if (currentImageIndex >= (mediaCollections?.gallery.length || 0)) {
+    if (currentImageIndex >= (displayImages.length || 0)) {
       setCurrentImageIndex(0);
     }
-  }, [currentImageIndex, mediaCollections?.gallery]);
+  }, [currentImageIndex, displayImages]);
 
   if (!mediaCollections) return null;
 
+  if (!hasImages) {
+    return (
+      <div className="max-w-7xl mx-auto">
+        <div className="h-[400px] md:h-[600px] bg-gray-50 p-4 sm:p-6 rounded-xl flex items-center justify-center">
+          <div className="text-center">
+            <IoImages className="text-gray-400 mx-auto mb-4" size={64} />
+            <h3 className="text-xl font-medium text-gray-700">
+              {t("noImagesAvailable") || "No images provided for this property"}
+            </h3>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const handlePrevious = () => {
-    if (!mediaCollections.gallery.length) return;
+    if (!displayImages.length) return;
     setCurrentImageIndex((prev) =>
-      prev === 0 ? mediaCollections.gallery.length - 1 : prev - 1
+      prev === 0 ? displayImages.length - 1 : prev - 1
     );
   };
 
   const handleNext = () => {
-    if (!mediaCollections.gallery.length) return;
+    if (!displayImages.length) return;
     setCurrentImageIndex((prev) =>
-      prev === mediaCollections.gallery.length - 1 ? 0 : prev + 1
+      prev === displayImages.length - 1 ? 0 : prev + 1
     );
   };
   const renderFullScreenContent = () => {
@@ -172,9 +203,7 @@ const ImageGallery = ({ data }: { data: Property | undefined }) => {
                   id="panorama-viewer"
                   width="100%"
                   height="100%"
-                  image={
-                    "https://static.dermandar.com/php/getimage.php?epid=dbDvdU&equi=1"
-                  }
+                  image={mediaCollections?.panorama[0]?.original_url}
                   pitch={10}
                   yaw={180}
                   hfov={110}
@@ -197,9 +226,7 @@ const ImageGallery = ({ data }: { data: Property | undefined }) => {
                 className="w-full h-full"
               >
                 <Image
-                  src={
-                    mediaCollections.gallery[currentImageIndex]?.original_url
-                  }
+                  src={displayImages[currentImageIndex]?.original_url}
                   alt={`Gallery image ${currentImageIndex + 1}`}
                   fill
                   className="object-contain"
@@ -209,7 +236,7 @@ const ImageGallery = ({ data }: { data: Property | undefined }) => {
               </motion.div>
 
               <div className="absolute inset-x-0 bottom-0 p-4">
-                {showThumbnails && (
+                {showThumbnails && displayImages.length > 1 && (
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -217,7 +244,7 @@ const ImageGallery = ({ data }: { data: Property | undefined }) => {
                     className="bg-black/80 p-4 rounded-xl mb-4 backdrop-blur-sm"
                   >
                     <div className="flex gap-2 overflow-x-auto pb-2 snap-x scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
-                      {mediaCollections.gallery.map((image, idx) => (
+                      {displayImages.map((image, idx) => (
                         <ImageThumbnail
                           key={idx}
                           image={image}
@@ -231,48 +258,56 @@ const ImageGallery = ({ data }: { data: Property | undefined }) => {
                 )}
 
                 <div className="flex items-center justify-between">
-                  <motion.button
-                    onClick={() => setShowThumbnails(!showThumbnails)}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    className="bg-white/10 hover:bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg transition-all duration-300 text-white"
-                  >
-                    {showThumbnails ? t("hideThumbnails") : t("showThumbnails")}
-                  </motion.button>
+                  {displayImages.length > 1 && (
+                    <motion.button
+                      onClick={() => setShowThumbnails(!showThumbnails)}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="bg-white/10 hover:bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg transition-all duration-300 text-white"
+                    >
+                      {showThumbnails
+                        ? t("hideThumbnails")
+                        : t("showThumbnails")}
+                    </motion.button>
+                  )}
                   <span className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-lg text-white">
-                    {currentImageIndex + 1} / {mediaCollections.gallery.length}
+                    {currentImageIndex + 1} / {displayImages.length}
                   </span>
                 </div>
               </div>
 
-              <motion.button
-                onClick={handlePrevious}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-4 rounded-full
-                         transition-all duration-300 group shadow-lg"
-                whileHover={{ scale: 1.1, x: -4 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <IoChevronBack
-                  size={24}
-                  className="text-gray-800 group-hover:text-gray-900"
-                />
-              </motion.button>
-              <motion.button
-                onClick={handleNext}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-4 rounded-full
-                         transition-all duration-300 group shadow-lg"
-                whileHover={{ scale: 1.1, x: 4 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <IoChevronForward
-                  size={24}
-                  className="text-gray-800 group-hover:text-gray-900"
-                />
-              </motion.button>
+              {displayImages.length > 1 && (
+                <>
+                  <motion.button
+                    onClick={handlePrevious}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-4 rounded-full
+                             transition-all duration-300 group shadow-lg"
+                    whileHover={{ scale: 1.1, x: -4 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <IoChevronBack
+                      size={24}
+                      className="text-gray-800 group-hover:text-gray-900"
+                    />
+                  </motion.button>
+                  <motion.button
+                    onClick={handleNext}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-4 rounded-full
+                             transition-all duration-300 group shadow-lg"
+                    whileHover={{ scale: 1.1, x: 4 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <IoChevronForward
+                      size={24}
+                      className="text-gray-800 group-hover:text-gray-900"
+                    />
+                  </motion.button>
+                </>
+              )}
 
               <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm px-3 py-1.5 rounded-full">
                 <span className="text-white text-sm">
-                  {currentImageIndex + 1} / {mediaCollections.gallery.length}
+                  {currentImageIndex + 1} / {displayImages.length}
                 </span>
               </div>
             </div>
@@ -289,7 +324,11 @@ const ImageGallery = ({ data }: { data: Property | undefined }) => {
   };
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="grid grid-cols-1 md:grid-cols-[2fr,1fr] gap-6 h-[400px] md:h-[600px] bg-gray-50 p-4 sm:p-6 rounded-xl">
+      <div
+        className={`grid grid-cols-1 ${
+          displayImages.length > 1 ? "md:grid-cols-[2fr,1fr]" : "md:grid-cols-1"
+        } gap-6 h-[400px] md:h-[600px] bg-gray-50 p-4 sm:p-6 rounded-xl`}
+      >
         <div
           className="relative rounded-xl overflow-hidden shadow-lg h-full cursor-pointer group"
           onClick={() => {
@@ -298,10 +337,7 @@ const ImageGallery = ({ data }: { data: Property | undefined }) => {
           }}
         >
           <Image
-            src={
-              mediaCollections.gallery[currentImageIndex]?.original_url ||
-              mediaCollections.gallery[0]?.original_url
-            }
+            src={displayImages[currentImageIndex]?.original_url}
             alt="Main property image"
             fill
             className="object-cover"
@@ -332,36 +368,38 @@ const ImageGallery = ({ data }: { data: Property | undefined }) => {
           </div>
         </div>
 
-        <div className="hidden md:grid grid-rows-3 gap-3 h-full">
-          {mediaCollections.gallery.slice(1, 4).map((image, index) => (
-            <div
-              key={index}
-              className="relative rounded-lg overflow-hidden shadow-md cursor-pointer"
-              onClick={() => {
-                setActiveView("gallery");
-                setShowGallery(true);
-              }}
-            >
-              <Image
-                src={image.original_url}
-                alt={`Property image ${index + 2}`}
-                fill
-                className="object-cover"
-                sizes="(max-width: 33vw) 100vw, 33vw"
-              />
-              {index === 2 && mediaCollections.gallery.length > 4 && (
-                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                  <div className="flex flex-col items-center">
-                    <IoImages className="text-white mb-2" size={32} />
-                    <span className="text-white text-xl font-semibold">
-                      +{mediaCollections.gallery.length - 4}
-                    </span>
+        {displayImages.length > 1 && (
+          <div className="hidden md:grid grid-rows-3 gap-3 h-full">
+            {displayImages.slice(1, 4).map((image, index) => (
+              <div
+                key={index}
+                className="relative rounded-lg overflow-hidden shadow-md cursor-pointer"
+                onClick={() => {
+                  setActiveView("gallery");
+                  setShowGallery(true);
+                }}
+              >
+                <Image
+                  src={image.original_url}
+                  alt={`Property image ${index + 2}`}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 33vw) 100vw, 33vw"
+                />
+                {index === 2 && displayImages.length > 4 && (
+                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                    <div className="flex flex-col items-center">
+                      <IoImages className="text-white mb-2" size={32} />
+                      <span className="text-white text-xl font-semibold">
+                        +{displayImages.length - 4}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <AnimatePresence>
@@ -425,22 +463,23 @@ const ImageGallery = ({ data }: { data: Property | undefined }) => {
               <div className="absolute bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t border-gray-100">
                 <div className="max-w-7xl mx-auto py-2 md:py-4 px-3 md:px-6">
                   <div className="flex items-center justify-between">
-                    <motion.button
-                      onClick={() => setShowThumbnails(!showThumbnails)}
-                      whileHover={{ scale: 1.02, y: -1 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="text-gray-700 hover:text-blue-600 px-3 md:px-5 py-2 md:py-2.5 rounded-xl hover:bg-blue-50 transition-all duration-300 flex items-center gap-2 md:gap-2.5 border border-gray-200 hover:border-blue-200"
-                    >
-                      <IoImages size={18} className="flex-shrink-0" />
-                      <span className="text-sm md:text-base font-medium whitespace-nowrap">
-                        {showThumbnails
-                          ? t("hideThumbnails")
-                          : t("showThumbnails")}
-                      </span>
-                    </motion.button>
+                    {displayImages.length > 1 && (
+                      <motion.button
+                        onClick={() => setShowThumbnails(!showThumbnails)}
+                        whileHover={{ scale: 1.02, y: -1 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="text-gray-700 hover:text-blue-600 px-3 md:px-5 py-2 md:py-2.5 rounded-xl hover:bg-blue-50 transition-all duration-300 flex items-center gap-2 md:gap-2.5 border border-gray-200 hover:border-blue-200"
+                      >
+                        <IoImages size={18} className="flex-shrink-0" />
+                        <span className="text-sm md:text-base font-medium whitespace-nowrap">
+                          {showThumbnails
+                            ? t("hideThumbnails")
+                            : t("showThumbnails")}
+                        </span>
+                      </motion.button>
+                    )}
                     <span className="text-sm md:text-base text-gray-700 bg-gray-50 px-3 md:px-5 py-2 md:py-2.5 rounded-xl border border-gray-200">
-                      {currentImageIndex + 1} /{" "}
-                      {mediaCollections.gallery.length}
+                      {currentImageIndex + 1} / {displayImages.length}
                     </span>
                   </div>
                 </div>
