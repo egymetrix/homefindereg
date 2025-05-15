@@ -28,7 +28,14 @@
       "almost": "تقريبا في كل مكان",
       "rent": "إيجار",
       "sale": "بيع",
-      "placeholder": "المحافظة، المدينة، المنطقة"
+      "placeholder": "المحافظة، المدينة، المنطقة",
+      "search": "بحث",
+      "searchBy": "البحث بواسطة",
+      "searchByName": "البحث بالاسم",
+      "searchByCategory": "البحث بالفئة",
+      "searchByCity": "البحث بالمدينة",
+      "selectCategory": "اختر الفئة",
+      "selectCity": "اختر المدينة"
     },
     "services": {
       "title": "خدمات (Dream Home Finder)",
@@ -195,6 +202,7 @@
     "viewProperties": "عرض العقارات",
     "savedProperties": "العقارات المحفوظة",
     "viewSavedProperties": "عرض العقارات المحفوظة والمفضلة",
-    "viewSaved": "عرض المحفوظات"
+    "viewSaved": "عرض المحفوظات",
+    "noSavedProperties": "لا توجد عقارات محفوظة بعد. تصفح العقارات وانقر على أيقونة القلب لإضافتها إلى المفضلة."
   }
 }

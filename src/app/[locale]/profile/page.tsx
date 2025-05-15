@@ -6,7 +6,7 @@ import { redirect, useParams } from "next/navigation";
 import ProfileLayout from "./components/ProfileLayout";
 import ProfileLoading from "./components/ProfileLoading";
 import { useTranslations } from "next-intl";
-import { UserIcon } from "lucide-react";
+import { UserIcon, BuildingIcon } from "lucide-react";
 import Link from "next/link";
 
 const ProfilePage = () => {
@@ -47,22 +47,6 @@ const ProfilePage = () => {
             </Link>
           </div>
 
-          {/* <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 flex flex-col">
-            <div className="p-3 rounded-full bg-primary/10 self-start mb-3">
-              <HomeIcon className="w-6 h-6 text-primary" />
-            </div>
-            <h3 className="text-lg font-medium mb-1">{t("myProperties")}</h3>
-            <p className="text-gray-500 text-sm mb-4">
-              {t("manageYourProperties")}
-            </p>
-            <Link
-              href={`/${locale}/profile/properties`}
-              className="mt-auto text-primary font-medium hover:underline"
-            >
-              {t("viewProperties")}
-            </Link>
-          </div>
-
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 flex flex-col">
             <div className="p-3 rounded-full bg-primary/10 self-start mb-3">
               <BuildingIcon className="w-6 h-6 text-primary" />
@@ -72,12 +56,12 @@ const ProfilePage = () => {
               {t("viewSavedProperties")}
             </p>
             <Link
-              href={`/${locale}/profile/saved`}
+              href={`/${locale}/profile/favorites`}
               className="mt-auto text-primary font-medium hover:underline"
             >
               {t("viewSaved")}
             </Link>
-          </div> */}
+          </div>
         </div>
       </div>
     </ProfileLayout>

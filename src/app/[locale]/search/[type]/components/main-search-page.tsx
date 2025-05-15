@@ -4,7 +4,7 @@ import { useRef } from "react";
 import L from "leaflet";
 import { Loader2 } from "lucide-react";
 import { useLocale } from "next-intl";
-import { getHomes } from "@/services/properties";
+import { searchHomes } from "@/services/properties";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams, useParams } from "next/navigation";
 import PropertyCard from "@/app/[locale]/cities/[cityId]/components/property-card";
@@ -21,15 +21,19 @@ const MainSearchPage = () => {
   const locale = useLocale();
   const mapRef = useRef<L.Map>(null);
 
+  // Extract search parameters
+  const homeNameParam = searchParams.get("home_name") || "";
+  const categoryTypeParam = searchParams.get("category_type") || "";
+  const cityParam = searchParams.get("city") || "";
+
   const { data: homesResponse, isLoading } = useQuery({
     queryKey: ["homes", params.type, searchParams.toString()],
     queryFn: async () => {
-      return await getHomes(
-        {
-          type: params.type as "sale" | "rent",
-          home_name: searchParams.get("home_name") || undefined,
-        },
-        locale
+      return await searchHomes(
+        cityParam,
+        params.type as string,
+        categoryTypeParam,
+        homeNameParam
       );
     },
   });
@@ -41,6 +45,7 @@ const MainSearchPage = () => {
     : [51.505, -0.09];
   const zoom = selectedProperty ? 15 : 13;
 
+  // Prepare breadcrumb items
   const breadcrumbItems = [
     {
       label: locale === "en" ? "Home" : "الرئيسية",
@@ -51,6 +56,20 @@ const MainSearchPage = () => {
       href: `#`,
     },
   ];
+
+  // Get search title based on parameters
+  const getSearchTitle = () => {
+    if (homeNameParam) {
+      return `${locale === "en" ? "Search Results for" : "نتائج البحث عن"} "${homeNameParam}"`;
+    } else if (categoryTypeParam) {
+      return `${locale === "en" ? "Properties of type" : "عقارات من نوع"} "${categoryTypeParam}"`;
+    } else if (cityParam) {
+      return `${locale === "en" ? "Properties in City" : "عقارات في مدينة"}: ${cityParam}`;
+    } else {
+      return locale === "en" ? "All Properties" : "جميع العقارات";
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <div className="flex flex-col lg:flex-row gap-6 p-6">
@@ -77,10 +96,7 @@ const MainSearchPage = () => {
             <Breadcrumbs items={breadcrumbItems} />
             <div className="mt-4 flex items-center justify-between px-1">
               <h1 className="text-xl font-semibold text-gray-900">
-                {locale === "en" ? "Search Results for" : "نتائج البحث عن"}{" "}
-                <span className="text-blue-600">
-                  {searchParams.get("home_name") || ""}
-                </span>
+                {getSearchTitle()}
               </h1>
               <span className="text-sm text-gray-500">
                 {properties.length} {locale === "en" ? "properties" : "عقار"}

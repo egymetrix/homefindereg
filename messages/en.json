@@ -25,7 +25,14 @@
       "almost": "Discover the best properties for sale and rent across Egypt with ease and speed.",
       "rent": "Rent",
       "sale": "Sale",
-      "placeholder": "Province, city, area, reference number"
+      "placeholder": "Province, city, area, reference number",
+      "search": "Search",
+      "searchBy": "Search by",
+      "searchByName": "Search by Name",
+      "searchByCategory": "Search by Category",
+      "searchByCity": "Search by City",
+      "selectCategory": "Select Category",
+      "selectCity": "Select City"
     },
     "services": {
       "title": "Dream Home Finder Services",
@@ -168,7 +175,8 @@
     "viewProperties": "View Properties",
     "savedProperties": "Saved Properties",
     "viewSavedProperties": "View your saved properties and favorites",
-    "viewSaved": "View Saved"
+    "viewSaved": "View Saved",
+    "noSavedProperties": "You don't have any saved properties yet. Browse properties and click the heart icon to add them to your favorites."
   },
   "About": {
     "hero": {
@@ -215,5 +223,13 @@
         }
       }
     }
+  },
+  "search": {
+    "title": "Search Results",
+    "resultsFor": "Search Results for",
+    "propertiesOfType": "Properties of type",
+    "propertiesInCity": "Properties in City",
+    "allProperties": "All Properties",
+    "noResults": "No properties found matching your search criteria"
   }
 }

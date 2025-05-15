@@ -2,7 +2,7 @@
 "use client";
 
 import { useLocale } from "next-intl";
-import { Mail, Loader2 } from "lucide-react";
+import { Mail, Loader2, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import Input from "@/components/ui/input";
 import Button from "@/components/ui/Button";
@@ -19,7 +19,25 @@ const ContactUs = ({ type }: { type?: string }) => {
     telephone: "",
     message: "",
     type: type || "",
+    kind_request: "",
   });
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const kindRequestOptions = [
+    {
+      value: "property_evaluation",
+      label: locale === "ar" ? "تقييم العقارات" : "Property Evaluation",
+    },
+    {
+      value: "engineering_consultancy",
+      label: locale === "ar" ? "خدمة الاستشارات الهندسية" : "Engineering Consultancy",
+    },
+    {
+      value: "thermal_insulation",
+      label: locale === "ar" ? "العزل الحراري للمنازل" : "Home Thermal Insulation",
+    },
+  ];
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
@@ -34,9 +52,9 @@ const ContactUs = ({ type }: { type?: string }) => {
     onSuccess: (response) => {
       toast.success(
         (response as { message?: string })?.message ||
-          (locale === "ar"
-            ? "تم إرسال رسالتك بنجاح"
-            : "Message sent successfully")
+        (locale === "ar"
+          ? "تم إرسال رسالتك بنجاح"
+          : "Message sent successfully")
       );
       setFormData({
         name: "",
@@ -45,12 +63,13 @@ const ContactUs = ({ type }: { type?: string }) => {
         telephone: "",
         message: "",
         type: type || "property",
+        kind_request: "",
       });
     },
     onError: (error: any) => {
       toast.error(
         error?.message ||
-          (locale === "ar" ? "حدث خطأ أثناء الإرسال" : "Error sending message")
+        (locale === "ar" ? "حدث خطأ أثناء الإرسال" : "Error sending message")
       );
     },
   });
@@ -113,6 +132,59 @@ const ContactUs = ({ type }: { type?: string }) => {
           }
           className="text-sm"
         />
+
+        <div className="relative">
+          <label className="block text-xs font-medium text-gray-700 mb-1">
+            {locale === "ar" ? "نوع الطلب*" : "Request Type*"}
+          </label>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setIsOpen(!isOpen)}
+              className="flex items-center justify-between w-full px-4 py-3 text-gray-700 bg-white hover:bg-gray-50 transition-all duration-200 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            >
+              <span className="text-sm">
+                {formData.kind_request
+                  ? kindRequestOptions.find(
+                    (opt) => opt.value === formData.kind_request
+                  )?.label
+                  : locale === "ar"
+                    ? "اختر نوع الطلب"
+                    : "Select request type"}
+              </span>
+              <ChevronDown
+                className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+                  }`}
+              />
+            </button>
+
+            {isOpen && (
+              <>
+                <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 shadow-lg rounded-lg py-1 overflow-hidden">
+                  {kindRequestOptions.map((option) => (
+                    <button
+                      key={option.value}
+                      className={`w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors ${formData.kind_request === option.value
+                        ? "text-primary font-medium bg-primary/5"
+                        : "text-gray-700"
+                        }`}
+                      onClick={() => {
+                        setFormData({ ...formData, kind_request: option.value });
+                        setIsOpen(false);
+                      }}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+                <div
+                  className="fixed inset-0 z-40 bg-transparent"
+                  onClick={() => setIsOpen(false)}
+                />
+              </>
+            )}
+          </div>
+        </div>
 
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1">

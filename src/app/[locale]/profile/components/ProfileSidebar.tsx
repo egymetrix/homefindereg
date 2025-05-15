@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { HomeIcon, UserIcon, LockIcon, LogOutIcon } from "lucide-react";
+import { HomeIcon, UserIcon, LockIcon, LogOutIcon, BuildingIcon } from "lucide-react";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
@@ -30,6 +30,11 @@ export default function ProfileSidebar() {
       icon: <UserIcon className="w-5 h-5" />,
       label: t("accountDetails"),
       href: `/${locale}/profile/account`,
+    },
+    {
+      icon: <BuildingIcon className="w-5 h-5" />,
+      label: t("savedProperties"),
+      href: `/${locale}/profile/favorites`,
     },
     {
       icon: <LockIcon className="w-5 h-5" />,
@@ -67,7 +72,7 @@ export default function ProfileSidebar() {
                 className={cn(
                   "flex items-center gap-3 px-4 py-3 rounded-md transition-colors hover:bg-gray-50",
                   pathname === item.href &&
-                    "bg-gray-50 text-primary font-medium"
+                  "bg-gray-50 text-primary font-medium"
                 )}
               >
                 {item.icon}

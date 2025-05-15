@@ -19,28 +19,28 @@ import toast from "react-hot-toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { clientPost } from "@/services/api";
 import { getAppointments } from "@/services/properties";
+import { Property } from "@/types";
 
 interface AppointmentData {
-  name: string;
-  surname: string;
-  email: string;
-  telephone: string;
-  id_appointment: string;
-  date: string;
-  time: string;
-  updated_at: string;
-  created_at: string;
   id: number;
+  name: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  user_id: number;
 }
 
 interface AppointmentResponse {
   success: boolean;
   status: number;
   message: string;
-  data: AppointmentData | AppointmentData[];
+  data: AppointmentData[];
 }
 
-const RequestAppointmentButton = () => {
+const RequestAppointmentButton = ({ property }: { property: Property | undefined }) => {
   const locale = useLocale();
 
   return (
@@ -59,16 +59,15 @@ const RequestAppointmentButton = () => {
             {locale === "ar" ? "نموذج طلب موعد" : "Appointment Request Form"}
           </VisuallyHidden>
         </DialogTitle>
-        <RequestAppointmentForm />
+        <RequestAppointmentForm property={property ?? undefined} />
       </DialogContent>
     </Dialog>
   );
 };
 
-const RequestAppointmentForm = () => {
+const RequestAppointmentForm = ({ property }: { property: Property | undefined }) => {
   const locale = useLocale();
-  const [selectedDate, setSelectedDate] = useState<string>("");
-  const [selectedTime, setSelectedTime] = useState<string>("");
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
@@ -90,48 +89,29 @@ const RequestAppointmentForm = () => {
   // Check if data is empty
   const isEmpty =
     !appointmentsData?.data ||
-    (Array.isArray(appointmentsData.data) &&
-      appointmentsData.data.length === 0);
+    appointmentsData.data.length === 0;
 
-  const availableDates = Array.isArray(appointmentsData?.data)
-    ? [
-        ...new Set(
-          appointmentsData.data
-            .filter((appointment) => {
-              const appointmentDate = new Date(appointment.date);
-              const today = new Date();
-              today.setHours(0, 0, 0, 0); // Reset time to start of day for accurate comparison
-              return appointmentDate >= today;
-            })
-            .map((appointment) => appointment.date)
-        ),
-      ]
-    : [];
+  // Filter available appointments (only show not reserved ones)
+  const availableAppointments = appointmentsData?.data?.filter(
+    appointment => appointment.status === "NotReserved"
+  ) || [];
 
-  const availableTimes = Array.isArray(appointmentsData?.data)
-    ? [...new Set(appointmentsData.data.map((appointment) => appointment.time))]
-    : [];
-
-  // Get appointment ID based on selected date and time
-  const getAppointmentId = () => {
-    if (!Array.isArray(appointmentsData?.data)) return null;
-
-    const selectedAppointment = appointmentsData.data.find(
-      (appointment) =>
-        appointment.date === selectedDate && appointment.time === selectedTime
-    );
-
-    return selectedAppointment?.id_appointment || null;
-  };
+  // Group appointments by date for better organization
+  const appointmentsByDate = availableAppointments.reduce((acc, appointment) => {
+    if (!acc[appointment.date]) {
+      acc[appointment.date] = [];
+    }
+    acc[appointment.date].push(appointment);
+    return acc;
+  }, {} as Record<string, AppointmentData[]>);
 
   const { mutate, isPending } = useMutation<AppointmentResponse>({
     mutationFn: async () => {
-      const appointmentId = getAppointmentId();
-      if (!appointmentId) {
+      if (!selectedAppointmentId) {
         throw new Error(
           locale === "ar"
-            ? "لم يتم العثور على موعد صالح"
-            : "Valid appointment not found"
+            ? "يرجى اختيار موعد"
+            : "Please select an appointment"
         );
       }
 
@@ -140,14 +120,15 @@ const RequestAppointmentForm = () => {
       formDataToSend.append("surname", formData.surname);
       formDataToSend.append("email", formData.email);
       formDataToSend.append("telephone", formData.telephone);
-      formDataToSend.append("id_appointment", appointmentId);
+      formDataToSend.append("id_appointment", selectedAppointmentId.toString());
+      formDataToSend.append("preporty_name", property?.home_name ?? "");
+      formDataToSend.append("preporty_id", property?.id.toString() ?? "");
 
       return await clientPost("/site/appointment-request", formDataToSend);
     },
-    onSuccess: (response) => {
-      toast.success(response.message);
-      setSelectedDate("");
-      setSelectedTime("");
+    onSuccess: () => {
+      toast.success(locale === "ar" ? "تم إرسال الطلب بنجاح" : "Request sent successfully");
+      setSelectedAppointmentId(null);
       setFormData({
         name: "",
         surname: "",
@@ -158,17 +139,16 @@ const RequestAppointmentForm = () => {
     onError: (error: any) => {
       toast.error(
         error?.message ||
-          (locale === "ar"
-            ? "حدث خطأ أثناء إرسال الطلب"
-            : "Error submitting request")
+        (locale === "ar"
+          ? "حدث خطأ أثناء إرسال الطلب"
+          : "Error submitting request")
       );
     },
   });
 
   const handleSubmit = () => {
     if (
-      !selectedDate ||
-      !selectedTime ||
+      !selectedAppointmentId ||
       !formData.name ||
       !formData.surname ||
       !formData.email ||
@@ -176,8 +156,8 @@ const RequestAppointmentForm = () => {
     ) {
       toast.error(
         locale === "ar"
-          ? "يرجى إدخال جميع الحقول المطلوبة"
-          : "Please fill in all required fields"
+          ? "يرجى إدخال جميع الحقول المطلوبة واختيار موعد"
+          : "Please fill in all required fields and select an appointment"
       );
       return;
     }
@@ -216,82 +196,41 @@ const RequestAppointmentForm = () => {
           <>
             <div>
               <p className="text-gray-700 mb-3">
-                {locale === "ar" ? "اختر اليوم" : "Choose Day"}
+                {locale === "ar" ? "اختر موعداً متاحاً" : "Choose an available appointment"}
               </p>
-              <div className="max-h-[250px] overflow-y-auto pr-2 -mr-2">
-                <div className="grid gap-3">
-                  {availableDates.map((date) => (
-                    <button
-                      key={date}
-                      onClick={() => setSelectedDate(date)}
-                      className={`w-full p-4 rounded-lg flex items-center justify-between transition-all 
-                        ${
-                          selectedDate === date
-                            ? "bg-green-600 text-white shadow-lg shadow-green-200 transform -translate-y-0.5"
-                            : "bg-gray-50 hover:bg-gray-100 hover:shadow-md hover:-translate-y-0.5"
-                        }
-                        border border-gray-100
-                        transition-all duration-200`}
-                    >
-                      <div className="flex items-center gap-4">
-                        <div
-                          className={`text-2xl font-bold ${
-                            selectedDate === date
-                              ? "text-white"
-                              : "text-gray-900"
-                          }`}
+              <div className="max-h-[350px] overflow-y-auto pr-2 -mr-2">
+                {Object.entries(appointmentsByDate).map(([date, appointments]) => (
+                  <div key={date} className="mb-6">
+                    <h3 className="text-md font-medium mb-3 text-gray-700">
+                      {format(new Date(date), "EEEE, MMMM dd, yyyy", {
+                        locale: locale === "ar" ? ar : enUS,
+                      })}
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {appointments.map((appointment) => (
+                        <button
+                          key={appointment.id}
+                          onClick={() => setSelectedAppointmentId(appointment.id.toString())}
+                          className={`w-full p-4 rounded-lg text-left transition-all 
+                            ${selectedAppointmentId === appointment.id.toString()
+                              ? "bg-green-600 text-white shadow-lg shadow-green-200 transform -translate-y-0.5"
+                              : "bg-gray-50 hover:bg-gray-100 hover:shadow-md hover:-translate-y-0.5"
+                            }
+                            border border-gray-100
+                            transition-all duration-200`}
                         >
-                          {format(new Date(date), "dd")}
-                        </div>
-                        <div className="flex flex-col items-start">
-                          <div
-                            className={`text-sm ${
-                              selectedDate === date
-                                ? "text-green-100"
-                                : "text-gray-500"
-                            }`}
-                          >
-                            {format(new Date(date), "MMM", {
-                              locale: locale === "ar" ? ar : enUS,
-                            })}
+                          <div className="flex flex-col gap-1">
+                            <span className={`font-medium ${selectedAppointmentId === appointment.id.toString() ? "text-white" : "text-gray-800"}`}>
+                              {appointment.name}
+                            </span>
+                            <span className={`text-sm ${selectedAppointmentId === appointment.id.toString() ? "text-green-100" : "text-gray-500"}`}>
+                              {appointment.start_time.substring(0, 5)} - {appointment.end_time.substring(0, 5)}
+                            </span>
                           </div>
-                          <div
-                            className={`text-sm ${
-                              selectedDate === date
-                                ? "text-green-100"
-                                : "text-gray-500"
-                            }`}
-                          >
-                            {format(new Date(date), "EEE", {
-                              locale: locale === "ar" ? ar : enUS,
-                            })}
-                          </div>
-                        </div>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <p className="text-gray-700 mb-3">
-                {locale === "ar" ? "اختر الوقت" : "Choose Time"}
-              </p>
-              <div className="flex gap-3 flex-wrap">
-                {availableTimes.map((time) => (
-                  <button
-                    key={time}
-                    onClick={() => setSelectedTime(time)}
-                    className={`px-4 py-2 rounded-full bg-gray-50 hover:bg-gray-100 text-sm 
-                      ${
-                        selectedTime === time
-                          ? "bg-green-600 text-white shadow-lg shadow-green-200 transform -translate-y-0.5 hover:bg-green-700"
-                          : ""
-                      }`}
-                  >
-                    {time}
-                  </button>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>

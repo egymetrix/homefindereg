@@ -55,8 +55,21 @@ export const getHomes = async (params: GetHomesParams) => {
   );
 };
 
+export const searchHomes = async (
+  city: string,
+  type: string,
+  category_type: string,
+  home_name: string
+) => {
+  return await clientGet<{ data: Property[] }>(
+    `/site/search-preporty?city=${city}&type=${type}&category_type=${category_type}&home_name=${home_name}`
+  );
+};
+
 export const getProperty = async (propertyId: string) => {
-  return await clientGet<{ data: Property }>(`/site/get-home?id=${propertyId}`);
+  return await clientGet<{ data: Property; HomeSuggest: Property[] }>(
+    `/site/get-home?id=${propertyId}`
+  );
 };
 
 export const getAppointments = async () => {
@@ -74,6 +87,14 @@ export const addToFavorites = async (
 
 export const getFAQ = async () => {
   return await clientGet(`/site/get-faq`);
+};
+
+export const getPrivacyPolicy = async () => {
+  return await clientGet(`/site/privacy-policy`);
+};
+
+export const getAboutUs = async () => {
+  return await clientGet(`/site/get-aboutus`);
 };
 
 export const getPropertyEvaluation = async () => {

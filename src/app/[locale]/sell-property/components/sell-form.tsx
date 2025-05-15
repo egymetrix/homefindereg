@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations, useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { clientPost } from "@/services/api";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/input";
@@ -13,17 +13,19 @@ interface FormData {
   surname: string;
   email: string;
   telephone: string;
+  preporty_address: string;
   files: File[];
 }
 
 const SellForm = () => {
-  const t = useTranslations("sell-form");
   const locale = useLocale();
+  const t = useTranslations("sell-form");
   const [formData, setFormData] = useState<FormData>({
     name: "",
     surname: "",
     email: "",
     telephone: "",
+    preporty_address: "",
     files: [],
   });
   const [isPending, setIsPending] = useState(false);
@@ -75,12 +77,13 @@ const SellForm = () => {
       submitFormData.append("surname", formData.surname);
       submitFormData.append("email", formData.email);
       submitFormData.append("telephone", formData.telephone);
+      submitFormData.append("preporty_address", formData.preporty_address);
 
       formData.files.forEach((file) => {
         submitFormData.append("files[]", file);
       });
 
-      await clientPost("/site/store-sell-property", submitFormData, locale);
+      await clientPost("/site/store-sell-property", submitFormData);
 
       toast.success(t("successMessage"));
       setFormData({
@@ -88,6 +91,7 @@ const SellForm = () => {
         surname: "",
         email: "",
         telephone: "",
+        preporty_address: "",
         files: [],
       });
     } catch (error: unknown) {
@@ -180,17 +184,27 @@ const SellForm = () => {
                   setFormData({ ...formData, telephone: e.target.value })
                 }
               />
+
+              <div className="md:col-span-2">
+                <Input
+                  label={locale === "ar" ? "العنوان" : "Address"}
+                  type="text"
+                  value={formData.preporty_address}
+                  onChange={(e) =>
+                    setFormData({ ...formData, preporty_address: e.target.value })
+                  }
+                />
+              </div>
             </div>
 
             {/* File upload section */}
             <div className="mt-6">
               <p className="text-sm text-gray-700 mb-2">{t("uploadFiles")}</p>
               <div
-                className={`border-2 border-dashed p-6 rounded-lg text-center cursor-pointer transition-colors ${
-                  isDragging
-                    ? "border-primary bg-primary/5"
-                    : "border-gray-300 hover:border-primary/50"
-                }`}
+                className={`border-2 border-dashed p-6 rounded-lg text-center cursor-pointer transition-colors ${isDragging
+                  ? "border-primary bg-primary/5"
+                  : "border-gray-300 hover:border-primary/50"
+                  }`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}

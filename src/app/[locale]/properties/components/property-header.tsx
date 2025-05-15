@@ -25,6 +25,8 @@ import { useEffect, useState } from "react";
 import { usePathname } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import { addToFavorites } from "@/services/properties";
+import { useAuthContext } from "@/contexts/AuthContext";
+import toast from "react-hot-toast";
 
 interface PropertyHeaderProps {
   property: Property | undefined;
@@ -37,12 +39,12 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
   const [copied, setCopied] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const pathname = usePathname();
+  const { isAuthenticated } = useAuthContext();
   const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL}${pathname}`;
-  const shareTitle = `${property?.home_name} - ${
-    locale === "ar"
-      ? `${property?.home_price} ج.م`
-      : `${property?.home_price} $`
-  }`;
+  const shareTitle = `${property?.home_name} - ${locale === "ar"
+    ? `${property?.home_price} ج.م`
+    : `${property?.home_price} $`
+    }`;
 
   // Load favorites from localStorage on component mount
   useEffect(() => {
@@ -61,14 +63,40 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
   const handleFavoriteClick = async () => {
     if (!property) return;
 
+    // If user is not authenticated, show toast message
+    if (!isAuthenticated) {
+      toast.error(locale === "ar"
+        ? "يجب عليك تسجيل الدخول لإضافة العقارات إلى المفضلة"
+        : "You need to login to add properties to favorites");
+      return;
+    }
+
     const newFavoriteStatus = !isFavorite;
     setIsFavorite(newFavoriteStatus);
 
     // Update localStorage
+    updateLocalStorage(newFavoriteStatus);
+
+    try {
+      await addToFavorites(
+        property.id.toString(),
+        newFavoriteStatus ? "1" : "0"
+      );
+    } catch (error) {
+      // Revert state if API call fails
+      setIsFavorite(!newFavoriteStatus);
+      console.error("Failed to update favorite status:", error);
+    }
+  };
+
+  const updateLocalStorage = (isFav: boolean) => {
+    if (!property) return;
+
+    // Get favorites from localStorage
     const storedFavorites = localStorage.getItem("favorites");
     const favorites = storedFavorites ? JSON.parse(storedFavorites) : [];
 
-    if (newFavoriteStatus) {
+    if (isFav) {
       // Add to favorites if not already included
       if (!favorites.includes(property.id.toString())) {
         favorites.push(property.id.toString());
@@ -82,17 +110,6 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
     }
 
     localStorage.setItem("favorites", JSON.stringify(favorites));
-
-    try {
-      await addToFavorites(
-        property.id.toString(),
-        newFavoriteStatus ? "1" : "0"
-      );
-    } catch (error) {
-      // Revert state if API call fails
-      setIsFavorite(!newFavoriteStatus);
-      console.error("Failed to update favorite status:", error);
-    }
   };
 
   const handleCopy = async () => {
@@ -161,9 +178,8 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
             onClick={handleFavoriteClick}
           >
             <Heart
-              className={`w-5 h-5 ${
-                isFavorite ? "text-red-500 fill-red-500" : "text-gray-600"
-              }`}
+              className={`w-5 h-5 ${isFavorite ? "text-red-500 fill-red-500" : "text-gray-600"
+                }`}
             />
           </button>
           <div className="relative">

@@ -16,7 +16,7 @@ const ServiceContainer = ({ service }: { service: any }) => {
             <div className="p-4 md:p-6">
               <div
                 className="text-gray-800 prose-headings:text-gray-800 prose-p:text-gray-600 prose-strong:text-gray-700 prose-ul:text-gray-600 prose-li:text-gray-600 prose-ul:list-disc prose-ol:list-decimal"
-                dangerouslySetInnerHTML={{ __html: service.long_content }}
+                dangerouslySetInnerHTML={{ __html: service?.long_content }}
               />
             </div>
           </TransitionBox>

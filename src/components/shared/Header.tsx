@@ -119,9 +119,8 @@ const Header = ({
         <div className="relative">
           <button
             onClick={() => setShowProfileMenu(!showProfileMenu)}
-            className={`text-sm hover:opacity-75 flex items-center gap-2 transition-colors ${
-              hasBg ? "text-gray-900" : "text-white"
-            }`}
+            className={`text-sm hover:opacity-75 flex items-center gap-2 transition-colors ${hasBg ? "text-gray-900" : "text-white"
+              }`}
           >
             <UserRoundCheck
               className={`${hasBg ? "text-primary" : "text-white"} size-4`}
@@ -155,9 +154,8 @@ const Header = ({
     return (
       <button
         onClick={() => handleDialogOpen("signIn")}
-        className={`text-sm hover:opacity-75 flex items-center gap-2 transition-colors ${
-          hasBg ? "text-gray-900" : "text-white"
-        }`}
+        className={`text-sm hover:opacity-75 flex items-center gap-2 transition-colors ${hasBg ? "text-gray-900" : "text-white"
+          }`}
       >
         <UserRoundCheck
           className={`${hasBg ? "text-primary" : "text-white"} size-4`}
@@ -170,11 +168,10 @@ const Header = ({
   return (
     <>
       <header
-        className={`sticky top-0 left-0 right-0 w-full z-[99997] transition-all duration-300 ${
-          withBg || isScrolled
+        className={`sticky top-0 left-0 right-0 w-full z-[99997] transition-all duration-300 ${withBg || isScrolled
             ? "bg-white text-gray-900"
             : "bg-transparent backdrop-blur-sm text-white"
-        } ${withShadow ? "shadow-md" : ""}`}
+          } ${withShadow ? "shadow-md" : ""}`}
       >
         <div className="container mx-auto px-4 py-3 flex justify-between items-center max-w-screen-xl">
           <Link href="/">
@@ -194,14 +191,12 @@ const Header = ({
                 <div key={link.label}>
                   <Link
                     href={link.href ?? ""}
-                    className={`text-sm hover:opacity-75 flex items-center gap-2 transition-colors ${
-                      withBg || isScrolled ? "text-gray-900" : "text-white"
-                    }`}
+                    className={`text-sm hover:opacity-75 flex items-center gap-2 transition-colors ${withBg || isScrolled ? "text-gray-900" : "text-white"
+                      }`}
                   >
                     <span
-                      className={`${
-                        withBg || isScrolled ? "text-primary" : "text-white"
-                      }`}
+                      className={`${withBg || isScrolled ? "text-primary" : "text-white"
+                        }`}
                     >
                       {link.icon}
                     </span>
@@ -245,9 +240,8 @@ const Header = ({
           </div>
 
           <nav
-            className={`lg:hidden fixed inset-x-0 top-[72px] bg-white backdrop-blur-sm shadow-lg transition-all duration-300 ease-in-out z-[99996] ${
-              isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
-            }`}
+            className={`lg:hidden fixed inset-x-0 top-[72px] bg-white backdrop-blur-sm shadow-lg transition-all duration-300 ease-in-out z-[99996] ${isMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
+              }`}
           >
             <ul className="flex flex-col items-center py-4 space-y-4">
               {navLinks.slice(0, 5).map((link) => (
@@ -544,8 +538,8 @@ const SignInForm = ({
             data.type === "googleAuth"
               ? "google"
               : data.type === "facebookAuth"
-              ? "facebook"
-              : "unknown",
+                ? "facebook"
+                : "unknown",
           timestamp: new Date().toISOString(),
           type: "message",
           data: data,
@@ -684,9 +678,8 @@ const SignInForm = ({
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className={`absolute  top-1/2 -translate-y-1/2 ${
-              showPassword ? "text-primary" : "text-gray-500"
-            } ${locale === "en" ? "right-3" : "left-3"}`}
+            className={`absolute  top-1/2 -translate-y-1/2 ${showPassword ? "text-primary" : "text-gray-500"
+              } ${locale === "en" ? "right-3" : "left-3"}`}
           >
             {showPassword ? (
               <Eye className="w-5 h-5 text-gray-500" />
@@ -739,8 +732,8 @@ const SignUpForm = ({
         setDialogState(null);
       }
     },
-    onError: (error: any) => {
-      toast.error(error?.message || "Registration failed");
+    onError: () => {
+      toast.error(locale === "ar" ? "حدث خطأ أثناء التسجيل" : "Registration failed");
     },
   });
 
@@ -791,9 +784,8 @@ const SignUpForm = ({
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className={`absolute top-1/2 -translate-y-1/2 ${
-              showPassword ? "text-primary" : "text-gray-500"
-            } ${locale === "en" ? "right-3" : "left-3"}`}
+            className={`absolute top-1/2 -translate-y-1/2 ${showPassword ? "text-primary" : "text-gray-500"
+              } ${locale === "en" ? "right-3" : "left-3"}`}
           >
             {showPassword ? (
               <Eye className="w-5 h-5 text-gray-500" />
@@ -812,9 +804,8 @@ const SignUpForm = ({
           <button
             type="button"
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            className={`absolute top-1/2 -translate-y-1/2 ${
-              showConfirmPassword ? "text-primary" : "text-gray-500"
-            } ${locale === "en" ? "right-3" : "left-3"}`}
+            className={`absolute top-1/2 -translate-y-1/2 ${showConfirmPassword ? "text-primary" : "text-gray-500"
+              } ${locale === "en" ? "right-3" : "left-3"}`}
           >
             {showConfirmPassword ? (
               <Eye className="w-5 h-5 text-gray-500" />

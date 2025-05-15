@@ -15,6 +15,7 @@ import Description from "./description";
 import OtherFeatures from "./other-features";
 import PropertyPlace from "./property-place";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
+import SuggestedProperties from "./suggested-properties";
 
 const PropertyContainer = ({ propertyId }: { propertyId: string }) => {
   const locale = useLocale();
@@ -24,6 +25,8 @@ const PropertyContainer = ({ propertyId }: { propertyId: string }) => {
     queryKey: ["property", id],
     queryFn: () => getProperty(id),
   });
+
+  console.log(data?.HomeSuggest);
 
   useEffect(() => {
     if (!isLoading && !data) {
@@ -76,13 +79,19 @@ const PropertyContainer = ({ propertyId }: { propertyId: string }) => {
                 </div>
                 <div className="basis-1/3">
                   <div className="mb-4">
-                    <RequestAppointment />
+                    <RequestAppointment property={data?.data ?? undefined} />
                   </div>
                   <div className="sticky top-48">
                     <ContactUs type="property" />
                   </div>
                 </div>
               </section>
+
+              {data?.HomeSuggest && data.HomeSuggest.length > 0 && (
+                <div className="px-4 sm:px-6 lg:px-8">
+                  <SuggestedProperties properties={data.HomeSuggest} />
+                </div>
+              )}
             </main>
           </div>
         </>

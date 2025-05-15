@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 interface SocialLinkProps {
   href: string;
@@ -82,22 +82,24 @@ const FooterLink: React.FC<FooterLinkProps & { icon?: React.ReactNode }> = ({
 const Footer: React.FC = () => {
   const t = useTranslations("footer");
   const currentYear = new Date().getFullYear();
+  const locale = useLocale();
+
 
   const FOOTER_LINKS = {
     contact: [
       {
-        href: "https://goo.gl/maps/...",
-        label: "Heliopolis, Cairo Governorate, Egypt",
+        href: "#",
+        label: "Al Fondok, Hurghada 1, Red Sea Governorate 1964412",
         icon: <MapPin className="w-4 h-4" />,
       },
       {
-        href: "tel:+201501234567",
-        label: "+20 150 123 4567",
+        href: "tel:+201017373960",
+        label: "+20 101 737 3960",
         icon: <Phone className="w-4 h-4" />,
       },
       {
-        href: "mailto:contact@homefindereg.com",
-        label: "contact@homefindereg.com",
+        href: "mailto:info@homefindereg.com",
+        label: "info@homefindereg.com",
         icon: <Mail className="w-4 h-4" />,
       },
     ],
@@ -113,7 +115,7 @@ const Footer: React.FC = () => {
     help: [
       { href: "/about", label: t("aboutUs") },
       { href: "/contact", label: t("contactUs") },
-      // { href: "/privacy", label: t("privacyPolicy") },
+      { href: "/privacy-policy", label: t("privacyPolicy") },
     ],
   };
 
@@ -192,12 +194,22 @@ const Footer: React.FC = () => {
         <div className="w-full h-px bg-gray-800"></div>
 
         <div className="py-4">
-          <div className="flex flex-wrap justify-center items-center gap-x-4 gap-y-2 text-xs text-gray-400">
-            <span>
-              © {currentYear} {t("companyName")}
-            </span>
-            <span className="hidden lg:block">•</span>
-            <span>{t("allRightsReserved")}</span>
+          <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 text-xs text-gray-400">
+            <div className="flex items-center gap-x-2">
+              <span>
+                © {currentYear} {t("companyName")}
+              </span>
+              <span className="hidden lg:block">•</span>
+              <span>{t("allRightsReserved")}</span>
+            </div>
+            <div className="flex items-center gap-x-2">
+              <span>
+                {locale === "en" ? "Powered by :" : "تصميم وتطوير :"}
+                <Link href="https://egymetrix.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-400 transition-colors duration-200 mx-2">
+                  Egymetrix
+                </Link>
+              </span>
+            </div>
           </div>
         </div>
       </div>

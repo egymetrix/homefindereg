@@ -1,54 +1,44 @@
-import { useTranslations } from "next-intl";
-import { FaHome, FaHandshake, FaChartLine } from "react-icons/fa";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client"
+import { useQuery } from "@tanstack/react-query";
+import PrivacyContent from "../../privacy-policy/components/privacy-content";
+import { getAboutUs } from "@/services/properties";
+import Banner from "@/components/shared/Banner";
+
+interface ServiceResponse {
+  data?: any;
+  success?: boolean;
+  status?: number;
+  message?: string;
+}
 
 export default function OurMission() {
-  const t = useTranslations("About");
+  const { data: serviceData } = useQuery({
+    queryKey: ["about-us"],
+    queryFn: () => getAboutUs() as Promise<ServiceResponse>,
+  })
 
-  const values = [
-    {
-      icon: <FaHome className="h-8 w-8 text-primary" />,
-      title: t("mission.values.quality.title"),
-      description: t("mission.values.quality.description"),
-    },
-    {
-      icon: <FaHandshake className="h-8 w-8 text-primary" />,
-      title: t("mission.values.trust.title"),
-      description: t("mission.values.trust.description"),
-    },
-    {
-      icon: <FaChartLine className="h-8 w-8 text-primary" />,
-      title: t("mission.values.growth.title"),
-      description: t("mission.values.growth.description"),
-    },
-  ];
+  const title = serviceData?.data?.title || "Our Mission";
+  const description = serviceData?.data?.content || "Our mission is to help you find your perfect home";
+  const bannerImage = serviceData?.data?.media?.[0]?.original_url || "/images/about.jpg";
 
   return (
-    <section className="py-16 lg:py-24 max-w-screen-xl mx-auto">
-      <div className="container px-4 mx-auto">
-        <div className="mb-16 text-center">
-          <h2 className="mb-4 text-3xl font-bold text-gray-900 md:text-4xl">
-            {t("mission.title")}
-          </h2>
-          <p className="mx-auto max-w-2xl text-gray-600">
-            {t("mission.description")}
-          </p>
+    <>
+      <Banner backgroundImage={bannerImage} height="70vh">
+        <div className="container relative flex h-full items-center justify-center px-4">
+          <div className="text-center">
+            <h1 className="mb-4 text-4xl font-bold text-white md:text-5xl lg:text-6xl">
+              {title}
+            </h1>
+            <p className="text-lg text-white/90 md:text-xl max-w-2xl mx-auto">
+              {description}
+            </p>
+          </div>
         </div>
-
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {values.map((value, index) => (
-            <div
-              key={index}
-              className="rounded-lg border border-gray-100 p-8 shadow-sm transition-all hover:shadow-md"
-            >
-              <div className="mb-4">{value.icon}</div>
-              <h3 className="mb-3 text-xl font-semibold text-gray-900">
-                {value.title}
-              </h3>
-              <p className="text-gray-600">{value.description}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
+      </Banner>
+      <section className="py-16 lg:py-24 max-w-screen-xl mx-auto">
+        <PrivacyContent service={serviceData?.data} />
+      </section>
+    </>
   );
 }
