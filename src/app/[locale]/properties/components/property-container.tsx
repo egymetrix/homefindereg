@@ -82,7 +82,7 @@ const PropertyContainer = ({ propertyId }: { propertyId: string }) => {
                     <RequestAppointment property={data?.data ?? undefined} />
                   </div>
                   <div className="sticky top-48">
-                    <ContactUs type="property" />
+                    <ContactUs type="property" preporty_id={id} />
                   </div>
                 </div>
               </section>

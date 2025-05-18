@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import {
@@ -66,8 +67,8 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
     // If user is not authenticated, show toast message
     if (!isAuthenticated) {
       toast.error(locale === "ar"
-        ? "يجب عليك تسجيل الدخول لإضافة العقارات إلى المفضلة"
-        : "You need to login to add properties to favorites");
+        ? "يرجى تسجيل الدخول لإضافة العقارات إلى المفضلة."
+        : "Please log in to add properties to your favorites.");
       return;
     }
 
@@ -82,10 +83,20 @@ const PropertyHeader = ({ property }: PropertyHeaderProps) => {
         property.id.toString(),
         newFavoriteStatus ? "1" : "0"
       );
+
+      toast.success(newFavoriteStatus
+        ? locale === "ar"
+          ? "تم إضافة العقار إلى المفضلة داخل حسابك."
+          : "The property has been added to your favorites in your account."
+        : locale === "ar"
+          ? "تم إزالة العقار من المفضلة داخل حسابك."
+          : "The property has been removed from your favorites in your account.");
     } catch (error) {
       // Revert state if API call fails
       setIsFavorite(!newFavoriteStatus);
-      console.error("Failed to update favorite status:", error);
+      toast.error(locale === "ar"
+        ? "حدث خطأ أثناء تحديث حالة المفضلة."
+        : "An error occurred while updating the favorite status.");
     }
   };
 

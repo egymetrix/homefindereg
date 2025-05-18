@@ -173,10 +173,10 @@
     "myProperties": "My Properties",
     "manageYourProperties": "View and manage your listed properties",
     "viewProperties": "View Properties",
-    "savedProperties": "Saved Properties",
-    "viewSavedProperties": "View your saved properties and favorites",
-    "viewSaved": "View Saved",
-    "noSavedProperties": "You don't have any saved properties yet. Browse properties and click the heart icon to add them to your favorites."
+    "savedProperties": "Favorite Properties",
+    "viewSavedProperties": "View your favorite properties",
+    "viewSaved": "View Favorite",
+    "noSavedProperties": "You don't have any favorite properties yet. Browse properties and click the heart icon to add them to your favorites."
   },
   "About": {
     "hero": {

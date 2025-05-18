@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use server";
 
 import { cookies } from "@/lib/cookies";
@@ -66,21 +67,25 @@ export async function clientPost<T>(endpoint: string, formData: FormData) {
   "use client";
   const locale = await getLocale();
   const token = (await nextCookies()).get("token")?.value;
+  const headers = {
+    lang: locale,
+    "Content-Type": "multipart/form-data",
+    Authorization: `Bearer ${token}`,
+  };
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
   const response = await clientAxios.post<T>(endpoint, formData, {
-    headers: {
-      lang: locale,
-      "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${token}`,
-    },
+    headers,
   });
-  return response.data;
+
+  return response?.data;
 }
 
 serverAxios.interceptors.response.use(
   (response) => response,
   (error) => {
     const message = error.response?.data?.message || "An error occurred";
-    console.log(message);
   }
 );
 
@@ -88,6 +93,5 @@ clientAxios.interceptors.response.use(
   (response) => response,
   (error) => {
     const message = error.response?.data?.message || "An error occurred";
-    console.log(message);
   }
 );

@@ -200,9 +200,9 @@
     "myProperties": "عقاراتي",
     "manageYourProperties": "عرض وإدارة العقارات المدرجة",
     "viewProperties": "عرض العقارات",
-    "savedProperties": "العقارات المحفوظة",
-    "viewSavedProperties": "عرض العقارات المحفوظة والمفضلة",
-    "viewSaved": "عرض المحفوظات",
-    "noSavedProperties": "لا توجد عقارات محفوظة بعد. تصفح العقارات وانقر على أيقونة القلب لإضافتها إلى المفضلة."
+    "savedProperties": "العقارات المفضلة",
+    "viewSavedProperties": "عرض العقارات المفضلة",
+    "viewSaved": "عرض المفضلة",
+    "noSavedProperties": "لا توجد عقارات مفضلة بعد. تصفح العقارات وانقر على أيقونة القلب لإضافتها إلى المفضلة."
   }
 }

@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 import { useLocale } from "next-intl";
 import { searchHomes } from "@/services/properties";
 import { useQuery } from "@tanstack/react-query";
-import { useSearchParams, useParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import PropertyCard from "@/app/[locale]/cities/[cityId]/components/property-card";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
 import dynamic from "next/dynamic";
@@ -17,7 +17,6 @@ const Map = dynamic(() => import("@/components/shared/Map"), {
 
 const MainSearchPage = () => {
   const searchParams = useSearchParams();
-  const params = useParams();
   const locale = useLocale();
   const mapRef = useRef<L.Map>(null);
 
@@ -25,16 +24,40 @@ const MainSearchPage = () => {
   const homeNameParam = searchParams.get("home_name") || "";
   const categoryTypeParam = searchParams.get("category_type") || "";
   const cityParam = searchParams.get("city") || "";
+  const typeParam = searchParams.get("type") || "";
+
+  console.log("Search Parameters:", {
+    homeNameParam,
+    categoryTypeParam,
+    cityParam,
+    typeParam
+  });
+
+  // // Additional filter parameters
+  // const minPriceParam = searchParams.get("min_price") || "";
+  // const maxPriceParam = searchParams.get("max_price") || "";
+  // const minAreaParam = searchParams.get("min_area") || "";
+  // const maxAreaParam = searchParams.get("max_area") || "";
+  // const bathroomsParam = searchParams.get("home_bathrooms") || "";
+  // const kitchensParam = searchParams.get("home_kitchens") || "";
 
   const { data: homesResponse, isLoading } = useQuery({
-    queryKey: ["homes", params.type, searchParams.toString()],
+    queryKey: ["homes", searchParams.toString()],
     queryFn: async () => {
-      return await searchHomes(
+      console.log("Fetching homes with params:", {
+        city: cityParam,
+        type: typeParam,
+        category_type: categoryTypeParam,
+        home_name: homeNameParam
+      });
+      // Use the consolidated searchHomesByParams function for all search scenarios
+      const response = await searchHomes(
         cityParam,
-        params.type as string,
+        typeParam,
         categoryTypeParam,
         homeNameParam
       );
+      return response;
     },
   });
 

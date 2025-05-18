@@ -1,6 +1,6 @@
 import Header from "@/components/shared/Header";
 import MainSearchPage from "./components/main-search-page";
-import Filters from "../../cities/[cityId]/components/filters";
+import Filters from "../cities/[cityId]/components/filters";
 import { Loader2 } from "lucide-react";
 import { Suspense } from "react";
 

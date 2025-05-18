@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { Card } from "@/components/ui/card";
@@ -39,11 +40,9 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
 
         // If user is not authenticated, show toast message
         if (!isAuthenticated) {
-            toast.error(
-                locale === "ar"
-                    ? "يجب عليك تسجيل الدخول لإضافة العقارات إلى المفضلة"
-                    : "You need to login to add properties to favorites"
-            );
+            toast.error(locale === "ar"
+                ? "يرجى تسجيل الدخول لإضافة العقارات إلى المفضلة."
+                : "Please log in to add properties to your favorites.");
             return;
         }
 
@@ -59,10 +58,16 @@ const PropertyCard = ({ property }: PropertyCardProps) => {
                 property.id.toString(),
                 newFavoriteStatus ? "1" : "0"
             );
+            toast.success(newFavoriteStatus
+                ? locale === "ar"
+                    ? "تم إضافة العقار إلى المفضلة داخل حسابك."
+                    : "The property has been added to your favorites in your account."
+                : locale === "ar"
+                    ? "تم إزالة العقار من المفضلة داخل حسابك."
+                    : "The property has been removed from your favorites in your account.");
         } catch (error) {
             // Revert state if API call fails
             setIsFavorite(!newFavoriteStatus);
-            console.error("Failed to update favorite status:", error);
         }
     };
 

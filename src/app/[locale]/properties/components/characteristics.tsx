@@ -1,4 +1,4 @@
-import { Property, PropertyMedia } from "@/types";
+import { Property } from "@/types";
 import { useLocale } from "next-intl";
 import { IoClose } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,7 +11,6 @@ import { toast } from "react-hot-toast";
 import html2pdf from "html2pdf.js";
 
 const Characteristics = ({ property }: { property: Property | undefined }) => {
-  console.log(property);
   const [showAll, setShowAll] = useState(false);
   const [showPriceModal, setShowPriceModal] = useState(false);
   const [formData, setFormData] = useState({
@@ -121,113 +120,125 @@ const Characteristics = ({ property }: { property: Property | undefined }) => {
   const handlePrintPDF = () => {
     // Create a temporary div to format the PDF content
     const printContent = document.createElement('div');
-    printContent.innerHTML = `
-      <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #ddd;">
-          <div>
-            <img src="/images/logo.png" style="width: 150px; height: auto;" alt="Logo" />
-          </div>
-        </div>
-        
-        <div style="margin-bottom: 20px;">
-          <h2 style="color: #2e7d32; margin: 0; font-size: 28px;">€ ${property.home_price}</h2>
-          <h3 style="color: #333; margin: 5px 0;">${property.home_name}</h3>
-          <p style="color: #666;">${property.address}</p>
-        </div>
-        
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px;">
-          ${property.media && property.media.length > 0
-        ? property.media.slice(0, 4).map((img: PropertyMedia) =>
-          `<img src="${img.original_url}" style="width: 100%; height: auto; border-radius: 8px;" />`
-        ).join('')
-        : '<img src="https://via.placeholder.com/600x400?text=No+Image" style="width: 100%; height: auto; border-radius: 8px;" />'
-      }
-        </div>
-        
-        <div style="margin-bottom: 20px;">
-          <h3 style="color: #2e7d32; border-bottom: 1px solid #ddd; padding-bottom: 5px;">${locale === "en" ? "Characteristics" : "المميزات"}</h3>
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
-            ${(locale === "ar" ? arCharacteristics : enCharacteristics)
-        .map(item => `
-                <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
-                  <span style="color: #666;">${item.label}</span>
-                  <span style="font-weight: bold;">${item.value}</span>
-                </div>
-              `).join('')
-      }
-          </div>
-        </div>
-        
-        <div style="margin-bottom: 20px;">
-          <h3 style="color: #2e7d32; border-bottom: 1px solid #ddd; padding-bottom: 5px;">${locale === "en" ? "Description" : "الوصف"}</h3>
-          <p style="line-height: 1.6;">${property.home_description || ''}</p>
-        </div>
-        
-        <div style="margin-bottom: 20px;">
-          <h3 style="color: #2e7d32; border-bottom: 1px solid #ddd; padding-bottom: 5px;">${locale === "en" ? "Additional Details" : "تفاصيل إضافية"}</h3>
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
-            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
-              <span style="color: #666;">${locale === "en" ? "Bedrooms" : "غرف النوم"}</span>
-              <span style="font-weight: bold;">${property.home_bedrooms}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
-              <span style="color: #666;">${locale === "en" ? "Bathrooms" : "الحمامات"}</span>
-              <span style="font-weight: bold;">${property.home_bathrooms}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
-              <span style="color: #666;">${locale === "en" ? "Kitchens" : "المطابخ"}</span>
-              <span style="font-weight: bold;">${property.home_kitchens}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
-              <span style="color: #666;">${locale === "en" ? "Area" : "المساحة"}</span>
-              <span style="font-weight: bold;">${property.home_area}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
-              <span style="color: #666;">${locale === "en" ? "Garage" : "المرآب"}</span>
-              <span style="font-weight: bold;">${property.home_garage}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
-              <span style="color: #666;">${locale === "en" ? "Pool" : "حمام السباحة"}</span>
-              <span style="font-weight: bold;">${property.home_pool}</span>
-            </div>
-          </div>
-        </div>
-        
-        ${property.other_features && property.other_features.length > 0 ? `
-        <div style="margin-bottom: 20px;">
-          <h3 style="color: #2e7d32; border-bottom: 1px solid #ddd; padding-bottom: 5px;">${locale === "en" ? "Other Features" : "مميزات أخرى"}</h3>
-          <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
-            ${property.other_features.map(feature => `
-              <span style="background-color: #f0f8f1; color: #2e7d32; padding: 6px 12px; border-radius: 20px; font-size: 14px;">
-                ${feature.name}
-              </span>
-            `).join('')}
-          </div>
-        </div>
-        ` : ''}
-        
-        <div style="margin-top: 30px; text-align: center; font-size: 12px; color: #666;">
-          <p>Ref: ${property.id} - ${new Date().toLocaleDateString()}</p>
-          <p>${locale === "en" ? "This document is for information purposes only." : "هذه الوثيقة لأغراض المعلومات فقط."}</p>
-        </div>
-      </div>
-    `;
 
-    // Configure pdf options
-    const options = {
-      margin: 10,
-      filename: `property-${property.id}.pdf`,
-      image: { type: 'jpg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    // Prepare images first
+    const prepareImagesAndGeneratePDF = async () => {
+      toast.success(
+        locale === "en" ? "Preparing PDF, please wait..." : "جاري إعداد ملف PDF، يرجى الانتظار..."
+      );
+
+      // Get Logo as blob URL
+      const logoUrl = '/images/logo.png';
+
+
+      // Process property images - Removed, keeping only logo
+
+      // Set the HTML content
+      printContent.innerHTML = `
+        <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #ddd;">
+            <div>
+              <img src="${logoUrl}" style="width: 150px; height: auto;" alt="Logo" />
+            </div>
+          </div>
+          
+          <div style="margin-bottom: 20px;">
+            <h2 style="color: #2e7d32; margin: 0; font-size: 28px;">€ ${property.home_price}</h2>
+            <h3 style="color: #333; margin: 5px 0;">${property.home_name}</h3>
+            <p style="color: #666;">${property.address}</p>
+          </div>
+          
+          <div style="margin-bottom: 20px;">
+            <h3 style="color: #2e7d32; border-bottom: 1px solid #ddd; padding-bottom: 5px;">${locale === "en" ? "Characteristics" : "المميزات"}</h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+              ${(locale === "ar" ? arCharacteristics : enCharacteristics)
+          .map(item => `
+                  <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+                    <span style="color: #666;">${item.label}</span>
+                    <span style="font-weight: bold;">${item.value}</span>
+                  </div>
+                `).join('')
+        }
+            </div>
+          </div>
+          
+          <div style="margin-bottom: 20px;">
+            <h3 style="color: #2e7d32; border-bottom: 1px solid #ddd; padding-bottom: 5px;">${locale === "en" ? "Description" : "الوصف"}</h3>
+            <p style="line-height: 1.6;">${property.home_description || ''}</p>
+          </div>
+          
+          <div style="margin-bottom: 20px;">
+            <h3 style="color: #2e7d32; border-bottom: 1px solid #ddd; padding-bottom: 5px;">${locale === "en" ? "Additional Details" : "تفاصيل إضافية"}</h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+              <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+                <span style="color: #666;">${locale === "en" ? "Bedrooms" : "غرف النوم"}</span>
+                <span style="font-weight: bold;">${property.home_bedrooms}</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+                <span style="color: #666;">${locale === "en" ? "Bathrooms" : "الحمامات"}</span>
+                <span style="font-weight: bold;">${property.home_bathrooms}</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+                <span style="color: #666;">${locale === "en" ? "Kitchens" : "المطابخ"}</span>
+                <span style="font-weight: bold;">${property.home_kitchens}</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+                <span style="color: #666;">${locale === "en" ? "Area" : "المساحة"}</span>
+                <span style="font-weight: bold;">${property.home_area}</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+                <span style="color: #666;">${locale === "en" ? "Garage" : "المرآب"}</span>
+                <span style="font-weight: bold;">${property.home_garage}</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+                <span style="color: #666;">${locale === "en" ? "Pool" : "حمام السباحة"}</span>
+                <span style="font-weight: bold;">${property.home_pool}</span>
+              </div>
+            </div>
+          </div>
+          
+          ${property.other_features && property.other_features.length > 0 ? `
+          <div style="margin-bottom: 20px;">
+            <h3 style="color: #2e7d32; border-bottom: 1px solid #ddd; padding-bottom: 5px;">${locale === "en" ? "Other Features" : "مميزات أخرى"}</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+              ${property.other_features.map(feature => `
+                <span style="background-color: #f0f8f1; color: #2e7d32; padding: 6px 12px; border-radius: 20px; font-size: 14px;">
+                  ${feature.name}
+                </span>
+              `).join('')}
+            </div>
+          </div>
+          ` : ''}
+          
+          <div style="margin-top: 30px; text-align: center; font-size: 12px; color: #666;">
+            <p>Ref: ${property.id} - ${new Date().toLocaleDateString()}</p>
+            <p>${locale === "en" ? "This document is for information purposes only." : "هذه الوثيقة لأغراض المعلومات فقط."}</p>
+          </div>
+        </div>
+      `;
+
+      // Configure pdf options
+      const options = {
+        margin: 10,
+        filename: `property-${property.home_name}.pdf`,
+        image: { type: 'jpg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      // Generate PDF
+      html2pdf().from(printContent).set(options).save().then(() => {
+        // Clean up blob URLs after PDF is generated
+
+
+        toast.success(
+          locale === "en" ? "PDF generated successfully" : "تم إنشاء ملف PDF بنجاح"
+        );
+      });
     };
 
-    // Generate PDF
-    html2pdf().from(printContent).set(options).save();
-
-    toast.success(
-      locale === "en" ? "PDF generation started" : "بدأ إنشاء ملف PDF"
-    );
+    // Start the process
+    prepareImagesAndGeneratePDF();
   };
 
   return (

@@ -169,8 +169,8 @@ const Header = ({
     <>
       <header
         className={`sticky top-0 left-0 right-0 w-full z-[99997] transition-all duration-300 ${withBg || isScrolled
-            ? "bg-white text-gray-900"
-            : "bg-transparent backdrop-blur-sm text-white"
+          ? "bg-white text-gray-900"
+          : "bg-transparent backdrop-blur-sm text-white"
           } ${withShadow ? "shadow-md" : ""}`}
       >
         <div className="container mx-auto px-4 py-3 flex justify-between items-center max-w-screen-xl">
@@ -593,22 +593,36 @@ const SignInForm = ({
     mutationKey: ["signIn"],
     mutationFn: (formData: FormData) => clientPost("/site/login", formData),
     onSuccess: async (response) => {
-      if (response.token) {
-        cookies.set("token", response.token, {
+
+      if (!response) {
+        toast.error(locale === "ar" ? "حدث خطأ أثناء تسجيل الدخول" : "Login failed");
+        return;
+      }
+
+      try {
+        cookies.set("token", response?.token || "", {
           expires: 1, // 1 day
           path: "/",
-          secure: process.env.NODE_ENV === "production",
           sameSite: "strict",
         });
 
         // Get user data using token
-        const userData = await clientGetUser(response.token);
+        const userData = await clientGetUser(response?.token || "");
+
+        if (!userData || !userData.user) {
+          toast.error(locale === "ar" ? "حدث خطأ أثناء الحصول على بيانات المستخدم" : "Failed to get user data");
+          return;
+        }
+
         login({ ...response, user: userData.user });
         toast.success(response.message || "Successfully logged in!");
         setDialogState(null);
+      } catch (error: any) {
+        toast.error(error?.message || "Failed to complete login process");
       }
     },
     onError: (error: any) => {
+      console.error("Login error:", error);
       toast.error(error?.message || "Login failed");
     },
   });
@@ -723,7 +737,6 @@ const SignUpForm = ({
         cookies.set("token", response.token, {
           expires: 1, // 1 day
           path: "/",
-          secure: process.env.NODE_ENV === "production",
           sameSite: "strict",
         });
         const userData = await clientGetUser(response.token);

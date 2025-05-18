@@ -9,6 +9,9 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { ChevronDown } from "lucide-react";
 import { createPortal } from "react-dom";
+import { useQuery } from "@tanstack/react-query";
+import { clientGet } from "@/services/api";
+import { Category } from "@/types";
 
 type PropertyType = "sale" | "rent";
 type SearchFilterType = "name" | "category" | "city";
@@ -25,6 +28,10 @@ interface SearchInputProps {
   onSubmit: () => void;
   filterType: SearchFilterType;
   onFilterChange: (type: SearchFilterType) => void;
+  selectedType: PropertyType;
+  selectedCategory: string;
+  onCategorySelect: (category: string) => void;
+  onCategorySelected?: (category: string) => void;
 }
 
 const PROPERTY_TYPES = {
@@ -58,20 +65,53 @@ const ToggleButton = ({ type, selected, onSelect }: ToggleButtonProps) => {
   );
 };
 
-const SearchInput = ({ placeholder, onSearch, onSubmit, filterType, onFilterChange }: SearchInputProps) => {
+const SearchInput = ({
+  placeholder,
+  onSearch,
+  onSubmit,
+  filterType,
+  onFilterChange,
+  selectedType,
+  selectedCategory,
+  onCategorySelect,
+  onCategorySelected
+}: SearchInputProps) => {
   const locale = useLocale();
   const t = useTranslations("home.hero");
   const [isFocused, setIsFocused] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const categoryInputRef = useRef<HTMLDivElement>(null);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, right: 0 });
+  const [categoryDropdownPosition, setCategoryDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
+  const [inputValue, setInputValue] = useState("");
+
+  // Fetch categories when filter type is "category"
+  const { data: categoriesResponse, isLoading: isCategoriesLoading } = useQuery<{
+    data: Category[];
+  }>({
+    queryKey: ["categories", selectedType, locale, filterType],
+    queryFn: async () => {
+      if (filterType !== "category") return { data: [] };
+      return await clientGet<{ data: Category[] }>(
+        `/site/get-category?type=${selectedType}&locale=${locale}`
+      );
+    },
+    enabled: filterType === "category",
+  });
+
+  const categories = categoriesResponse?.data || [];
 
   const handleSearch = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      onSearch(e.target.value);
+      setInputValue(e.target.value);
+      if (filterType !== "category") {
+        onSearch(e.target.value);
+      }
     },
-    [onSearch]
+    [onSearch, filterType]
   );
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -86,6 +126,16 @@ const SearchInput = ({ placeholder, onSearch, onSubmit, filterType, onFilterChan
     setIsDropdownOpen(prev => !prev);
   };
 
+  // Toggle category dropdown
+  const toggleCategoryDropdown = (e: React.MouseEvent) => {
+    if (filterType === "category") {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log("Toggling category dropdown");
+      setIsCategoryDropdownOpen(prev => !prev);
+    }
+  };
+
   // Update dropdown position when opened
   useEffect(() => {
     if (isDropdownOpen && buttonRef.current) {
@@ -98,13 +148,20 @@ const SearchInput = ({ placeholder, onSearch, onSubmit, filterType, onFilterChan
     }
   }, [isDropdownOpen, locale]);
 
+  // Update category dropdown position
+  useEffect(() => {
+    if (isCategoryDropdownOpen && categoryInputRef.current) {
+      const rect = categoryInputRef.current.getBoundingClientRect();
+      setCategoryDropdownPosition({
+        top: rect.bottom + window.scrollY + 5,
+        left: rect.left + window.scrollX,
+        width: rect.width
+      });
+    }
+  }, [isCategoryDropdownOpen]);
+
   // Close dropdown when clicking outside
   useEffect(() => {
-    // Ensure dropdown appears by forcing it to be visible on first mount
-    if (isDropdownOpen && buttonRef.current && dropdownRef.current) {
-      dropdownRef.current.style.display = "block";
-    }
-
     const handleClickOutside = (event: MouseEvent) => {
       if (
         isDropdownOpen &&
@@ -115,19 +172,38 @@ const SearchInput = ({ placeholder, onSearch, onSubmit, filterType, onFilterChan
       ) {
         setIsDropdownOpen(false);
       }
+
+      if (
+        isCategoryDropdownOpen &&
+        categoryInputRef.current &&
+        !categoryInputRef.current.contains(event.target as Node)
+      ) {
+        setIsCategoryDropdownOpen(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isDropdownOpen]);
+  }, [isDropdownOpen, isCategoryDropdownOpen]);
 
   const filterOptions = [
     { value: "name" as const, label: t("searchByName") },
     { value: "category" as const, label: t("searchByCategory") },
     { value: "city" as const, label: t("searchByCity") }
   ];
+
+  // Handle category selection directly
+  const handleCategoryItemClick = (categoryName: string) => {
+    onCategorySelect(categoryName);
+    setIsCategoryDropdownOpen(false);
+
+    // Trigger automatic redirection when a category is selected
+    if (onCategorySelected) {
+      onCategorySelected(categoryName);
+    }
+  };
 
   return (
     <div className="relative max-w-2xl mx-auto">
@@ -145,7 +221,10 @@ const SearchInput = ({ placeholder, onSearch, onSubmit, filterType, onFilterChan
               ref={buttonRef}
               type="button"
               className={`h-full min-w-[110px] ${locale === "ar" ? "border-l" : "border-r"} border-gray-200 pl-4 pr-3 py-4 flex items-center justify-between text-gray-600 hover:text-gray-900 transition-colors`}
-              onClick={toggleDropdown}
+              onClick={(e) => {
+                console.log("Filter type button clicked");
+                toggleDropdown(e);
+              }}
             >
               <span className="text-sm font-medium">
                 {filterOptions.find(opt => opt.value === filterType)?.label}
@@ -154,15 +233,34 @@ const SearchInput = ({ placeholder, onSearch, onSubmit, filterType, onFilterChan
             </button>
           </div>
 
-          <input
-            type="text"
-            placeholder={placeholder}
-            className={`flex-1 px-3 py-4 text-gray-800 placeholder-gray-500 focus:outline-none`}
-            aria-label="Search properties"
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            onChange={handleSearch}
-          />
+          {filterType === "category" ? (
+            <div
+              ref={categoryInputRef}
+              className="flex-1 px-3 py-4 cursor-pointer relative"
+              onClick={(e) => {
+                console.log("Category input clicked");
+                toggleCategoryDropdown(e);
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <div className="text-gray-800">
+                  {selectedCategory || <span className="text-gray-500">{placeholder}</span>}
+                </div>
+                <ChevronDown className={`h-4 w-4 ml-1 text-gray-500 transition-transform ${isCategoryDropdownOpen ? "rotate-180" : ""}`} />
+              </div>
+            </div>
+          ) : (
+            <input
+              type="text"
+              placeholder={placeholder}
+              className={`flex-1 px-3 py-4 text-gray-800 placeholder-gray-500 focus:outline-none`}
+              aria-label="Search properties"
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              onChange={handleSearch}
+              value={inputValue}
+            />
+          )}
 
           <div className={`px-4 ${locale === "ar" ? "order-first" : ""}`}>
             <motion.button
@@ -171,6 +269,7 @@ const SearchInput = ({ placeholder, onSearch, onSubmit, filterType, onFilterChan
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               aria-label="Search"
+              onClick={() => console.log("Search button clicked")}
             >
               <svg
                 className="w-6 h-6 text-gray-600"
@@ -190,7 +289,7 @@ const SearchInput = ({ placeholder, onSearch, onSubmit, filterType, onFilterChan
         </div>
       </motion.form>
 
-      {/* Dropdown outside the form for better visibility and z-index handling */}
+      {/* Filter type dropdown */}
       {isDropdownOpen && createPortal(
         <motion.div
           ref={dropdownRef}
@@ -198,7 +297,7 @@ const SearchInput = ({ placeholder, onSearch, onSubmit, filterType, onFilterChan
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.2 }}
-          className={`fixed bg-white shadow-2xl rounded-lg overflow-hidden w-48 border border-gray-200 z-[9999]`}
+          className={`fixed bg-white shadow-2xl rounded-lg overflow-hidden w-48 border border-gray-200 z-[99999]`}
           style={{
             top: dropdownPosition.top,
             left: locale !== "ar" ? dropdownPosition.left : "auto",
@@ -218,11 +317,67 @@ const SearchInput = ({ placeholder, onSearch, onSubmit, filterType, onFilterChan
                 e.stopPropagation();
                 onFilterChange(option.value);
                 setIsDropdownOpen(false);
+
+                // Reset category selection when changing filter type
+                if (option.value === "category") {
+                  onCategorySelect("");
+                  setInputValue("");
+                }
               }}
             >
               {option.label}
             </button>
           ))}
+        </motion.div>,
+        document.body
+      )}
+
+      {/* Category dropdown */}
+      {isCategoryDropdownOpen && filterType === "category" && createPortal(
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.2 }}
+          className="fixed bg-white shadow-2xl rounded-lg overflow-hidden w-48 border border-gray-200 z-[99999]"
+          style={{
+            top: categoryDropdownPosition.top,
+            left: categoryDropdownPosition.left,
+            right: locale === "ar" ? categoryDropdownPosition.left : "auto",
+            pointerEvents: "auto"
+          }}
+        >
+          {isCategoriesLoading ? (
+            <div className="py-3 px-4 text-sm text-gray-500 text-center">
+              {t("loading")}...
+            </div>
+          ) : categories.length > 0 ? (
+            categories.map(category => {
+              console.log("Rendering category:", category.name); // Debug log
+              return (
+                <button
+                  key={category.id}
+                  type="button"
+                  className={`block w-full text-left px-4 py-3 text-sm ${selectedCategory === category.name
+                    ? "bg-blue-50 text-blue-600 font-medium"
+                    : "text-gray-700 hover:bg-gray-50"
+                    }`}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log("Category item clicked:", category.name);
+                    handleCategoryItemClick(category.name);
+                  }}
+                >
+                  {category.name}
+                </button>
+              );
+            })
+          ) : (
+            <div className="py-3 px-4 text-sm text-gray-500 text-center">
+              {t("noCategories")}
+            </div>
+          )}
         </motion.div>,
         document.body
       )}
@@ -237,27 +392,38 @@ const Hero = () => {
   const [selected, setSelected] = useState<PropertyType>(PROPERTY_TYPES.RENT);
   const [searchValue, setSearchValue] = useState("");
   const [searchFilter, setSearchFilter] = useState<SearchFilterType>("name");
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   const handleSearch = useCallback((value: string) => {
     setSearchValue(value);
   }, []);
 
   const handleSearchSubmit = useCallback(() => {
-    if (searchValue.trim()) {
-      const params = new URLSearchParams();
+    const params = new URLSearchParams();
 
-      // Add search parameter based on selected filter
-      if (searchFilter === "name") {
-        params.append("home_name", searchValue.trim());
-      } else if (searchFilter === "category") {
-        params.append("category_type", searchValue.trim());
-      } else if (searchFilter === "city") {
-        params.append("city", searchValue.trim());
-      }
-
-      router.push(`/search/${selected}?${params.toString()}`);
+    // Add search parameter based on selected filter
+    if (searchFilter === "name" && searchValue.trim()) {
+      params.append("home_name", searchValue.trim());
+    } else if (searchFilter === "category" && selectedCategory) {
+      params.append("category_type", selectedCategory);
+    } else if (searchFilter === "city" && searchValue.trim()) {
+      params.append("city", searchValue.trim());
+    } else {
+      // If no valid search conditions, don't proceed
+      return;
     }
-  }, [router, searchValue, selected, searchFilter]);
+
+    router.push(`/search?${params.toString()}&type=${selected}`);
+  }, [router, searchValue, selectedCategory, selected, searchFilter]);
+
+  // Function to handle category selection and auto-redirect
+  const handleCategorySelected = useCallback((categoryName: string) => {
+    console.log("Redirecting to category:", categoryName);
+    const params = new URLSearchParams();
+    params.append("category_type", categoryName);
+    params.append("type", selected);
+    router.push(`/search?${params.toString()}`);
+  }, [router, selected]);
 
   return (
     <Banner backgroundImage="/images/hero-bg.jpg" height="90vh">
@@ -310,6 +476,10 @@ const Hero = () => {
             onSubmit={handleSearchSubmit}
             filterType={searchFilter}
             onFilterChange={setSearchFilter}
+            selectedType={selected}
+            selectedCategory={selectedCategory}
+            onCategorySelect={setSelectedCategory}
+            onCategorySelected={handleCategorySelected}
           />
         </TransitionBox>
       </TransitionBox>

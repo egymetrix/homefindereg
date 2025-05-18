@@ -6,7 +6,7 @@ import { clientGet } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
 import { useLocale } from "next-intl";
 import Button from "@/components/ui/Button";
-import { usePathname, useRouter, Link } from "@/i18n/routing";
+import { Link } from "@/i18n/routing";
 import { useSearchParams } from "next/navigation";
 import { Category, City, Government } from "@/types";
 
@@ -28,8 +28,6 @@ const CitiesFilter = ({
   activeCategory: string;
   setActiveCategory: React.Dispatch<React.SetStateAction<string>>;
 }) => {
-  const router = useRouter();
-  const pathname = usePathname();
   const locale = useLocale();
   const filters = [
     { name: "sale", label: locale === "en" ? "Sale" : "بيع" },
@@ -55,20 +53,6 @@ const CitiesFilter = ({
 
   const handleCategoryClick = (name: string) => {
     setActiveCategory(name);
-
-    const searchParams = new URLSearchParams();
-    searchParams.set("filter", activeFilter);
-    searchParams.set("category", name);
-
-    if (pathname === "/") {
-      router.push(`/cities?${searchParams.toString()}#estates`, {
-        scroll: false,
-      });
-    } else {
-      router.push(`${pathname}?${searchParams.toString()}`, {
-        scroll: false,
-      });
-    }
   };
 
   return (
@@ -77,36 +61,20 @@ const CitiesFilter = ({
         {filters.map((filter) => (
           <button
             key={filter.name}
-            className={`px-6 capitalize py-2 rounded-t-lg transition-colors duration-300 ${
-              activeFilter === filter.name
-                ? "bg-white"
-                : "bg-gray-100 hover:bg-gray-200"
-            }`}
+            className={`px-6 capitalize py-2 rounded-t-lg transition-colors duration-300 ${activeFilter === filter.name
+              ? "bg-white"
+              : "bg-gray-100 hover:bg-gray-200"
+              }`}
             onClick={() => {
               if (activeFilter !== filter.name) {
                 setActiveFilter(filter.name as "sale" | "rent");
                 // The category will be updated via useEffect
-                // But only update URL when explicitly clicked
                 if (
                   categoriesResponse?.data &&
                   categoriesResponse.data.length > 0
                 ) {
-                  // We need to wait for the new category to be set first
                   const newCategory = categoriesResponse.data[0].name;
-
-                  const searchParams = new URLSearchParams();
-                  searchParams.set("filter", filter.name);
-                  searchParams.set("category", newCategory);
-
-                  if (pathname === "/") {
-                    router.push(`/cities?${searchParams.toString()}#estates`, {
-                      scroll: false,
-                    });
-                  } else {
-                    router.push(`${pathname}?${searchParams.toString()}`, {
-                      scroll: false,
-                    });
-                  }
+                  setActiveCategory(newCategory);
                 }
               }
             }}
@@ -124,11 +92,10 @@ const CitiesFilter = ({
           categoriesResponse?.data?.map((category: Category) => (
             <button
               key={category.name}
-              className={`relative whitespace-nowrap px-1 py-4 text-sm font-medium transition-colors ${
-                activeCategory === category.name
-                  ? "text-blue-600"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
+              className={`relative whitespace-nowrap px-1 py-4 text-sm font-medium transition-colors ${activeCategory === category.name
+                ? "text-blue-600"
+                : "text-gray-500 hover:text-gray-700"
+                }`}
               onClick={() => handleCategoryClick(category.name)}
             >
               {category.name}
@@ -150,8 +117,6 @@ const CitiesList = ({
   activeFilter: "sale" | "rent";
   activeCategory: string;
 }) => {
-  const router = useRouter();
-  const pathname = usePathname();
   const locale = useLocale();
   const [showAll, setShowAll] = useState(false);
 
@@ -171,26 +136,11 @@ const CitiesList = ({
   const displayedGovernments = showAll ? governments : governments.slice(0, 4);
 
   const handleCityClick = () => {
-    if (pathname === "/") {
-      const searchParams = new URLSearchParams();
-      searchParams.set("filter", activeFilter);
-      searchParams.set("category", activeCategory);
-      router.push(`/cities?${searchParams.toString()}#estates`, {
-        scroll: false,
-      });
-    }
+    // Removed redirect logic
   };
 
   const handleShowAll = () => {
     setShowAll(true);
-    if (pathname === "/") {
-      const searchParams = new URLSearchParams();
-      searchParams.set("filter", activeFilter);
-      searchParams.set("category", activeCategory);
-      router.push(`/cities?${searchParams.toString()}#estates`, {
-        scroll: false,
-      });
-    }
   };
 
   if (isLoading) {

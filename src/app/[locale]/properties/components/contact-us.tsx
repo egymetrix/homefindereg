@@ -9,9 +9,11 @@ import Button from "@/components/ui/Button";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { contactUs } from "@/services/contact-us";
+import { usePathname } from "next/navigation";
 
-const ContactUs = ({ type }: { type?: string }) => {
+const ContactUs = ({ type, preporty_id }: { type?: string, preporty_id?: string }) => {
   const locale = useLocale();
+  const pathname = usePathname();
   const [formData, setFormData] = useState({
     name: "",
     surname: "",
@@ -20,6 +22,7 @@ const ContactUs = ({ type }: { type?: string }) => {
     message: "",
     type: type || "",
     kind_request: "",
+    preporty_id: preporty_id || "",
   });
 
   const [isOpen, setIsOpen] = useState(false);
@@ -37,24 +40,31 @@ const ContactUs = ({ type }: { type?: string }) => {
       value: "thermal_insulation",
       label: locale === "ar" ? "العزل الحراري للمنازل" : "Home Thermal Insulation",
     },
+    {
+      value: "other",
+      label: locale === "ar" ? "أخرى" : "Other",
+    },
   ];
 
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
       const data = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
+        // Skip empty type and property_id fields
+        if ((key === 'type' || key === 'preporty_id') && !value) {
+          return;
+        }
         const formValue = key === "telephone" ? Number(value) : value;
         data.append(key, formValue.toString());
       });
       const response = await contactUs(data);
       return response;
     },
-    onSuccess: (response) => {
+    onSuccess: () => {
       toast.success(
-        (response as { message?: string })?.message ||
-        (locale === "ar"
-          ? "تم إرسال رسالتك بنجاح"
-          : "Message sent successfully")
+        locale === "ar"
+          ? "تم إرسال رسالتك! سنقوم بالرد عليك قريبًا."
+          : "Your message has been sent! We'll get back to you soon."
       );
       setFormData({
         name: "",
@@ -64,6 +74,7 @@ const ContactUs = ({ type }: { type?: string }) => {
         message: "",
         type: type || "property",
         kind_request: "",
+        preporty_id: preporty_id || "",
       });
     },
     onError: (error: any) => {
@@ -133,58 +144,60 @@ const ContactUs = ({ type }: { type?: string }) => {
           className="text-sm"
         />
 
-        <div className="relative">
-          <label className="block text-xs font-medium text-gray-700 mb-1">
-            {locale === "ar" ? "نوع الطلب*" : "Request Type*"}
-          </label>
+        {pathname.includes("contact") && (
           <div className="relative">
-            <button
-              type="button"
-              onClick={() => setIsOpen(!isOpen)}
-              className="flex items-center justify-between w-full px-4 py-3 text-gray-700 bg-white hover:bg-gray-50 transition-all duration-200 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-            >
-              <span className="text-sm">
-                {formData.kind_request
-                  ? kindRequestOptions.find(
-                    (opt) => opt.value === formData.kind_request
-                  )?.label
-                  : locale === "ar"
-                    ? "اختر نوع الطلب"
-                    : "Select request type"}
-              </span>
-              <ChevronDown
-                className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isOpen ? "rotate-180" : ""
-                  }`}
-              />
-            </button>
-
-            {isOpen && (
-              <>
-                <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 shadow-lg rounded-lg py-1 overflow-hidden">
-                  {kindRequestOptions.map((option) => (
-                    <button
-                      key={option.value}
-                      className={`w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors ${formData.kind_request === option.value
-                        ? "text-primary font-medium bg-primary/5"
-                        : "text-gray-700"
-                        }`}
-                      onClick={() => {
-                        setFormData({ ...formData, kind_request: option.value });
-                        setIsOpen(false);
-                      }}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
-                <div
-                  className="fixed inset-0 z-40 bg-transparent"
-                  onClick={() => setIsOpen(false)}
+            <label className="block text-xs font-medium text-gray-700 mb-1">
+              {locale === "ar" ? "نوع الطلب*" : "Request Type*"}
+            </label>
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setIsOpen(!isOpen)}
+                className="flex items-center justify-between w-full px-4 py-3 text-gray-700 bg-white hover:bg-gray-50 transition-all duration-200 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              >
+                <span className="text-sm">
+                  {formData.kind_request
+                    ? kindRequestOptions.find(
+                      (opt) => opt.value === formData.kind_request
+                    )?.label
+                    : locale === "ar"
+                      ? "اختر نوع الطلب"
+                      : "Select request type"}
+                </span>
+                <ChevronDown
+                  className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+                    }`}
                 />
-              </>
-            )}
+              </button>
+
+              {isOpen && (
+                <>
+                  <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 shadow-lg rounded-lg py-1 overflow-hidden">
+                    {kindRequestOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        className={`w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors ${formData.kind_request === option.value
+                          ? "text-primary font-medium bg-primary/5"
+                          : "text-gray-700"
+                          }`}
+                        onClick={() => {
+                          setFormData({ ...formData, kind_request: option.value });
+                          setIsOpen(false);
+                        }}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                  <div
+                    className="fixed inset-0 z-40 bg-transparent"
+                    onClick={() => setIsOpen(false)}
+                  />
+                </>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1">

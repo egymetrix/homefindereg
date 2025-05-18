@@ -92,6 +92,12 @@ const CustomSelect = ({
 }: CustomSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const handleOptionSelect = (optionValue: string) => {
+    console.log("Option selected in CustomSelect:", optionValue);
+    onChange?.(optionValue);
+    setIsOpen(false);
+  };
+
   return (
     <div className="relative group">
       <button
@@ -106,15 +112,13 @@ const CustomSelect = ({
               Loading...
             </div>
           ) : value ? (
-            options.find((opt) => opt.value === value)?.label
+            options.find((opt) => opt.value === value)?.label || value
           ) : (
             placeholder
           )}
         </span>
         <ChevronDown
-          className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
         />
       </button>
 
@@ -131,15 +135,11 @@ const CustomSelect = ({
               {options.map((option) => (
                 <button
                   key={option.value}
-                  className={`w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors ${
-                    value === option.value
+                  className={`w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors ${value === option.value
                       ? "text-primary font-medium bg-primary/5"
                       : "text-gray-700"
-                  }`}
-                  onClick={() => {
-                    onChange?.(option.value);
-                    setIsOpen(false);
-                  }}
+                    }`}
+                  onClick={() => handleOptionSelect(option.value)}
                 >
                   {option.label}
                 </button>
@@ -173,11 +173,9 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
           )}
           <input
             ref={ref}
-            className={`w-full px-4 py-2.5 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 ${
-              icon ? "pl-10" : ""
-            } ${
-              error ? "border-red-500" : "hover:border-primary/40"
-            } ${className}`}
+            className={`w-full px-4 py-2.5 text-gray-700 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 ${icon ? "pl-10" : ""
+              } ${error ? "border-red-500" : "hover:border-primary/40"
+              } ${className}`}
             {...props}
           />
         </div>
@@ -235,9 +233,8 @@ const RangeFilter = ({
           </span>
         </div>
         <ChevronDown
-          className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+            }`}
         />
       </button>
 
@@ -289,7 +286,7 @@ const Filters = () => {
   const isRTL = locale === "ar";
 
   const [showFilters, setShowFilters] = useState(false);
-  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  // const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [filters, setFilters] = useState<FilterState>(() => ({
     type: (searchParams.get("type") as "sale" | "rent") || "sale",
     category_type: searchParams.get("category_type") || "",
@@ -327,19 +324,44 @@ const Filters = () => {
   // Update URL and state
   const updateFilter = useCallback(
     (key: keyof FilterState, value: string) => {
-      setFilters((prev) => ({ ...prev, [key]: value }));
-      updateSearchParams(searchParams, pathname, router, { [key]: value });
+      console.log("Updating filter:", { key, value });
+      setFilters((prev) => {
+        const newFilters = { ...prev, [key]: value };
+        console.log("New filters state:", newFilters);
+        return newFilters;
+      });
+
+      // Create a new URLSearchParams object with all current parameters
+      const params = new URLSearchParams(searchParams.toString());
+
+      // Update or remove the parameter
+      if (value === null || value === "") {
+        params.delete(key);
+      } else {
+        params.set(key, value);
+      }
+
+      // Preserve all existing parameters
+      const currentParams = new URLSearchParams(searchParams.toString());
+      currentParams.forEach((val, key) => {
+        if (!params.has(key)) {
+          params.set(key, val);
+        }
+      });
+
+      console.log("Updated URL params:", params.toString());
+      router.push(`${pathname}?${params.toString()}`);
     },
     [searchParams, router, pathname]
   );
 
   // Reset category_type when locale changes
   useEffect(() => {
-    // Reset the category_type when locale changes
-    if (filters.category_type) {
+    // Only reset if we're not already on a category page
+    if (filters.category_type && !searchParams.get("category_type")) {
       updateFilter("category_type", "");
     }
-  }, [locale, updateFilter, filters.category_type]);
+  }, [locale, updateFilter, filters.category_type, searchParams]);
 
   // Update URL when debounced values change with proper dependencies
   useEffect(() => {
@@ -415,17 +437,15 @@ const Filters = () => {
               className="flex-1 flex items-center justify-between px-4 py-3 bg-white hover:bg-gray-50 text-gray-700 rounded-lg border border-gray-200 transition-all duration-200 group"
             >
               <div
-                className={`flex items-center gap-3 ${
-                  isRTL ? "flex-row-reverse" : ""
-                }`}
+                className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""
+                  }`}
               >
                 <div className="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
                   <SlidersHorizontal className="w-4 h-4 text-primary" />
                 </div>
                 <div
-                  className={`flex flex-col ${
-                    isRTL ? "items-end" : "items-start"
-                  }`}
+                  className={`flex flex-col ${isRTL ? "items-end" : "items-start"
+                    }`}
                 >
                   <span className="text-sm font-medium">{t("filters")}</span>
                   <span className="text-xs text-gray-500">
@@ -436,9 +456,8 @@ const Filters = () => {
                 </div>
               </div>
               <ChevronDown
-                className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
-                  showFilters ? "rotate-180" : ""
-                }`}
+                className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${showFilters ? "rotate-180" : ""
+                  }`}
               />
             </button>
 
@@ -471,7 +490,10 @@ const Filters = () => {
               name="category"
               placeholder={t("propertyType")}
               value={filters.category_type}
-              onChange={(value) => updateFilter("category_type", value)}
+              onChange={(value) => {
+                console.log("Category changed in Filters:", value);
+                updateFilter("category_type", value);
+              }}
               options={
                 categoriesResponse?.data?.map((category) => ({
                   value: category.name,
@@ -493,10 +515,10 @@ const Filters = () => {
                 min && max
                   ? `${formatPrice(min)} - ${formatPrice(max)}`
                   : min
-                  ? t("fromPrice", { price: formatPrice(min) })
-                  : max
-                  ? t("upToPrice", { price: formatPrice(max) })
-                  : t("priceRange")
+                    ? t("fromPrice", { price: formatPrice(min) })
+                    : max
+                      ? t("upToPrice", { price: formatPrice(max) })
+                      : t("priceRange")
               }
               icon={<span className="text-sm font-medium">$</span>}
             />
@@ -513,15 +535,15 @@ const Filters = () => {
                 min && max
                   ? `${formatArea(min)} - ${formatArea(max)}`
                   : min
-                  ? t("fromArea", { area: formatArea(min) })
-                  : max
-                  ? t("upToArea", { area: formatArea(max) })
-                  : t("surfaceArea")
+                    ? t("fromArea", { area: formatArea(min) })
+                    : max
+                      ? t("upToArea", { area: formatArea(max) })
+                      : t("surfaceArea")
               }
             />
           </div>
 
-          <div className="flex justify-center mt-2 mb-4">
+          {/* <div className="flex justify-center mt-2 mb-4">
             <button
               onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
               className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 group"
@@ -534,9 +556,9 @@ const Filters = () => {
                 }`}
               />
             </button>
-          </div>
+          </div> */}
 
-          {showAdvancedFilters && (
+          {/* {showAdvancedFilters && (
             <AnimatePresence>
               {showAdvancedFilters && (
                 <motion.div
@@ -587,7 +609,7 @@ const Filters = () => {
                 </motion.div>
               )}
             </AnimatePresence>
-          )}
+          )} */}
         </div>
 
         {/* Mobile Filters Modal */}
@@ -598,9 +620,8 @@ const Filters = () => {
               onClick={() => setShowFilters(false)}
             />
             <div
-              className={`fixed inset-x-0 top-[72px] bottom-0 bg-white overflow-y-auto ${
-                isRTL ? "text-right" : "text-left"
-              }`}
+              className={`fixed inset-x-0 top-[72px] bottom-0 bg-white overflow-y-auto ${isRTL ? "text-right" : "text-left"
+                }`}
             >
               <div className="sticky top-0 flex items-center justify-between p-4 bg-white border-b z-10">
                 <h2 className="text-lg font-semibold">{t("filters")}</h2>
@@ -628,7 +649,10 @@ const Filters = () => {
                   name="category"
                   placeholder={t("propertyType")}
                   value={filters.category_type}
-                  onChange={(value) => updateFilter("category_type", value)}
+                  onChange={(value) => {
+                    console.log("Category changed in Filters:", value);
+                    updateFilter("category_type", value);
+                  }}
                   options={
                     categoriesResponse?.data?.map((category) => ({
                       value: category.name,
@@ -650,10 +674,10 @@ const Filters = () => {
                     min && max
                       ? `${formatPrice(min)} - ${formatPrice(max)}`
                       : min
-                      ? t("fromPrice", { price: formatPrice(min) })
-                      : max
-                      ? t("upToPrice", { price: formatPrice(max) })
-                      : t("priceRange")
+                        ? t("fromPrice", { price: formatPrice(min) })
+                        : max
+                          ? t("upToPrice", { price: formatPrice(max) })
+                          : t("priceRange")
                   }
                   icon={<span className="text-sm font-medium">$</span>}
                 />
@@ -670,10 +694,10 @@ const Filters = () => {
                     min && max
                       ? `${formatArea(min)} - ${formatArea(max)}`
                       : min
-                      ? t("fromArea", { area: formatArea(min) })
-                      : max
-                      ? t("upToArea", { area: formatArea(max) })
-                      : t("surfaceArea")
+                        ? t("fromArea", { area: formatArea(min) })
+                        : max
+                          ? t("upToArea", { area: formatArea(max) })
+                          : t("surfaceArea")
                   }
                 />
 
@@ -716,9 +740,8 @@ const Filters = () => {
                     className={isRTL ? "pr-10" : "pl-10"}
                   />
                   <Search
-                    className={`w-4 h-4 text-gray-500 absolute top-[34px] ${
-                      isRTL ? "right-3" : "left-3"
-                    }`}
+                    className={`w-4 h-4 text-gray-500 absolute top-[34px] ${isRTL ? "right-3" : "left-3"
+                      }`}
                   />
                 </div>
               </div>
