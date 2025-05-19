@@ -26,13 +26,6 @@ const MainSearchPage = () => {
   const cityParam = searchParams.get("city") || "";
   const typeParam = searchParams.get("type") || "";
 
-  console.log("Search Parameters:", {
-    homeNameParam,
-    categoryTypeParam,
-    cityParam,
-    typeParam
-  });
-
   // // Additional filter parameters
   // const minPriceParam = searchParams.get("min_price") || "";
   // const maxPriceParam = searchParams.get("max_price") || "";
@@ -44,12 +37,7 @@ const MainSearchPage = () => {
   const { data: homesResponse, isLoading } = useQuery({
     queryKey: ["homes", searchParams.toString()],
     queryFn: async () => {
-      console.log("Fetching homes with params:", {
-        city: cityParam,
-        type: typeParam,
-        category_type: categoryTypeParam,
-        home_name: homeNameParam
-      });
+
       // Use the consolidated searchHomesByParams function for all search scenarios
       const response = await searchHomes(
         cityParam,

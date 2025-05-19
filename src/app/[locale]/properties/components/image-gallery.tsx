@@ -106,7 +106,6 @@ const ImageThumbnail = ({
 );
 
 const ImageGallery = ({ data }: { data: Property | undefined }) => {
-  console.log(data);
   const t = useTranslations("properties");
   const mediaCollections = useMediaCollections(data);
 
@@ -325,9 +324,8 @@ const ImageGallery = ({ data }: { data: Property | undefined }) => {
   return (
     <div className="max-w-7xl mx-auto">
       <div
-        className={`grid grid-cols-1 ${
-          displayImages.length > 1 ? "md:grid-cols-[2fr,1fr]" : "md:grid-cols-1"
-        } gap-6 h-[400px] md:h-[600px] bg-gray-50 p-4 sm:p-6 rounded-xl`}
+        className={`grid grid-cols-1 ${displayImages.length > 1 ? "md:grid-cols-[2fr,1fr]" : "md:grid-cols-1"
+          } gap-6 h-[400px] md:h-[600px] bg-gray-50 p-4 sm:p-6 rounded-xl`}
       >
         <div
           className="relative rounded-xl overflow-hidden shadow-lg h-full cursor-pointer group"
@@ -420,21 +418,19 @@ const ImageGallery = ({ data }: { data: Property | undefined }) => {
                         key={idx}
                         onClick={() => setActiveView(btn.view as any)}
                         className={`px-3 md:px-6 py-2 md:py-3 rounded-xl transition-all duration-300 flex items-center gap-2 md:gap-3 flex-shrink-0
-                        ${
-                          activeView === btn.view
+                        ${activeView === btn.view
                             ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-200/50 ring-1 ring-blue-400/30"
                             : "text-gray-700 hover:bg-gray-100/80 hover:shadow-sm ring-1 ring-gray-200/50"
-                        } backdrop-blur-sm`}
+                          } backdrop-blur-sm`}
                         whileHover={{ scale: 1.02, y: -1 }}
                         whileTap={{ scale: 0.98 }}
                       >
                         <btn.icon
                           size={20}
-                          className={`${
-                            activeView === btn.view
+                          className={`${activeView === btn.view
                               ? "text-white"
                               : "text-gray-600"
-                          }`}
+                            }`}
                         />
                         <span className="text-xs md:text-sm font-semibold tracking-wide whitespace-nowrap">
                           {btn.label}

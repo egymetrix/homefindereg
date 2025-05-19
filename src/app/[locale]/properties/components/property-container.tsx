@@ -26,7 +26,6 @@ const PropertyContainer = ({ propertyId }: { propertyId: string }) => {
     queryFn: () => getProperty(id),
   });
 
-  console.log(data?.HomeSuggest);
 
   useEffect(() => {
     if (!isLoading && !data) {

@@ -131,7 +131,6 @@ const SearchInput = ({
     if (filterType === "category") {
       e.preventDefault();
       e.stopPropagation();
-      console.log("Toggling category dropdown");
       setIsCategoryDropdownOpen(prev => !prev);
     }
   };
@@ -222,7 +221,6 @@ const SearchInput = ({
               type="button"
               className={`h-full min-w-[110px] ${locale === "ar" ? "border-l" : "border-r"} border-gray-200 pl-4 pr-3 py-4 flex items-center justify-between text-gray-600 hover:text-gray-900 transition-colors`}
               onClick={(e) => {
-                console.log("Filter type button clicked");
                 toggleDropdown(e);
               }}
             >
@@ -238,7 +236,6 @@ const SearchInput = ({
               ref={categoryInputRef}
               className="flex-1 px-3 py-4 cursor-pointer relative"
               onClick={(e) => {
-                console.log("Category input clicked");
                 toggleCategoryDropdown(e);
               }}
             >
@@ -269,7 +266,6 @@ const SearchInput = ({
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               aria-label="Search"
-              onClick={() => console.log("Search button clicked")}
             >
               <svg
                 className="w-6 h-6 text-gray-600"
@@ -353,7 +349,6 @@ const SearchInput = ({
             </div>
           ) : categories.length > 0 ? (
             categories.map(category => {
-              console.log("Rendering category:", category.name); // Debug log
               return (
                 <button
                   key={category.id}
@@ -365,7 +360,6 @@ const SearchInput = ({
                   onMouseDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    console.log("Category item clicked:", category.name);
                     handleCategoryItemClick(category.name);
                   }}
                 >
@@ -418,7 +412,6 @@ const Hero = () => {
 
   // Function to handle category selection and auto-redirect
   const handleCategorySelected = useCallback((categoryName: string) => {
-    console.log("Redirecting to category:", categoryName);
     const params = new URLSearchParams();
     params.append("category_type", categoryName);
     params.append("type", selected);

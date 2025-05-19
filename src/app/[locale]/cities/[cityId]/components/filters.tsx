@@ -93,7 +93,6 @@ const CustomSelect = ({
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOptionSelect = (optionValue: string) => {
-    console.log("Option selected in CustomSelect:", optionValue);
     onChange?.(optionValue);
     setIsOpen(false);
   };
@@ -136,8 +135,8 @@ const CustomSelect = ({
                 <button
                   key={option.value}
                   className={`w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors ${value === option.value
-                      ? "text-primary font-medium bg-primary/5"
-                      : "text-gray-700"
+                    ? "text-primary font-medium bg-primary/5"
+                    : "text-gray-700"
                     }`}
                   onClick={() => handleOptionSelect(option.value)}
                 >
@@ -324,10 +323,8 @@ const Filters = () => {
   // Update URL and state
   const updateFilter = useCallback(
     (key: keyof FilterState, value: string) => {
-      console.log("Updating filter:", { key, value });
       setFilters((prev) => {
         const newFilters = { ...prev, [key]: value };
-        console.log("New filters state:", newFilters);
         return newFilters;
       });
 
@@ -349,7 +346,6 @@ const Filters = () => {
         }
       });
 
-      console.log("Updated URL params:", params.toString());
       router.push(`${pathname}?${params.toString()}`);
     },
     [searchParams, router, pathname]
@@ -491,7 +487,6 @@ const Filters = () => {
               placeholder={t("propertyType")}
               value={filters.category_type}
               onChange={(value) => {
-                console.log("Category changed in Filters:", value);
                 updateFilter("category_type", value);
               }}
               options={
@@ -650,7 +645,6 @@ const Filters = () => {
                   placeholder={t("propertyType")}
                   value={filters.category_type}
                   onChange={(value) => {
-                    console.log("Category changed in Filters:", value);
                     updateFilter("category_type", value);
                   }}
                   options={
