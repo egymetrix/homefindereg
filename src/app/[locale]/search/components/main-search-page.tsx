@@ -4,7 +4,7 @@ import { useRef } from "react";
 import L from "leaflet";
 import { Loader2 } from "lucide-react";
 import { useLocale } from "next-intl";
-import { searchHomes } from "@/services/properties";
+import { getHomes } from "@/services/properties";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import PropertyCard from "@/app/[locale]/cities/[cityId]/components/property-card";
@@ -22,15 +22,15 @@ const MainSearchPage = () => {
 
   // Extract search parameters
   const homeNameParam = searchParams.get("home_name") || "";
-  const categoryTypeParam = searchParams.get("category_type") || "";
-  const cityParam = searchParams.get("city") || "";
+  const categoryTypeParam = searchParams.get("category_id") || "";
+  const cityParam = searchParams.get("city_name") || "";
   const typeParam = searchParams.get("type") || "";
 
   // // Additional filter parameters
-  // const minPriceParam = searchParams.get("min_price") || "";
-  // const maxPriceParam = searchParams.get("max_price") || "";
-  // const minAreaParam = searchParams.get("min_area") || "";
-  // const maxAreaParam = searchParams.get("max_area") || "";
+  const minPriceParam = searchParams.get("min_price") || "";
+  const maxPriceParam = searchParams.get("max_price") || "";
+  const minAreaParam = searchParams.get("min_area") || "";
+  const maxAreaParam = searchParams.get("max_area") || "";
   // const bathroomsParam = searchParams.get("home_bathrooms") || "";
   // const kitchensParam = searchParams.get("home_kitchens") || "";
 
@@ -39,12 +39,16 @@ const MainSearchPage = () => {
     queryFn: async () => {
 
       // Use the consolidated searchHomesByParams function for all search scenarios
-      const response = await searchHomes(
-        cityParam,
-        typeParam,
-        categoryTypeParam,
-        homeNameParam
-      );
+      const response = await getHomes({
+        city_name: cityParam,
+        type: typeParam as "sale" | "rent",
+        category_id: categoryTypeParam,
+        home_name: homeNameParam,
+        min_price: minPriceParam,
+        max_price: maxPriceParam,
+        min_area: minAreaParam,
+        max_area: maxAreaParam,
+      });
       return response;
     },
   });
@@ -73,7 +77,7 @@ const MainSearchPage = () => {
     if (homeNameParam) {
       return `${locale === "en" ? "Search Results for" : "نتائج البحث عن"} "${homeNameParam}"`;
     } else if (categoryTypeParam) {
-      return `${locale === "en" ? "Properties of type" : "عقارات من نوع"} "${categoryTypeParam}"`;
+      return `${locale === "en" ? "All Properties in this Category" : "جميع العقارات في هذه الفئة"}`;
     } else if (cityParam) {
       return `${locale === "en" ? "Properties in City" : "عقارات في مدينة"}: ${cityParam}`;
     } else {

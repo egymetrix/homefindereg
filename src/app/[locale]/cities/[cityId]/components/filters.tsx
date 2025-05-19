@@ -21,7 +21,7 @@ import { useTranslations } from "next-intl";
 
 interface FilterState {
   type: "sale" | "rent";
-  category_type: string;
+  category_id: string;
   min_price: string;
   max_price: string;
   min_area: string;
@@ -288,7 +288,7 @@ const Filters = () => {
   // const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [filters, setFilters] = useState<FilterState>(() => ({
     type: (searchParams.get("type") as "sale" | "rent") || "sale",
-    category_type: searchParams.get("category_type") || "",
+    category_id: searchParams.get("category_id") || "",
     min_price: searchParams.get("min_price") || "",
     max_price: searchParams.get("max_price") || "",
     min_area: searchParams.get("min_area") || "",
@@ -351,13 +351,13 @@ const Filters = () => {
     [searchParams, router, pathname]
   );
 
-  // Reset category_type when locale changes
+  // Reset category_id when locale changes
   useEffect(() => {
     // Only reset if we're not already on a category page
-    if (filters.category_type && !searchParams.get("category_type")) {
-      updateFilter("category_type", "");
+    if (filters.category_id && !searchParams.get("category_id")) {
+      updateFilter("category_id", "");
     }
-  }, [locale, updateFilter, filters.category_type, searchParams]);
+  }, [locale, updateFilter, filters.category_id, searchParams]);
 
   // Update URL when debounced values change with proper dependencies
   useEffect(() => {
@@ -398,7 +398,7 @@ const Filters = () => {
   const resetFilters = useCallback(() => {
     const defaultFilters = {
       type: filters.type,
-      category_type: filters.category_type,
+      category_id: filters.category_id,
       min_price: null,
       max_price: null,
       min_area: null,
@@ -420,7 +420,7 @@ const Filters = () => {
     });
 
     updateSearchParams(searchParams, pathname, router, defaultFilters);
-  }, [filters.type, filters.category_type, router, pathname, searchParams]);
+  }, [filters.type, filters.category_id, router, pathname, searchParams]);
 
   return (
     <div className="bg-white shadow-sm border-y sticky top-[69px] z-[99]">
@@ -485,13 +485,13 @@ const Filters = () => {
             <CustomSelect
               name="category"
               placeholder={t("propertyType")}
-              value={filters.category_type}
+              value={filters.category_id}
               onChange={(value) => {
-                updateFilter("category_type", value);
+                updateFilter("category_id", value);
               }}
               options={
                 categoriesResponse?.data?.map((category) => ({
-                  value: category.name,
+                  value: String(category.id),
                   label: category.name,
                 })) || []
               }
@@ -643,13 +643,13 @@ const Filters = () => {
                 <CustomSelect
                   name="category"
                   placeholder={t("propertyType")}
-                  value={filters.category_type}
+                  value={filters.category_id}
                   onChange={(value) => {
-                    updateFilter("category_type", value);
+                    updateFilter("category_id", value);
                   }}
                   options={
                     categoriesResponse?.data?.map((category) => ({
-                      value: category.name,
+                      value: String(category.id),
                       label: category.name,
                     })) || []
                   }

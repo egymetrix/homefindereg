@@ -360,7 +360,7 @@ const SearchInput = ({
                   onMouseDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    handleCategoryItemClick(category.name);
+                    handleCategoryItemClick(category.id.toString());
                   }}
                 >
                   {category.name}
@@ -399,9 +399,9 @@ const Hero = () => {
     if (searchFilter === "name" && searchValue.trim()) {
       params.append("home_name", searchValue.trim());
     } else if (searchFilter === "category" && selectedCategory) {
-      params.append("category_type", selectedCategory);
+      params.append("category_id", selectedCategory);
     } else if (searchFilter === "city" && searchValue.trim()) {
-      params.append("city", searchValue.trim());
+      params.append("city_name", searchValue.trim());
     } else {
       // If no valid search conditions, don't proceed
       return;
@@ -411,9 +411,9 @@ const Hero = () => {
   }, [router, searchValue, selectedCategory, selected, searchFilter]);
 
   // Function to handle category selection and auto-redirect
-  const handleCategorySelected = useCallback((categoryName: string) => {
+  const handleCategorySelected = useCallback((categoryId: string) => {
     const params = new URLSearchParams();
-    params.append("category_type", categoryName);
+    params.append("category_id", categoryId);
     params.append("type", selected);
     router.push(`/search?${params.toString()}`);
   }, [router, selected]);

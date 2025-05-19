@@ -47,7 +47,7 @@ const CitiesFilter = ({
 
   useEffect(() => {
     if (categoriesResponse?.data && categoriesResponse.data.length > 0) {
-      setActiveCategory(categoriesResponse.data[0].name);
+      setActiveCategory(categoriesResponse.data[0].id.toString());
     }
   }, [activeFilter, categoriesResponse, setActiveCategory]);
 
@@ -73,7 +73,7 @@ const CitiesFilter = ({
                   categoriesResponse?.data &&
                   categoriesResponse.data.length > 0
                 ) {
-                  const newCategory = categoriesResponse.data[0].name;
+                  const newCategory = categoriesResponse.data[0].id.toString();
                   setActiveCategory(newCategory);
                 }
               }
@@ -92,14 +92,14 @@ const CitiesFilter = ({
           categoriesResponse?.data?.map((category: Category) => (
             <button
               key={category.name}
-              className={`relative whitespace-nowrap px-1 py-4 text-sm font-medium transition-colors ${activeCategory === category.name
+              className={`relative whitespace-nowrap px-1 py-4 text-sm font-medium transition-colors ${activeCategory === category.id.toString()
                 ? "text-blue-600"
                 : "text-gray-500 hover:text-gray-700"
                 }`}
-              onClick={() => handleCategoryClick(category.name)}
+              onClick={() => handleCategoryClick(category.id.toString())}
             >
               {category.name}
-              {activeCategory === category.name && (
+              {activeCategory === category.id.toString() && (
                 <div className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600" />
               )}
             </button>
@@ -125,7 +125,7 @@ const CitiesList = ({
       queryKey: ["governments", activeFilter, activeCategory],
       queryFn: async () => {
         return await clientGet<GovernmentResponse>(
-          `/site/gov-city?type=${activeFilter}&category_type=${activeCategory}`
+          `/site/gov-city?type=${activeFilter}&category_id=${activeCategory}`
         );
       },
       enabled: !!activeFilter && !!activeCategory,
@@ -176,7 +176,7 @@ const CitiesList = ({
                   {government.cities.map((city: City) => (
                     <Link
                       key={city.id}
-                      href={`/cities/${`${city.name}-${city.id}`}?category_type=${activeCategory}&type=${activeFilter}`}
+                      href={`/cities/${`${city.name}-${city.id}`}?category_id=${activeCategory}&type=${activeFilter}`}
                       className="flex items-center gap-2 py-1 px-4 bg-gray-50 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
                       onClick={() => handleCityClick()}
                     >

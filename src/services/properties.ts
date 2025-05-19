@@ -19,7 +19,7 @@ interface ServiceResponse {
 
 interface GetHomesParams {
   city_id?: string;
-  category_type?: string;
+  category_id?: string;
   type?: "sale" | "rent";
   min_price?: string;
   max_price?: string;
@@ -28,6 +28,7 @@ interface GetHomesParams {
   home_name?: string;
   home_bathrooms?: string;
   home_kitchens?: string;
+  city_name?: string;
 }
 
 export const getHomes = async (params: GetHomesParams) => {
@@ -37,8 +38,8 @@ export const getHomes = async (params: GetHomesParams) => {
   if (params.city_id) searchParams.append("city_id", params.city_id);
 
   // Add optional parameters if they exist
-  if (params.category_type)
-    searchParams.append("category_type", params.category_type);
+  if (params.category_id)
+    searchParams.append("category_id", params.category_id);
   if (params.type) searchParams.append("type", params.type);
   if (params.min_price) searchParams.append("min_price", params.min_price);
   if (params.max_price) searchParams.append("max_price", params.max_price);
@@ -49,27 +50,13 @@ export const getHomes = async (params: GetHomesParams) => {
     searchParams.append("home_bathrooms", params.home_bathrooms);
   if (params.home_kitchens)
     searchParams.append("home_kitchens", params.home_kitchens);
-
-  console.log("searchParams", searchParams.toString());
+  if (params.city_name) searchParams.append("city_name", params.city_name);
 
   const res = await clientGet<{ data: Property[] }>(
     `/site/get-homes?${searchParams.toString()}`
   );
 
-  console.log("res", res.data);
-
   return res;
-};
-
-export const searchHomes = async (
-  city: string,
-  type: string,
-  category_type: string,
-  home_name: string
-) => {
-  return await clientGet<{ data: Property[] }>(
-    `/site/search-preporty?city=${city}&type=${type}&category_type=${category_type}&home_name=${home_name}`
-  );
 };
 
 export const getProperty = async (propertyId: string) => {

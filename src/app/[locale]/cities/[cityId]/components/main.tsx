@@ -30,7 +30,7 @@ const Main = () => {
     queryFn: async () => {
       return await getHomes({
         city_id: cityIdNumber,
-        category_type: searchParams.get("category_type") || undefined,
+        category_id: searchParams.get("category_id") || undefined,
         type: (searchParams.get("type") as "sale" | "rent") || undefined,
         min_price: searchParams.get("min_price") || undefined,
         max_price: searchParams.get("max_price") || undefined,
@@ -59,12 +59,11 @@ const Main = () => {
       label: locale === "en" ? "Houses for sale" : "منازل للبيع",
       href: `/cities/${params.cityId}?type=${searchParams.get(
         "type"
-      )}&category_type=${searchParams.get("category_type")}`,
+      )}&category_id=${searchParams.get("category_id")}`,
     },
     {
-      label: `${decodeURIComponent(cityName)} (${properties.length} ${
-        locale === "en" ? "properties" : "عقار"
-      })`,
+      label: `${decodeURIComponent(cityName)} (${properties.length} ${locale === "en" ? "properties" : "عقار"
+        })`,
       href: `#`,
     },
   ];
