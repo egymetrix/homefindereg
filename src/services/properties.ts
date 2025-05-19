@@ -50,9 +50,15 @@ export const getHomes = async (params: GetHomesParams) => {
   if (params.home_kitchens)
     searchParams.append("home_kitchens", params.home_kitchens);
 
-  return await clientGet<{ data: Property[] }>(
+  console.log("searchParams", searchParams.toString());
+
+  const res = await clientGet<{ data: Property[] }>(
     `/site/get-homes?${searchParams.toString()}`
   );
+
+  console.log("res", res.data);
+
+  return res;
 };
 
 export const searchHomes = async (
