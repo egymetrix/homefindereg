@@ -39,7 +39,8 @@ export async function serverPost<T>(endpoint: string, formData: FormData) {
       "Content-Type": "multipart/form-data",
     },
   });
-  return response.data;
+  console.log("responseServer", response);
+  return response?.data;
 }
 
 // Client-side functions
@@ -78,6 +79,8 @@ export async function clientPost<T>(endpoint: string, formData: FormData) {
   const response = await clientAxios.post<T>(endpoint, formData, {
     headers,
   });
+
+  console.log("responseAxios", response);
 
   return response?.data;
 }

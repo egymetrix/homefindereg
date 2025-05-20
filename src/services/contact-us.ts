@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
-import { clientPost } from "@/services/api";
+import { serverPost } from "@/services/api";
 
 export const contactUs = async (data: any) => {
-  const response = await clientPost("/site/contactus-request", data);
+  const response = await serverPost("/site/contactus-request", data);
+  console.log("response", response);
   return response;
 };

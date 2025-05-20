@@ -8,8 +8,8 @@ import Input from "@/components/ui/input";
 import Button from "@/components/ui/Button";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { contactUs } from "@/services/contact-us";
 import { usePathname } from "next/navigation";
+import axios from "axios";
 
 const ContactUs = ({ type, preporty_id }: { type?: string, preporty_id?: string }) => {
   const locale = useLocale();
@@ -24,6 +24,8 @@ const ContactUs = ({ type, preporty_id }: { type?: string, preporty_id?: string 
     kind_request: "",
     preporty_id: preporty_id || "",
   });
+
+  console.log("formData", formData);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -51,13 +53,15 @@ const ContactUs = ({ type, preporty_id }: { type?: string, preporty_id?: string 
       const data = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
         // Skip empty type and property_id fields
-        if ((key === 'type' || key === 'preporty_id') && !value) {
-          return;
-        }
+        // if ((key === 'preporty_id') && !value) {
+        //   return;
+        // }
         const formValue = key === "telephone" ? Number(value) : value;
         data.append(key, formValue.toString());
       });
-      const response = await contactUs(data);
+      console.log("data", data);
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/site/contactus-request`, data);
+      console.log("response", response);
       return response;
     },
     onSuccess: () => {
@@ -86,12 +90,25 @@ const ContactUs = ({ type, preporty_id }: { type?: string, preporty_id?: string 
   });
 
   const handleSubmit = () => {
-    if (Object.values(formData).some((value) => !value)) {
+    // Check only required fields, not optional ones
+    const requiredFields = ['name', 'surname', 'email', 'telephone', 'message'];
+
+    // Add kind_request as required only on the contact page
+    if (pathname.includes("contact")) {
+      requiredFields.push('kind_request');
+    }
+
+    const missingRequiredField = requiredFields.some(field => !formData[field as keyof typeof formData]);
+
+    console.log("missingRequiredField", missingRequiredField);
+
+    if (missingRequiredField) {
       toast.error(
         locale === "ar" ? "يرجى ملء جميع الحقول" : "Please fill in all fields"
       );
       return;
     }
+
     mutate();
   };
 
