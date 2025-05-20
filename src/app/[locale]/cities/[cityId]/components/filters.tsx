@@ -485,7 +485,7 @@ const Filters = () => {
             <CustomSelect
               name="category"
               placeholder={t("propertyType")}
-              value={filters.category_id}
+              value={categoriesResponse?.data?.find(category => category?.id === Number(filters.category_id))?.name}
               onChange={(value) => {
                 updateFilter("category_id", value);
               }}
