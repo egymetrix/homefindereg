@@ -9,9 +9,15 @@ import Button from "@/components/ui/Button";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { usePathname } from "next/navigation";
-import axios from "axios";
+// import { clientPost } from "@/services/api";
 
-const ContactUs = ({ type, preporty_id }: { type?: string, preporty_id?: string }) => {
+const ContactUs = ({
+  type,
+  preporty_id,
+}: {
+  type?: string;
+  preporty_id?: string;
+}) => {
   const locale = useLocale();
   const pathname = usePathname();
   const [formData, setFormData] = useState({
@@ -36,11 +42,15 @@ const ContactUs = ({ type, preporty_id }: { type?: string, preporty_id?: string 
     },
     {
       value: "engineering_consultancy",
-      label: locale === "ar" ? "خدمة الاستشارات الهندسية" : "Engineering Consultancy",
+      label:
+        locale === "ar"
+          ? "خدمة الاستشارات الهندسية"
+          : "Engineering Consultancy",
     },
     {
       value: "thermal_insulation",
-      label: locale === "ar" ? "العزل الحراري للمنازل" : "Home Thermal Insulation",
+      label:
+        locale === "ar" ? "العزل الحراري للمنازل" : "Home Thermal Insulation",
     },
     {
       value: "other",
@@ -52,15 +62,24 @@ const ContactUs = ({ type, preporty_id }: { type?: string, preporty_id?: string 
     mutationFn: async () => {
       const data = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
-        // Skip empty type and property_id fields
-        // if ((key === 'preporty_id') && !value) {
-        //   return;
-        // }
+        // Skip empty preporty_id and kind_request fields
+        if ((key === "preporty_id" || key === "kind_request") && value === "") {
+          return;
+        }
         const formValue = key === "telephone" ? Number(value) : value;
         data.append(key, formValue.toString());
       });
       console.log("data", data);
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/site/contactus-request`, data);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/site/contactus-request`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          body: data,
+        }
+      );
       console.log("response", response);
       return response;
     },
@@ -91,14 +110,16 @@ const ContactUs = ({ type, preporty_id }: { type?: string, preporty_id?: string 
 
   const handleSubmit = () => {
     // Check only required fields, not optional ones
-    const requiredFields = ['name', 'surname', 'email', 'telephone', 'message'];
+    const requiredFields = ["name", "surname", "email", "telephone", "message"];
 
     // Add kind_request as required only on the contact page
     if (pathname.includes("contact")) {
-      requiredFields.push('kind_request');
+      requiredFields.push("kind_request");
     }
 
-    const missingRequiredField = requiredFields.some(field => !formData[field as keyof typeof formData]);
+    const missingRequiredField = requiredFields.some(
+      (field) => !formData[field as keyof typeof formData]
+    );
 
     console.log("missingRequiredField", missingRequiredField);
 
@@ -194,11 +215,14 @@ const ContactUs = ({ type, preporty_id }: { type?: string, preporty_id?: string 
                       <button
                         key={option.value}
                         className={`w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors ${formData.kind_request === option.value
-                          ? "text-primary font-medium bg-primary/5"
-                          : "text-gray-700"
+                            ? "text-primary font-medium bg-primary/5"
+                            : "text-gray-700"
                           }`}
                         onClick={() => {
-                          setFormData({ ...formData, kind_request: option.value });
+                          setFormData({
+                            ...formData,
+                            kind_request: option.value,
+                          });
                           setIsOpen(false);
                         }}
                       >
