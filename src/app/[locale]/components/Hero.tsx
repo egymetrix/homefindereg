@@ -205,70 +205,76 @@ const SearchInput = ({
   };
 
   return (
-    <div className="relative max-w-2xl mx-auto">
+    <div className="relative w-full max-w-xs sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto px-2 sm:px-4 lg:px-0">
       <motion.form
         onSubmit={handleSubmit}
-        className={`relative bg-white rounded-full overflow-hidden transition-shadow duration-300 ${isFocused ? "shadow-lg" : "shadow-md"
+        className={`relative bg-white rounded-lg sm:rounded-xl lg:rounded-full overflow-hidden transition-shadow duration-300 ${isFocused ? "shadow-lg" : "shadow-md"
           }`}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="flex items-center">
-          <div className={`relative z-20 ${locale === "ar" ? "order-last" : ""}`}>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center">
+          {/* Filter Type Button */}
+          <div className={`relative z-20 ${locale === "ar" ? "sm:order-last" : ""}`}>
             <button
               ref={buttonRef}
               type="button"
-              className={`h-full min-w-[110px] ${locale === "ar" ? "border-l" : "border-r"} border-gray-200 pl-4 pr-3 py-4 flex items-center justify-between text-gray-600 hover:text-gray-900 transition-colors`}
+              className={`h-full w-full sm:min-w-[90px] md:min-w-[110px] ${locale === "ar" ? "sm:border-l" : "sm:border-r"
+                } sm:border-gray-200 border-b sm:border-b-0 border-gray-200 pl-2 sm:pl-3 md:pl-4 pr-2 sm:pr-3 py-2 sm:py-3 md:py-4 flex items-center justify-between text-gray-600 hover:text-gray-900 transition-colors touch-manipulation`}
               onClick={(e) => {
                 toggleDropdown(e);
               }}
             >
-              <span className="text-sm font-medium">
+              <span className="text-xs sm:text-sm font-medium truncate">
                 {filterOptions.find(opt => opt.value === filterType)?.label}
               </span>
-              <ChevronDown className={`h-4 w-4 ml-1 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} />
+              <ChevronDown className={`h-3 w-3 sm:h-4 sm:w-4 ml-1 flex-shrink-0 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} />
             </button>
           </div>
 
-          {filterType === "category" ? (
-            <div
-              ref={categoryInputRef}
-              className="flex-1 px-3 py-4 cursor-pointer relative"
-              onClick={(e) => {
-                toggleCategoryDropdown(e);
-              }}
-            >
-              <div className="flex items-center justify-between">
-                <div className="text-gray-800">
-                  {selectedCategory || <span className="text-gray-500">{placeholder}</span>}
+          {/* Search Input / Category Selector */}
+          <div className="flex-1 flex items-center min-w-0">
+            {filterType === "category" ? (
+              <div
+                ref={categoryInputRef}
+                className="flex-1 px-2 sm:px-3 py-2 sm:py-3 md:py-4 cursor-pointer relative touch-manipulation min-w-0"
+                onClick={(e) => {
+                  toggleCategoryDropdown(e);
+                }}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="text-gray-800 truncate flex-1 min-w-0 text-xs sm:text-sm md:text-base">
+                    {selectedCategory || <span className="text-gray-500">{placeholder}</span>}
+                  </div>
+                  <ChevronDown className={`h-3 w-3 sm:h-4 sm:w-4 ml-1 sm:ml-2 flex-shrink-0 text-gray-500 transition-transform ${isCategoryDropdownOpen ? "rotate-180" : ""}`} />
                 </div>
-                <ChevronDown className={`h-4 w-4 ml-1 text-gray-500 transition-transform ${isCategoryDropdownOpen ? "rotate-180" : ""}`} />
               </div>
-            </div>
-          ) : (
-            <input
-              type="text"
-              placeholder={placeholder}
-              className={`flex-1 px-3 py-4 text-gray-800 placeholder-gray-500 focus:outline-none`}
-              aria-label="Search properties"
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
-              onChange={handleSearch}
-              value={inputValue}
-            />
-          )}
+            ) : (
+              <input
+                type="text"
+                placeholder={placeholder}
+                className={`flex-1 px-2 sm:px-3 py-2 sm:py-3 md:py-4 text-gray-800 placeholder-gray-500 focus:outline-none min-w-0 text-xs sm:text-sm md:text-base`}
+                aria-label="Search properties"
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+                onChange={handleSearch}
+                value={inputValue}
+              />
+            )}
+          </div>
 
-          <div className={`px-4 ${locale === "ar" ? "order-first" : ""}`}>
+          {/* Search Button */}
+          <div className={`px-2 sm:px-3 md:px-4 py-1 sm:py-2 md:py-0 ${locale === "ar" ? "sm:order-first" : ""} flex justify-center sm:justify-start`}>
             <motion.button
               type="submit"
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+              className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-full transition-colors duration-200 touch-manipulation"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               aria-label="Search"
             >
               <svg
-                className="w-6 h-6 text-gray-600"
+                className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-gray-600"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -293,7 +299,7 @@ const SearchInput = ({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.2 }}
-          className={`fixed bg-white shadow-2xl rounded-lg overflow-hidden w-48 border border-gray-200 z-[99999]`}
+          className="fixed bg-white shadow-2xl rounded-lg overflow-hidden border border-gray-200 z-[99999] w-32 sm:w-40 md:w-48"
           style={{
             top: dropdownPosition.top,
             left: locale !== "ar" ? dropdownPosition.left : "auto",
@@ -305,9 +311,9 @@ const SearchInput = ({
             <button
               key={option.value}
               type="button"
-              className={`block w-full text-left px-4 py-3 text-sm ${filterType === option.value
+              className={`block w-full text-left px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm touch-manipulation ${filterType === option.value
                 ? "bg-blue-50 text-blue-600 font-medium"
-                : "text-gray-700 hover:bg-gray-50"
+                : "text-gray-700 hover:bg-gray-50 active:bg-gray-100"
                 }`}
               onClick={(e) => {
                 e.stopPropagation();
@@ -335,16 +341,15 @@ const SearchInput = ({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.2 }}
-          className="fixed bg-white shadow-2xl rounded-lg overflow-hidden w-48 border border-gray-200 z-[99999]"
+          className="fixed bg-white shadow-2xl rounded-lg overflow-hidden border border-gray-200 z-[99999] max-h-48 sm:max-h-60 overflow-y-auto w-32 sm:w-40 md:w-48"
           style={{
             top: categoryDropdownPosition.top,
             left: categoryDropdownPosition.left,
-            right: locale === "ar" ? categoryDropdownPosition.left : "auto",
             pointerEvents: "auto"
           }}
         >
           {isCategoriesLoading ? (
-            <div className="py-3 px-4 text-sm text-gray-500 text-center">
+            <div className="py-2 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm text-gray-500 text-center">
               {t("loading")}...
             </div>
           ) : categories.length > 0 ? (
@@ -353,9 +358,9 @@ const SearchInput = ({
                 <button
                   key={category.id}
                   type="button"
-                  className={`block w-full text-left px-4 py-3 text-sm ${selectedCategory === category.name
+                  className={`block w-full text-left px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm touch-manipulation ${selectedCategory === category.name
                     ? "bg-blue-50 text-blue-600 font-medium"
-                    : "text-gray-700 hover:bg-gray-50"
+                    : "text-gray-700 hover:bg-gray-50 active:bg-gray-100"
                     }`}
                   onMouseDown={(e) => {
                     e.preventDefault();
@@ -363,12 +368,12 @@ const SearchInput = ({
                     handleCategoryItemClick(category.id.toString());
                   }}
                 >
-                  {category.name}
+                  <span className="truncate block">{category.name}</span>
                 </button>
               );
             })
           ) : (
-            <div className="py-3 px-4 text-sm text-gray-500 text-center">
+            <div className="py-2 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm text-gray-500 text-center">
               {t("noCategories")}
             </div>
           )}
@@ -403,7 +408,6 @@ const Hero = () => {
     } else if (searchFilter === "city" && searchValue.trim()) {
       params.append("city_name", searchValue.trim());
     } else {
-      // If no valid search conditions, don't proceed
       return;
     }
 

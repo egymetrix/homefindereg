@@ -9,7 +9,9 @@ import Button from "@/components/ui/Button";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { usePathname } from "next/navigation";
-// import { clientPost } from "@/services/api";
+import axios from "axios";
+import { clientPost } from "@/services/api";
+import { contactUs } from "@/services/contact-us";
 
 const ContactUs = ({
   type,
@@ -30,8 +32,6 @@ const ContactUs = ({
     kind_request: "",
     preporty_id: preporty_id || "",
   });
-
-  console.log("formData", formData);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -58,7 +58,7 @@ const ContactUs = ({
     },
   ];
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, data } = useMutation({
     mutationFn: async () => {
       const data = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
@@ -69,18 +69,7 @@ const ContactUs = ({
         const formValue = key === "telephone" ? Number(value) : value;
         data.append(key, formValue.toString());
       });
-      console.log("data", data);
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/site/contactus-request`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          body: data,
-        }
-      );
-      console.log("response", response);
+      const response = await contactUs(data);
       return response;
     },
     onSuccess: () => {
@@ -108,6 +97,7 @@ const ContactUs = ({
     },
   });
 
+
   const handleSubmit = () => {
     // Check only required fields, not optional ones
     const requiredFields = ["name", "surname", "email", "telephone", "message"];
@@ -121,7 +111,6 @@ const ContactUs = ({
       (field) => !formData[field as keyof typeof formData]
     );
 
-    console.log("missingRequiredField", missingRequiredField);
 
     if (missingRequiredField) {
       toast.error(
@@ -215,8 +204,8 @@ const ContactUs = ({
                       <button
                         key={option.value}
                         className={`w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors ${formData.kind_request === option.value
-                            ? "text-primary font-medium bg-primary/5"
-                            : "text-gray-700"
+                          ? "text-primary font-medium bg-primary/5"
+                          : "text-gray-700"
                           }`}
                         onClick={() => {
                           setFormData({
